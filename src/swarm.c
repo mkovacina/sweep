@@ -170,9 +170,9 @@ int initialize_swarm ( fgrid_ptr agent_grid ) {
       
     }
 
-	if (TraceLevelIsVerbose())
+	if (IsTraceLevelVerbose())
 	{
-		TraceLineVerbose("Made agents\n");
+		TraceVerboseLine("Made agents\n");
 		print_agent(temp_agent);
 	}
 

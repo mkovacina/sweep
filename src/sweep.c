@@ -74,7 +74,7 @@ int main ( int argc, char *argv[] )
 	char                 **file_names;
 	FILE                 *FILE_NAME_FILE;
 
-	TraceLineVerbose("INITIALIZING SWARM EXPERIMENTATION AND EVALUATION PLATFORM");
+	TraceVerboseLine("INITIALIZING SWARM EXPERIMENTATION AND EVALUATION PLATFORM");
 
 	swarm = malloc( sizeof( swarm_element_struct ) );
 	swarm->agent = NULL;
@@ -100,7 +100,7 @@ int main ( int argc, char *argv[] )
 			file_names = malloc( sizeof( char* ) * 5 );
 			for ( i = 0; i < 5; i++ ) file_names[i] = malloc( sizeof(char) * MAX_BUFFER ) ;
 
-			TraceLineVerbose("Files read in from filename file");
+			TraceVerboseLine("Files read in from filename file");
 			for ( i = 0; i < 5; i++ ) {
 
 				fgets( file_names[i], MAX_BUFFER, FILE_NAME_FILE );

@@ -5,6 +5,7 @@
 #include <stdio.h>
 
 # include "errors.h"
+#include "trace.h"
 # include "constants.h"
 
 extern char* FSA_FILE_NAME;
@@ -41,12 +42,12 @@ void assign_fptrs ( char * file_names[], int start_num, int num_file_names ) {
 
 	}
 
-	if (TraceLevelIsVerbose())
+	if (IsTraceLevelVerbose())
 	{
-		TraceLineVerbose("Output of filenames in assign_fptrs");
+		TraceVerboseLine("Output of filenames in assign_fptrs");
 		for (i=start_num;i< num_file_names; i++)
 		{   
-			TraceLineVerbose("%s\n", file_names[i]);
+			TraceVerboseLine("%s\n", file_names[i]);
 		}
 	}
 
@@ -92,11 +93,11 @@ void assign_fptrs ( char * file_names[], int start_num, int num_file_names ) {
 
 	}
 
-	TraceLineVerbose("FSA: %s", FSA_FILE_NAME );
-	TraceLineVerbose("AGT: %s", AGENT_FILE_NAME );
-	TraceLineVerbose("SWM: %s", SWARM_FILE_NAME );
-	TraceLineVerbose("AFF: %s", AGENT_FUNCTION_FILE_NAME );
-	TraceLineVerbose("SGD: %s", SUPPORT_GRIDS_FILE_NAME );
+	TraceVerboseLine("FSA: %s", FSA_FILE_NAME );
+	TraceVerboseLine("AGT: %s", AGENT_FILE_NAME );
+	TraceVerboseLine("SWM: %s", SWARM_FILE_NAME );
+	TraceVerboseLine("AFF: %s", AGENT_FUNCTION_FILE_NAME );
+	TraceVerboseLine("SGD: %s", SUPPORT_GRIDS_FILE_NAME );
 }
 
 void build_file_names ( char* base ) {

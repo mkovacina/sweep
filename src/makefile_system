@@ -5,7 +5,8 @@ CC = gcc
 CFLAGS = -ggdb -Wall -I.
 LDFLAGS = -L. -lm
 
-SOURCES = 	actions.c \
+SOURCES = 	\
+		actions.c \
 		agent.c \
 		errors.c \
 		file.c \
@@ -15,13 +16,16 @@ SOURCES = 	actions.c \
 		probes.c \
 		swarm.c \
 		sweep.c \
+		trace.c \
 		update_support.c 
 
 EXPERIMENT_DIR = ../exps
 
 include $(SOURCES:.c=.d)
 
-all: $(SOURCES:.c=.o) 
+all: sweep
+
+sweep: $(SOURCES:.c=.o) 
 	$(CC) $(CFLAGS) $(SOURCES:.c=.o) $(LDFLAGS) -o ../sweep
 
 %.d: %.c

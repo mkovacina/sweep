@@ -71,6 +71,7 @@ int main()
 	printf("#include \"print_grid.h\"\n");
 	printf("#include \"swarm.h\"\n\n");
 	printf("#include \"constants.h\"\n\n");
+	printf("#include \"trace.h\"\n\n");
 
 	printf("\n\n /***** WARNING *****/\n");
 	printf(" /***** WARNING *****/\n");
@@ -385,7 +386,7 @@ int main()
 		}; /* eat spaces */
 
 		if (buffer[index] == 'T' || buffer[index] == 't'){
-			printf("      TraceLineVerbose(\"Probe action  %d -> TERMINATE\\n\");\n",count);
+			printf("      TraceVerboseLine(\"Probe action  %d -> TERMINATE\\n\");\n",count);
 
 			printf("       terminate = 1;\n");
 		}
@@ -400,7 +401,7 @@ int main()
 		}
 		else if (buffer[index] == 'I'){
 			index++;
-			printf("       TraceLineVerbose(\"Iteration: \");");
+			printf("       TraceVerboseLine(\"Iteration: \");");
 			printf("       printf(\" %%d\\n\", iter_track);\n");
 		}
 		else if (buffer[index] == 'C'){
@@ -477,7 +478,7 @@ int main()
 		printf("       fclose(ANI_FILE);\n");
 	}
 
-	printf("       TraceLineVerbose(\" Program Terminating!\");\n");
+	printf("       TraceVerboseLine(\" Program Terminating!\");\n");
 
 	printf("       *done = 1;\n");
 	printf("    }\n");
