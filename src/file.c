@@ -14,115 +14,114 @@ extern char* SWARM_FILE_NAME;
 extern char* SUPPORT_GRIDS_FILE_NAME;
 
 void clear_nls ( char * strings[], int num_strings ) {
-/* Clears the \n from the end of strings and replaces it with a null terminator */
+	/* Clears the \n from the end of strings and replaces it with a null terminator */
 
-  int i;
+	int i;
 
-  for ( i = 0; i < num_strings; i++ ) {
-  
-    if ( (strings[i])[ strlen( strings[i] ) - 1 ] == '\n' )  {
-  
-      (strings[i])[ strlen( strings[i] ) - 1 ] = '\0';
-   
-    }
+	for ( i = 0; i < num_strings; i++ ) {
 
-  }
+		if ( (strings[i])[ strlen( strings[i] ) - 1 ] == '\n' )  {
+
+			(strings[i])[ strlen( strings[i] ) - 1 ] = '\0';
+
+		}
+
+	}
 
 }
 
 void assign_fptrs ( char * file_names[], int start_num, int num_file_names ) {
 
-  int i, error_flag = 0;
+	int i, error_flag = 0;
 
-  if ( num_file_names != CORRECT_FILE_NUMBER ) {
+	if ( num_file_names != CORRECT_FILE_NUMBER ) {
 
-    error_flag = 1;
-    error( "Incorrect number of files\nFiles Missing:\n" );
+		error_flag = 1;
+		error( "Incorrect number of files\nFiles Missing:\n" );
 
-  }
+	}
 
-#ifdef VERBOSE
-  printf("Output of filenames in assign_fptrs\n");
-  for (i=start_num;i< num_file_names; i++){   
-      printf("%s\n", file_names[i]);
-  }
-#endif
+	if (TraceLevelIsVerbose())
+	{
+		TraceLineVerbose("Output of filenames in assign_fptrs");
+		for (i=start_num;i< num_file_names; i++)
+		{   
+			TraceLineVerbose("%s\n", file_names[i]);
+		}
+	}
 
-  for ( i = start_num; i < num_file_names; i++ ) {
+	for ( i = start_num; i < num_file_names; i++ ) {
 
-    /* FSA file */
-    if ( strstr( file_names[i], ".fsa" ) ) {
-  
-      FSA_FILE_NAME = malloc( 1 + strlen( file_names[i] ) );
-      strcpy( FSA_FILE_NAME, file_names[i] );
+		/* FSA file */
+		if ( strstr( file_names[i], ".fsa" ) ) {
 
-    } else if ( strstr( file_names[i], ".agt" ) ) {
- 
-      AGENT_FILE_NAME = malloc( 1 + strlen( file_names[i] ) );
-      strcpy( AGENT_FILE_NAME, file_names[i] );
+			FSA_FILE_NAME = malloc( 1 + strlen( file_names[i] ) );
+			strcpy( FSA_FILE_NAME, file_names[i] );
 
-    } else if ( strstr( file_names[i], ".lst" ) ) {
+		} else if ( strstr( file_names[i], ".agt" ) ) {
 
-      AGENT_FUNCTION_FILE_NAME = malloc( 1 + strlen( file_names[i] ) );
-      strcpy( AGENT_FUNCTION_FILE_NAME, file_names[i] );
+			AGENT_FILE_NAME = malloc( 1 + strlen( file_names[i] ) );
+			strcpy( AGENT_FILE_NAME, file_names[i] );
 
-    } else if ( strstr( file_names[i], ".swm" ) ) {
+		} else if ( strstr( file_names[i], ".lst" ) ) {
 
-      SWARM_FILE_NAME = malloc( 1 + strlen( file_names[i] ) );
-      strcpy( SWARM_FILE_NAME, file_names[i] );
-  
-    } else if ( strstr( file_names[i], ".sgd" ) ) {
+			AGENT_FUNCTION_FILE_NAME = malloc( 1 + strlen( file_names[i] ) );
+			strcpy( AGENT_FUNCTION_FILE_NAME, file_names[i] );
 
-      SUPPORT_GRIDS_FILE_NAME = malloc( 1 + strlen( file_names[i] ) );
-      strcpy( SUPPORT_GRIDS_FILE_NAME, file_names[i] );
-    
-    }
+		} else if ( strstr( file_names[i], ".swm" ) ) {
 
-  }
+			SWARM_FILE_NAME = malloc( 1 + strlen( file_names[i] ) );
+			strcpy( SWARM_FILE_NAME, file_names[i] );
 
-  if ( error_flag ) {
-                                                                
-    if ( !FSA_FILE_NAME )            error( "Fsa File\n"            );
-    if ( !AGENT_FILE_NAME )          error( "Agent File\n"          );
-    if ( !SWARM_FILE_NAME )          error( "Swarm File\n"          );
-    if ( !AGENT_FUNCTION_FILE_NAME ) error( "Agent Function File\n" );
-    if ( !SUPPORT_GRIDS_FILE_NAME )  error( "Support Grids File\n"  );
+		} else if ( strstr( file_names[i], ".sgd" ) ) {
 
-  }
+			SUPPORT_GRIDS_FILE_NAME = malloc( 1 + strlen( file_names[i] ) );
+			strcpy( SUPPORT_GRIDS_FILE_NAME, file_names[i] );
 
-#ifdef VERBOSE
-    printf("FSA: %s\n", FSA_FILE_NAME );
-    printf("AGT: %s\n", AGENT_FILE_NAME );
-    printf("SWM: %s\n", SWARM_FILE_NAME );
-    printf("AFF: %s\n", AGENT_FUNCTION_FILE_NAME );
-    printf("SGD: %s\n", SUPPORT_GRIDS_FILE_NAME );
-#endif
+		}
 
+	}
+
+	if ( error_flag ) {
+
+		if ( !FSA_FILE_NAME )            error( "Fsa File\n"            );
+		if ( !AGENT_FILE_NAME )          error( "Agent File\n"          );
+		if ( !SWARM_FILE_NAME )          error( "Swarm File\n"          );
+		if ( !AGENT_FUNCTION_FILE_NAME ) error( "Agent Function File\n" );
+		if ( !SUPPORT_GRIDS_FILE_NAME )  error( "Support Grids File\n"  );
+
+	}
+
+	TraceLineVerbose("FSA: %s", FSA_FILE_NAME );
+	TraceLineVerbose("AGT: %s", AGENT_FILE_NAME );
+	TraceLineVerbose("SWM: %s", SWARM_FILE_NAME );
+	TraceLineVerbose("AFF: %s", AGENT_FUNCTION_FILE_NAME );
+	TraceLineVerbose("SGD: %s", SUPPORT_GRIDS_FILE_NAME );
 }
 
 void build_file_names ( char* base ) {
 
-  char temp[MAX_BUFFER];
+	char temp[MAX_BUFFER];
 
-  strcpy( temp, base );
-  FSA_FILE_NAME = malloc( strlen( strcat( temp, ".fsa" ) ) );
-  strcpy( FSA_FILE_NAME, temp );
+	strcpy( temp, base );
+	FSA_FILE_NAME = malloc( strlen( strcat( temp, ".fsa" ) ) );
+	strcpy( FSA_FILE_NAME, temp );
 
-  strcpy( temp, base );
-  AGENT_FILE_NAME = malloc( strlen( strcat( temp, ".agt") ) );
-  strcpy( AGENT_FILE_NAME, temp );
+	strcpy( temp, base );
+	AGENT_FILE_NAME = malloc( strlen( strcat( temp, ".agt") ) );
+	strcpy( AGENT_FILE_NAME, temp );
 
-  strcpy( temp,base );
-  SWARM_FILE_NAME = malloc( strlen( strcat( temp, ".swm") ) );
-  strcpy( SWARM_FILE_NAME, temp );
-  
-  strcpy( temp,base );
-  AGENT_FUNCTION_FILE_NAME = malloc( strlen( strcat( temp, ".lst") ) );
-  strcpy( AGENT_FUNCTION_FILE_NAME, temp );
+	strcpy( temp,base );
+	SWARM_FILE_NAME = malloc( strlen( strcat( temp, ".swm") ) );
+	strcpy( SWARM_FILE_NAME, temp );
 
-  strcpy( temp,base );
-  SUPPORT_GRIDS_FILE_NAME = malloc( strlen( strcat( temp, ".sgd") ) );
-  strcpy( SUPPORT_GRIDS_FILE_NAME, temp );
+	strcpy( temp,base );
+	AGENT_FUNCTION_FILE_NAME = malloc( strlen( strcat( temp, ".lst") ) );
+	strcpy( AGENT_FUNCTION_FILE_NAME, temp );
+
+	strcpy( temp,base );
+	SUPPORT_GRIDS_FILE_NAME = malloc( strlen( strcat( temp, ".sgd") ) );
+	strcpy( SUPPORT_GRIDS_FILE_NAME, temp );
 
 }
 

@@ -1,5 +1,9 @@
-/*------------------------ Includes Needed ---------------------------*/
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+#include <ctype.h>
 
+#include "trace.h"
 #include "swarm.h"
 #include "errors.h"
 #include "agent.h"
@@ -7,11 +11,6 @@
 #include "constants.h"
 #include "support_grids.h"
 #include "useful.h"
-
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-#include <ctype.h>
 
 /*------------------------ Externs Needed --------------------------- */
 
@@ -171,10 +170,12 @@ int initialize_swarm ( fgrid_ptr agent_grid ) {
       
     }
 
-#ifdef VERBOSE
-    printf("Made agents\n");
-    print_agent(temp_agent);
-#endif
+	if (TraceLevelIsVerbose())
+	{
+		TraceLineVerbose("Made agents\n");
+		print_agent(temp_agent);
+	}
+
     /* Trace up to last agent */
     first_agent = swarm;
     while ( first_agent->next_agt != NULL ) {
