@@ -1,0 +1,40 @@
+2    # there are 2 things to count
+Animation   
+# Counts (agent-based)
+# number of agent-based counts
+2
+# agent counts
+CO: A3 #
+C1: A1 #
+#
+# Counts (grid-based)
+0
+# Probe-actions repeated
+7   # number of probe actions
+# comment about first one
+C0 == 1: M"Found"
+C0 == 1: I
+C1 >= 3: M"Lost"
+C1 >= 3: I
+I > 1000: M"Exit"
+I > 1000: I
+I > 1000: T
+
+# Probe-actions once
+# 2    number of "one-shot" probe actions
+# C0 == 1: I
+# C0 == 2: I
+
+# Animation Information
+1  # time_step
+W  # include world in animation
+A  # include agents in animation
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,7 @@
+1	   # number of grids
+40
+40	   # size of grids
+0	   # support grid ID number, Neighbor
+U	   # file initialization grid
+0
+S	   # grid update is static

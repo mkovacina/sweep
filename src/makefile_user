@@ -1,0 +1,56 @@
+SHELL = /bin/sh
+
+EXPERIMENT_DIR = ../exps
+
+TOUCH_DIR = exp_touch
+
+
+all: new_experiment $(V)
+
+new_experiment:
+# if the file $(V).last is in not the $(TOUCH_DIR), then the current
+# experiment was not the last one run, and so all the user_* files
+# need to be replaced
+ifeq ($(findstring $(V).last,$(shell ls $(TOUCH_DIR))),)
+	-rm -f $(TOUCH_DIR)/*
+	-touch $(TOUCH_DIR)/$(V).last
+endif
+
+$(V) : $(TOUCH_DIR)/$(V)_actions $(TOUCH_DIR)/$(V)_priority $(TOUCH_DIR)/$(V)_probe
+
+$(TOUCH_DIR)/$(V)_priority: gen_priority $(EXPERIMENT_DIR)/$(V)/$(V).pri
+	cp $(EXPERIMENT_DIR)/$(V)/$(V).pri priority.dat
+	-rm priority.c
+	@echo about to run gen_priority
+	-./gen_priority > priority.c
+	touch $(TOUCH_DIR)/$(V)_priority
+
+$(TOUCH_DIR)/$(V)_probe: gen_probe $(EXPERIMENT_DIR)/$(V)/$(V).prb
+	cp $(EXPERIMENT_DIR)/$(V)/$(V).prb probe.dat
+	-rm probes.c
+	@echo about to run gen_probe
+	-./gen_probe > probes.c
+	touch $(TOUCH_DIR)/$(V)_probe
+
+$(TOUCH_DIR)/$(V)_actions: $(EXPERIMENT_DIR)/$(V)/$(V).c $(EXPERIMENT_DIR)/$(V)/$(V).h $(EXPERIMENT_DIR)/$(V)/$(V).tbl
+	cp $(EXPERIMENT_DIR)/$(V)/$(V).c user_actions.c
+	cp $(EXPERIMENT_DIR)/$(V)/$(V).h user_actions.h
+	cp $(EXPERIMENT_DIR)/$(V)/$(V).tbl user_actions.tbl
+	touch $(TOUCH_DIR)/$(V)_actions
+
+###
+
+CC = gcc
+
+CFLAGS =  -g -Wall -I.
+LDFLAGS =  -L. -lm
+
+gen_priority.o : gen_priority.c support_grids.h
+
+gen_priority: gen_priority.o
+	$(CC) $(CFLAGS) gen_priority.o $(LDFLAGS) -o gen_priority
+
+gen_probe.o : gen_probe.c print_grid.h
+
+gen_probe: gen_probe.o
+	$(CC) $(CFLAGS) gen_probe.o $(LDFLAGS) -o gen_probe

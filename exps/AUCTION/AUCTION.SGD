@@ -1,0 +1,8 @@
+1	   # number of grids
+40
+40	   # size of grids
+0	   # support grid ID number, environment
+F	   # grid initialization is file
+exps/auction/auction.dat
+S	   # grid update is static
+

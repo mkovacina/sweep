@@ -1,0 +1,18 @@
+2  # 2 different sets of actions
+#
+1  # 1 actions in the first fsa
+#
+Lwander:AF_set_proximity-0;#
+##
+2
+#
+wander:AF_safe_wander-0;#
+follow:AF_safe_follow-0;AF_set_proximity-0;#
+####	
+
+
+
+
+
+
+

@@ -1,0 +1,11 @@
+1  number of fsa's in the file
+#
+4  number of states in fsa
+#
+4  number of input symbols
+#
+0-0:0;1:1;2:2;3:3-wavd
+1-0:1;1:1;2:1;3:1-dead
+2-0:0;1:1;2:2;3:3-stay
+3-0:0;1:1;2:2;3:3-srch
+####

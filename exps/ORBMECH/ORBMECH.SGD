@@ -1,0 +1,7 @@
+1	   # number of grids
+50
+50	   # size of grids
+0	   # support grid ID number, environment
+U	   # grid initialization is uniform
+0	   # initial value is zero
+S	   # updates are static

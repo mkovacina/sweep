@@ -1,0 +1,11 @@
+2	   # number of grids
+40
+40	   # size of grids
+0	   # support grid ID number, environment
+F	   # file initialization grid
+exps/bridge5/bridge5.dat
+S	   # grid update is static
+1	   # support grid ID number, trails
+U	   # grid initialization is uniform
+0	   # initial value is zero
+S	   # updates are static

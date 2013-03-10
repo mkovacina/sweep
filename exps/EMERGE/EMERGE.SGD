@@ -1,0 +1,15 @@
+3	   # number of grids
+40
+40	   # size of grids
+0	   # support grid ID number, environment
+F	   # file initialization grid
+exps/emerge/emerge.dat
+S	   # grid update is static
+1	   # support grid ID number, trails
+F	   # file initialization
+exps/emerge/circle.dat
+S          # static update
+2	   # support grid id
+U	   # uniform initialization
+0	   # all 0's
+S	   # static update

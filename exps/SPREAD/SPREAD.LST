@@ -1,0 +1,10 @@
+1  # 
+#
+4  # 4 different actions to define
+#
+pick:pick_any;place-0(1);#
+sprd:move_any;set_radius-0(9);circle-0(1);#
+beac:set_radius-0(9);circle-0(1);set_radius-0(2);circle-1(99);#
+revs:move-backward;set_radius-0(9);circle-0(1);#
+####		
+

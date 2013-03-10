@@ -1,0 +1,17 @@
+2  # 2 sets of actions
+#
+3  # 3 actions in the fsa
+#
+ftar:findtarget-0;# 
+trob:object_trail-1;#
+foll:follow-1;#
+##	
+6 # 5 actions in second fsa
+#
+fobj:locate_region-0(1);# 
+pkup:pick_up-0;#
+ftar:findtarget-0;#
+folw:follow-1;#
+wdtr:staysearch-0(3);#		
+drop:put_down-0;#
+####	

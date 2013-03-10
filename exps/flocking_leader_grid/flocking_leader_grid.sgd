@@ -1,0 +1,19 @@
+4	   # number of grids
+100
+100	   # size of grids
+0	   # support grid ID number, message grid
+U	   # grid initialization is uniform
+0	   # initial value is zero
+S	   # grid update is clear
+1	   # support grid ID number, message grid
+U	   # grid initialization is uniform
+0	   # initial value is zero
+X	   # grid update is clear
+2	   # support grid ID number, message grid
+U	   # grid initialization is uniform
+0	   # initial value is zero
+X	   # grid update is clear
+3	   # support grid ID number, message grid
+U	   # grid initialization is uniform
+0	   # initial value is zero
+X	   # grid update is clear

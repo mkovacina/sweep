@@ -1,0 +1,4 @@
+  {   safe_str_trail,       "safe_str_trail"        },
+  {   stay_search_trail,    "stay_search_trail"     },
+  {   follow,               "follow"                },
+  {   staysearch,           "staysearch"            },

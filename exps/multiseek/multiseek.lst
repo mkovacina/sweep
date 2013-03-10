@@ -1,0 +1,12 @@
+1  # 1 set of actions
+#
+6  # 6 actions in the fsa
+#
+roam:move_wander;# 
+nort:move_up;#
+east:move_right;#
+sout:move_down;#
+west:move_left;#
+stay:place-0(1);#
+####	
+

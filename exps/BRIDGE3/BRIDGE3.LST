@@ -1,0 +1,10 @@
+1  
+#
+4  # 4 different actions to define
+#
+dead:no_op;#
+wavd:wander_avoid-0(4);#
+stay:staysearch-0(0);#
+srch:staysearch-0(3);#
+####		
+

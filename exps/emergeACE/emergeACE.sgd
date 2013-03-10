@@ -1,0 +1,11 @@
+2	   # number of grids
+40
+40	   # size of grids
+0	   # support grid ID number, environment
+F	   # file initialization grid
+exps/emergeACE/emergeACE.dat
+S	   # grid update is static
+1	   # trails grid 
+U	   # uniform initialization
+0	   # all 0's
+S	   # static updates

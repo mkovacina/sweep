@@ -1,0 +1,14 @@
+2  # 2 sets of actions
+#
+4  # 4 actions in the fsa
+#
+init:initialize;place-0(1);#
+srch:scan-0;#
+find:location;scan-0;#
+stay:no_op;#
+##
+1
+#
+sit:place-0(1);#
+####	
+

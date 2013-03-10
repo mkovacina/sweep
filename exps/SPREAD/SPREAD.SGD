@@ -1,0 +1,15 @@
+2	   # number of grids
+40
+40	   # size of grids
+0	   # support grid ID number, Spread grid
+U	   # uniform initialization
+0	   # start with 0
+X          # clear grid
+1	   # support grid ID number, Beacon grid
+U          # uniform initialization
+0	   # start with 0's
+X	   # clear update
+2          # border grid
+F          # file initialization
+/sweep/exps/spread/spread.dat
+S

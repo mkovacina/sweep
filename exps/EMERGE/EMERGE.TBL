@@ -1,0 +1,6 @@
+  {   pick_up,              "pick_up"               },
+  {   put_down,             "put_down"              },
+  {   hill_climb,           "hill_climb"            },
+  {   hill_down,            "hill_down"             },
+  {   locate_obj,	    "locate_obj"            },
+  {   safe_str,             "safe_str"              },

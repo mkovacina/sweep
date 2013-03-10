@@ -1,0 +1,8 @@
+1  # 1 set of actions
+#
+2  # 2 actions in the fsa
+#
+wndr:safe_wander;# 
+flash:flash-0;#
+####	
+

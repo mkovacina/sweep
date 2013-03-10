@@ -1,0 +1,8 @@
+{	scan,		"scan"		},
+{	initialize, 	"initialize"  	},
+{	location,	"location"	},
+{	bounce,		"bounce"	},
+{	target,		"target"	},
+{	look,		"look"		},
+{	location2,	"location2"	},
+

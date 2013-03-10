@@ -1,0 +1,32 @@
+0    # there is nothing to count
+Animation   
+# Counts (agent-based)
+# number of agent-based counts
+0
+# Counts (grid-based)
+0
+# number of grid-based counts
+
+# Probe-actions repeated
+1   # number of probe actions
+# comment about first one
+I > 10000: T
+
+# Probe-actions once
+# 2    number of "one-shot" probe actions
+# C0 == 1: I
+# C0 == 2: I
+
+# Animation Information
+5  # time_step
+W
+A  # include agents in animation
+
+
+
+
+
+
+
+
+

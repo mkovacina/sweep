@@ -1,0 +1,6 @@
+{   leader_recruit,             "leader_recruit"	},
+{   leader_safe_wander,		"leader_safe_wander"	},
+{   leader_place_info, 		"leader_place_info"    	},
+{   follower_safe_follow,    	"follower_safe_follow"	},
+{   follower_place_info,	"follower_place_info"	},
+

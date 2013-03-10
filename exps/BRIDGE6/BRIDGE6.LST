@@ -1,0 +1,18 @@
+2  # 2 different sets of actions
+#
+5  # 5 actions in the first fsa
+#
+ldwd:safe_str_trail-1;#
+ltk1:stay_search_trail-0(2),1;#
+ltk2:stay_search_trail-0(3),1;#
+lsty:staysearch-0(0);#
+lded:staysearch-0(-1);#
+##
+4
+#
+wand:safe_wander;#
+foll:follow-1;#
+stay:staysearch-0(-1);#
+dead:staysearch-0(-1);#
+####	
+

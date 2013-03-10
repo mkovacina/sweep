@@ -1,0 +1,25 @@
+2  number of fsa's in the file
+#  Leader FSA comes first
+6  number of states in fsa
+#
+6  number of input symbols
+#
+0-0:0;1:1;2:2;3:3;4:4;5:0-ldwd  # leader wander
+1-0:0;1:1;2:2;3:3;4:4;5:0-ltk1  # leader leave track 1
+2-0:2(99);0:5;1:2(99);1:5;2:2(99);2:5;3:3;4:4;5:2-rvtl  # reverse trail
+3-0:0;1:1;2:2;3:3;4:4;5:0-lsty	# leader stay in target area
+4-0:4;1:4;2:4;3:4;4:4;5:4-lded	# leader dead
+5-0:0;1:1;2;6;3;3;4:4;5:5-lfol	# leader follow
+6-0:0;1:1;2:6;3:3;4:4;5:6-ltk2  # leader leave track 2
+## Follower FSA comes next
+4 number of states in fsa
+#
+5 number of input symbols
+#
+0-0:0;1:1;2:2;3:3;4:4-wand      # wander with no info
+1-0:0;1:1;2:2;3:3;4:4-foll	# follow trail if there
+2-0:0;1:1;2:2;3:3;4:4-srst	# if bridge stumbled on, cross it
+3-0:0;1:1;2:2;3:3;4:4-stay	# stay in target region
+4-0:4;1:4;2:4;3:4;4:4-dead	# die in chasm
+####
+

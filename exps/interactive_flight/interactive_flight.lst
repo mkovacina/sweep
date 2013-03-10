@@ -1,0 +1,13 @@
+1  # 1 different sets of actions
+#
+1  # 1 actions in the fsa
+#
+wander:AF_read_controls;AF_move;place-0(1);AF_dump_info;#
+####	
+
+
+
+
+
+
+

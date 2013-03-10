@@ -1,0 +1,19 @@
+2  # 
+#
+4  # 4 different beacon actions to define
+#
+pick:pick_any;place-0(1);#
+sprd:move_any;set_radius-0(11);circle-0(1);#
+beac:set_radius-0(11);circle-0(1);place-0(1);set_radius-0(2);circle-1(99);#
+revs:move_backward;set_radius-0(9);circle-0(1);#
+##
+6
+#
+wand:move_any;#
+find:reset_field-0(18);reset_field-0(20);set_field_pri-0(19);pick_any;#
+enum:inc_field-0(20);move_any;#
+rpt1:message1;#
+rpt2:message2;#
+chng:pick_any;#
+####		
+

@@ -1,0 +1,5 @@
+{   AF_read_controls,	"AF_read_controls"	},
+{   AF_dump_info,	"AF_dump_info"		},
+{   AF_move,		"AF_move"		},
+
+

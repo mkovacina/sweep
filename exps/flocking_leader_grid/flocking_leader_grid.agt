@@ -1,0 +1,22 @@
+2
+##
+5
+#
+2	# field strength
+3	# buffer region size
+5	# proximity region size
+100	# velocity
+50	# thrust
+0	# angle
+0	# omega
+##
+5
+#
+1	# field strength
+2	# buffer region size
+2	# proximity region size
+10	# velocity
+0	# thrust
+0	# angle
+.2	# omega
+####

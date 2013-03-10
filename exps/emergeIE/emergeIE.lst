@@ -1,0 +1,11 @@
+1  # 1 set of actions
+#
+5  # 5 actions in the fsa
+#
+fobj:locate_region-0(1);# 
+pkup:pick_up-0;#
+ftar:findtarget-0;#
+drop:put_down-0;#
+wdtr:staysearch-0(3);#		
+####	
+

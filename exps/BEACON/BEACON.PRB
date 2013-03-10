@@ -1,0 +1,22 @@
+2    # there is 1 thing to count
+Animation   
+# Counts (agent-based)
+# number of agent-based counts
+1
+C0: A2 # count when they become beacons
+# Counts (grid-based)
+1
+# number of grid-based counts
+C1: G0 == 1 # count the total region covered
+# Probe-actions
+3            # number of probe actions
+# comment about first one
+C0 == 6: C1
+C0 == 6: T
+I >= 3000: T
+
+# Animation Information
+1  # time_step
+W  # include world in animation
+A  # include agents in animation
+

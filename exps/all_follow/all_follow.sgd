@@ -1,0 +1,7 @@
+1	   # number of grids
+50
+50	   # size of grids
+0	   # support grid ID number, message grid
+U	   # grid initialization is uniform
+0	   # initial value is zero
+X	   # grid update is clear

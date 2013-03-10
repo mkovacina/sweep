@@ -1,0 +1,12 @@
+1  # 1 set of actions
+#
+6  # 6 actions in the fsa
+#
+hiwd:safe_str;# 
+down:hill_down-0;#
+clmb:hill_climb-0;#
+pkup:pick_up-1;#
+lowd:locate_obj-1(1);#
+drop:put_down-2;#
+####	
+

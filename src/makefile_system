@@ -1,0 +1,30 @@
+SHELL = /bin/sh
+
+CC = gcc
+
+CFLAGS = -ggdb -Wall -I.
+LDFLAGS = -L. -lm
+
+SOURCES = 	actions.c \
+		agent.c \
+		errors.c \
+		file.c \
+		fsa.c \
+		print_grid.c \
+		priority.c \
+		probes.c \
+		swarm.c \
+		sweep.c \
+		update_support.c 
+
+EXPERIMENT_DIR = ../exps
+
+include $(SOURCES:.c=.d)
+
+all: $(SOURCES:.c=.o) 
+	$(CC) $(CFLAGS) $(SOURCES:.c=.o) $(LDFLAGS) -o ../sweep
+
+%.d: %.c
+	set -e; $(CC) -MM $(CFLAGS) $< \
+		| sed 's/\($*\)\.o[ :]*/\1.o $@ : /g' > $@; \
+		[ -s $@ ] || rm -f $@ 

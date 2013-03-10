@@ -1,0 +1,7 @@
+{   AF_move,		"AF_move"		},
+{   AF_random_move,	"AF_random_move"	},
+{   AF_safe_wander,	"AF_safe_wander"	},
+{   AF_safe_follow,	"AF_safe_follow"	},
+{   AF_set_proximity,	"AF_set_proximity"	},
+
+

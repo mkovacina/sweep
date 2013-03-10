@@ -1,0 +1,16 @@
+1  # the neighbor grid is specified as 10 but now probably should be 0 or 1
+#
+4
+#
+wander:safe_wander-1;wander_info-0,1,2;#
+vortex_end:neighbor_info-0;vortex_end_info-1,2;#
+vortex_mid:neighbor_info-0;vortex_mid_info-1,2;#
+vortex_follow:vortex_follow-1,2;#
+####		
+
+
+# grid 0: neighbor grid
+# grid 1: up grid
+# grid 2: right grid
+# grid 3: down grid
+# grid 4: left grid

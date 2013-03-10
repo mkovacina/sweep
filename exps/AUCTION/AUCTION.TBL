@@ -1,0 +1,7 @@
+{	initialize, 	"initialize"  	},
+{	read_msg,	"read_msg"	},
+{	broadcast,	"broadcast"	},
+{	ptop,		"ptop"		},
+{	best_get,	"best_get"	},
+{ 	measure,	"measure" 	},
+{	tar_move, 	"tar_move"	},

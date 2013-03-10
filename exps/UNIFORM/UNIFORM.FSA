@@ -1,0 +1,17 @@
+1  number of fsa's in the file
+#  Leader FSA comes first
+2  number of states in fsa
+#
+2  number of input symbols
+#
+0-0:0;1:1;2:2-leader_wander
+1-0:0;1:1;2:2-leader_recruit
+1-0:0;1:1;2:2-follower_follow
+####
+
+
+
+
+
+
+

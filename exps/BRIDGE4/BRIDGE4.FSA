@@ -1,0 +1,22 @@
+2  number of fsa's in the file
+#  Leader FSA comes first
+5  number of states in fsa
+#
+5  number of input symbols
+#
+0-0:0;1:1;2:2;3:3;4:4-ldwd
+1-0:0;1:1;2:2;3:3;4:4-ltk1
+2-0:0;1:1;2:2;3:3;4:4-ltk2
+3-0:0;1:1;2:2;3:3;4:4-lsty
+4-0:4;1:4;2:4;3:4;4:4-lded
+## Follower FSA comes next
+4 number of states in fsa
+#
+4 number of input symbols
+#
+0-0:0;1:1;2:2;3:3-wand
+1-0:0;1:1;2:2;3:3-foll
+2-0:2;1:2;2:2;3:2-dead
+3-0:0;1:1;2:2;3:3-stay
+####
+

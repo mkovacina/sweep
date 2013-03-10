@@ -1,0 +1,13 @@
+2  # 1 type of satellite (orbitting)
+#
+2  # 2 actions initialize and update position
+#
+init:x_setpos-0(1);y_setpos-0(3);z_setpos-0(2);x_setvel-0(1);y_setvel-0(1);z_setvel-0(-1);orbit_update-0;place-0(1);#
+orbt:orbit_update-0;place-0(1);#
+##
+2  # 2 actions initialize and update position
+#
+init:x_setpos-0(2);y_setpos-0(1);z_setpos-0(2);x_setvel-0(1);y_setvel-0(1);z_setvel-0(1);orbit_update-0;place-0(1);#
+orbt:orbit_update-0;place-0(1);#
+####	
+

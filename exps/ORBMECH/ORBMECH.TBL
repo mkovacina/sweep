@@ -1,0 +1,11 @@
+  {   x_setpos,             "x_setpos"      },
+  {   y_setpos,             "y_setpos"      },
+  {   z_setpos,             "z_setpos"      },
+  {   x_setvel,             "x_setvel"      },
+  {   y_setvel,             "y_setvel"      },
+  {   z_setvel,             "z_setvel"      },
+  {   x_thrust,             "x_thrust"      },
+  {   y_thrust,             "y_thrust"      },
+  {   z_thrust,             "z_thrust"      },
+  {   orbit_update,         "orbit_update"  },
+

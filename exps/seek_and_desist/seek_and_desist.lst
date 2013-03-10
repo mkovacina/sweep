@@ -1,0 +1,17 @@
+2  # 2 different sets of actions
+#
+1  # 1 actions in the first fsa
+#
+stay:no_op;#
+##
+1
+#
+seek:SaD_seek;place-0(1);#
+####	
+
+
+
+
+
+
+

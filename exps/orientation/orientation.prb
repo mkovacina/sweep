@@ -1,0 +1,29 @@
+5    # total num. of items to count
+Animation   
+# Counts (agent-based)
+# number of agent-based counts
+4
+CO : A1
+C1 : A2
+C2 : A3
+C3 : A4
+# Counts (grid-based)
+# number of grid-based count
+0
+
+# Probe-actions
+1            # number of probe actions
+# comment about 
+#( C0 + C1 + C2 + C3 ) == N : T
+#( C0 + C1 + C2 + C3 ) == N : D
+#( C0 + C1 + C2 + C3 ) == N : C0
+#( C0 + C1 + C2 + C3 ) == N : C1
+#( C0 + C1 + C2 + C3 ) == N : C2
+#( C0 + C1 + C2 + C3 ) == N : C3
+I == 500 : T
+
+# Animation Information
+1  # time_step
+W  # include world in animation
+A  # include agents in animation
+

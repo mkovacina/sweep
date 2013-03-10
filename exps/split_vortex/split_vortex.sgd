@@ -1,0 +1,19 @@
+4	   # number of grids
+30
+30	   # size of grids
+0	   # support grid ID number, horizontal neighbor grid
+U	   # uniform grid
+0	   # everyone starts with no neighbors
+X	   # update the screen by clearing it
+1	   # support grid ID number, vertical movement
+U	   # uniform grid
+0	   
+X	   # update the screen by clearing it
+2	   # support grid ID number, horizontal movement
+U	   # uniform grid
+0	   
+X	   # update the screen by clearing it
+3	   # support grid ID number, vertical follow grid
+U	   # uniform grid
+0	   
+X	   # update the screen by clearing it

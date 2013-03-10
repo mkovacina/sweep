@@ -1,0 +1,16 @@
+2  # 2 sets of actions
+#
+3  # 3 actions in the fsa
+#
+init:initialize;place-0(1);inc_field-0(5);#
+srch:scan-0;inc_field-0(5);#
+mesg:location;inc_field-0(5);#
+##
+4
+#
+move:move_any;place-0(1);inc_field-0(5);#
+rtlf:bounce;move_any;place-0(1);inc_field-0(5);#
+updn:bounce;move_any;place-0(1);inc_field-0(5);#
+crnr:bounce;move_any;place-0(1);inc_field-0(5);#
+####	
+

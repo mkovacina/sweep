@@ -1,0 +1,11 @@
+2	   # number of grids
+40
+40	   # size of grids
+0	   # support grid ID number, environment
+U	   # grid initialization is uniform
+0	   # initial value is zero
+X	   # grid update is dynamic
+1	   # support grid ID number, environment
+F	   # file initialization grid
+exps/tracksearch/tracksearch.dat
+S	   # grid update is static

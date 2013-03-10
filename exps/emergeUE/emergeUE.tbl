@@ -1,0 +1,7 @@
+  {   pick_up,              "pick_up"               },
+  {   put_down,             "put_down"              },
+  {   locate_region,	    "locate_region"         },
+  {   staysearch,           "staysearch"            },
+  {   findtarget,           "findtarget"            },
+  {   object_trail,         "object_trail"          },
+  {   follow,               "follow"                },

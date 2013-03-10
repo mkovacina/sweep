@@ -1,0 +1,9 @@
+1  
+#
+3  # 3 different actions to define
+#
+dead:no_op;#
+wavd:wander_avoid-0(4);#
+stay:staysearch-0(0);#
+####		
+

@@ -1,0 +1,9 @@
+1  number of fsa's in the file
+#  Central satellite comes first
+1  One state in the FSA
+#
+2  number of input symbols
+#
+0-0:0;1:0-orbt
+####
+

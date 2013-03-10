@@ -1,0 +1,141 @@
+/* gives access to error() */
+#include "errors.h"
+
+/* give access to print_*_grid() */
+#include "print_grid.h"
+
+static enum field_index { THRUST,
+			  OMEGA,
+			  /* END OF FILE INITIALIZED FIELDS */
+			  THETA,
+			  VELOCITY,
+			  X_POS,
+			  Y_POS,
+			  STUCK,
+			  COUNT,
+			  WAIT,
+			  FIRST_TIME } index;
+
+void AF_move( agent_struct *agent, int action_index );
+void runge_kutta( float *xx, float *yy, float *vv, float *thetaT, float T, float w, float dt );
+
+
+void AF_read_controls( agent_struct *agent, int actioin_index )
+{
+  FILE* in;
+
+  if ( ( in = fopen( "exps/interactive_flight/flight_controller", "r" ) ) != NULL )
+    {
+      fscanf( in, "%f", &( agent->field[ THRUST ] ) );
+      while( fgetc(in) != '\n' );
+      fscanf( in, "%f", &( agent->field[ OMEGA ] ) );
+
+      // Debugger-ific
+      // fprintf( stderr, "%f %f\n", thrust, omega );
+    
+      fclose( in );
+    }
+}
+
+
+void AF_random_move( agent_struct *agent, int action_index )
+{
+  if ( agent->field[ COUNT ] >= agent->field[ WAIT ] )
+    {
+      agent->field[ COUNT ] = 0.0;
+      agent->field[ WAIT  ] = RAND( 15, 300 );
+
+      agent->field[ THRUST ] = RAND( 1, 100 );
+      agent->field[ THETA  ] = RAND( -15, 15 );
+      agent->field[ OMEGA  ] = (float)RAND( -300, 300 ) / 1000.0;
+    } 
+
+  AF_move( agent, action_index );
+
+  agent->field[ COUNT ] += 1.0;
+}
+
+void AF_dump_info( agent_struct *agent, int action_index )
+{
+  FILE* in;
+
+  if ( ( in = fopen( "exps/interactive_flight/agent_info", "w" ) ) != NULL )
+    {
+      fprintf( in, "%f", agent->field[ VELOCITY ] );
+      fprintf( in, "\n" );
+      fprintf( in, "%f", agent->field[ THETA ] );
+
+      fclose( in );
+    }
+}
+
+void AF_move( agent_struct *agent, int action_index )
+{
+  float *x;
+  float *y;
+  float *v;
+  float *theta;
+  float thrust;
+  float omega;
+  float dt;
+
+  if ( agent->field[ FIRST_TIME ] < 1.0 )
+    {
+      agent->field[ X_POS ] = agent->x_pos;
+      agent->field[ Y_POS ] = agent->y_pos;
+      agent->field[ FIRST_TIME ] = 2.0;
+    }
+
+  x = &(agent->field[ X_POS ]);
+  y = &(agent->field[ Y_POS ]);
+  v = &(agent->field[ VELOCITY ]);
+  theta = &(agent->field[ THETA ]);
+  thrust = agent->field[ THRUST ];
+  omega = agent->field[ OMEGA ];
+  dt = 0.1;
+
+  runge_kutta( x, y, v, theta, thrust, omega, dt );
+
+  agent->x_pos = (int)(*x);
+  agent->y_pos = (int)(*y);
+}
+ 
+void runge_kutta( float *xx, float *yy, float *vv, float *thetaT, float T, float w, float dt ) 
+{
+  float f11, f12, f13, f14;
+  float f21, f22, f23, f24;
+  float f31, f32, f33, f34;
+  float f41, f42, f43, f44;
+
+  float x = *xx;
+  float y = *yy;
+  float v = *vv;
+  float theta = *thetaT;
+
+  int k = 10;
+
+  f11 = dt*v*cos(theta);
+  f12 = dt*v*sin(theta);
+  f13 = dt*(T-k*v);
+  f14 = dt*w;
+  
+  f21 = dt*(v+f13/2)*cos(theta+f14/2);
+  f22 = dt*(v+f13/2)*sin(theta+f14/2);
+  f23 = dt*(T-k*(v+f13/2));
+  f24 = dt*w;
+  
+  f31 = dt*(v+f23/2)*cos(theta+f24/2);
+  f32 = dt*(v+f23/2)*sin(theta+f24/2);
+  f33 = dt*(T-k*(v+f23/2));
+  f34 = dt*w;
+  
+  f41 = dt*(v+f33)*cos(theta+f34);
+  f42 = dt*(v+f33)*sin(theta+f34);
+  f43 = dt*(T-k*(v+f33));
+  f44 = dt*w;
+  
+  *xx=x+f11/6+f21/3+f31/3+f41/6;
+  *yy=y+f12/6+f22/3+f32/3+f42/6;
+  *vv=v+f13/6+f23/3+f33/3+f43/6;
+  *thetaT=theta+f14/6+f24/3+f34/3+f44/6;
+}

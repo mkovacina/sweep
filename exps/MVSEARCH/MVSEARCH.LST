@@ -1,0 +1,13 @@
+2  # 2 sets of actions
+#
+2  # 2 actions in the fsa
+#
+srch:scan-0;#
+stay:no_op;#
+##
+2
+#
+east:move_right;place-0(1);#
+west:move_left;place-0(1);#
+####	
+

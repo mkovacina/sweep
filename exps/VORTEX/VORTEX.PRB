@@ -1,0 +1,29 @@
+2    # there are 5 items to count
+Animation default-stdout
+# Counts (agent-based)
+# number of agent-based counts
+2
+C0 : A1
+C1 : A2
+# Counts (grid-based)
+# number of grid-based count
+0
+
+# Probe-actions
+1            # number of probe actions
+# comment about 
+C0+C1 == N : T
+#C0+C1 == N : D
+#I >= 0 : A
+#I >= 0 : G1
+#I >= 0 : G2
+#I == 0 : G0
+#I == 0 : G1
+#I == 0 : G2
+#I == 0 : T
+
+# Animation Information
+1  # time_step
+W  # include world in animation
+A  # include agents in animation
+

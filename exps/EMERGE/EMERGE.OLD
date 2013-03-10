@@ -1,0 +1,25 @@
+3	   # number of grids
+40
+40	   # size of grids
+0	   # support grid ID number, environment
+F	   # file initialization grid
+/sweep/exps/emerge/emerge.dat
+S	   # grid update is static
+1	   # support grid ID number, trails
+H	   # toss initialization
+25	   # number of objects
+1	   # object represented by '1'
+0	   # background by '0'
+0          # region to place objects bounded by (0,0)(39,39) 
+0
+39
+39
+4	   # hole region, in which objects may not be placed
+4
+36
+36
+S	   # update is static
+2	   # support grid id
+U	   # uniform initialization
+0	   # all 0's
+S	   # static update

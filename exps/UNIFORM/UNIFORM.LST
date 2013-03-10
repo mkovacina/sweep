@@ -1,0 +1,14 @@
+1  # 1 different sets of actions
+#
+2  # 2 actions in the fsa
+#
+leader_wander:leader_safe_wander-0;leader_place_info-0;#
+follower_follow:follower_safe_follow-0;follower_place_info-0;#
+####	
+
+
+
+
+
+
+

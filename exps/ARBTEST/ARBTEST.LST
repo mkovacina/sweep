@@ -1,0 +1,8 @@
+1  # 
+#
+2  # 2 different actions to define
+#
+pick:pick_any;set_radius(5);place-0(1);#
+move:move_any;circle-0(1);#
+####		
+

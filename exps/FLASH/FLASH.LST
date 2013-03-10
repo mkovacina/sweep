@@ -1,0 +1,8 @@
+1  # 1 set of actions
+#
+2  # 6 actions in the fsa
+#
+no_op:no_op;# 
+flash:flash-0;#
+####	
+

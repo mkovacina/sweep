@@ -1,0 +1,8 @@
+1  # 1 set of actions
+#
+2  # 2 actions in the fsa
+#
+srch:scan-0;#
+stay:no_op;#
+####	
+

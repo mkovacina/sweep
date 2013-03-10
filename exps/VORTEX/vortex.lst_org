@@ -1,0 +1,23 @@
+1  # the neighbor grid is specified as 10 but now probably should be 0 or 1
+#
+4
+#
+wander:safe_wander-1;place_up_add-0(1);place_down_add-0(1);place_left_add-0(1);place_right_add-0(1);#
+vortex_end:place_up_add-0(1);place_down_add-0(1);place_left_add-0(1);place_right_add-0(1);place_upright_add-0(-3);place_downleft_add-0(-3);place_downright_add-0(-3);place_upleft_add-0(-3);place_downleft_add-1(1);place_upleft_add-2(1);place_upright_add-3(1);place_downright_add-4(1);#
+vortex_mid:place_up_add-0(1);place_down_add-0(1);place_left_add-0(1);place_right_add-0(1);place_upright_add-0(-3);place_upleft_add-0(-3);place_downright_add-0(-3);place_downleft_add-0(-3);place_downleft_add-1(1);place_downleft_add-4(1);place_upleft_add-1(1);place_upleft_add-2(1);place_upright_add-2(1);place_upright_add-3(1);place_downright_add-3(1);place_downright_add-4(1);#
+vortex_follow:vortex_follow-1,2,3,4;#
+####		
+
+# grid 0: neighbor grid
+# grid 1: up grid
+# grid 2: right grid
+# grid 3: down grid
+# grid 4: left grid
+
+#vortex_end:place_downleft_add-1(1);place_upleft_add-2(1);place_upright_add-3(1);place_downright_add-4(1);place_up_add-0(1);place_down_add-0(1);place_left_add-0(1);place_right_add-0(1);place_upright_add-0(-3);place_downleft_add-0(-3);#
+
+#vortex_mid:place_downleft_add-1(1);place_downleft_add-4(1);place_upleft_add-1(1);place_upleft_add-2(1);place_upright_add-2(1);place_upright_add-3(1);place_downright_add-3(1);place_downright_add-4(1);
+#place_up_add-0(1);place_down_add-0(1);place_left_add-0(1);place_right_add-0(1);place_upright_add-0(-3);place_upleft_add-0(-3);place_downright_add-0(-3);place_downleft_add-0(-3);#
+
+
+

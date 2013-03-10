@@ -1,0 +1,38 @@
+2    # there is 1 thing to count
+Animation   
+# Counts (agent-based)
+# number of agent-based counts
+2
+C0 : A3  # number of agents in target region
+C1 : A2  # count dead followers
+# Counts (grid-based)
+0
+# number of grid-based counts
+
+# Probe-actions repeated
+5   # number of probe actions
+# comment about first one
+I > 400: T
+C0 + C1 == 40: I
+C0 + C1 == 40: M"Number in target region"
+C0 + C1 == 40: C0
+C0 + C1 == 40: T
+
+# Probe-actions once
+# 2    number of "one-shot" probe actions
+# C0 == 1: I
+# C0 == 2: I
+
+# Animation Information
+1  # time_step
+W  # include world in animation
+A  # include agents in animation
+
+
+
+
+
+
+
+
+

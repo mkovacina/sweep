@@ -1,0 +1,16 @@
+1 
+#
+7
+#
+wander:safe_wander;split_wander_info-0,1;#
+h_split_r:split_info-0(1);#
+h_split_l:split_info-0(2);#
+v_split_u:split_info-1(3);#
+v_split_d:split_info-1(4);#
+h_end:split_info-0(5);#
+v_end:split_info-1(6);#
+####		
+
+
+# grid 0: horizontal neighbor info
+# grid 1: vertical   neighbor info

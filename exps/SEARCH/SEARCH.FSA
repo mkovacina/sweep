@@ -1,0 +1,10 @@
+1  number of fsa's in the file
+#  Leader FSA comes first
+2  number of states in fsa
+#
+3  number of input symbols
+#
+0-0:0;1:1;2:0-srch
+1-0:1;1:1;2:1-stay
+####
+

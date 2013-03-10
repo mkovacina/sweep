@@ -1,0 +1,8 @@
+#! /bin/bash
+
+if make -C src V=$1; then
+	case $3 in
+		jswdisp ) ./sweep exp/$1.exp $2 | jswdisp;;
+		* )	  ./sweep exp/$1.exp $2;;
+	esac
+fi

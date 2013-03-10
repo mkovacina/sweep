@@ -1,0 +1,14 @@
+2  # 2 different sets of actions
+#
+2  # 2 actions in the first fsa
+#
+l_wander:leader_wander-1;#
+l_recruit:leader_recruit-0,1;#
+##
+3
+#
+f_wander:follower_wander_info-0;#
+f_follow:follower_follow-1;#
+f_halt:follower_halt-1;#
+####	
+

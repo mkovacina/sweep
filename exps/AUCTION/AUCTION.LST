@@ -1,0 +1,9 @@
+1  # 1 set of actions
+#
+4  # 4 actions in the fsa
+#
+init:initialize;measure;place-0(1);#
+talk:read_msg;best_get;broadcast;#
+amble:tar_move-0;#
+stay:place-0(4);#
+####

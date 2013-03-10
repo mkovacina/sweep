@@ -1,0 +1,14 @@
+1  number of fsa's in the file
+#  Leader FSA comes first
+6  number of states in fsa
+#
+5  number of input symbols
+#
+0-0:0;1:1;2:0;3:4;4:0-hiwd
+1-0:0;1:1;2:3;3:4;4:1-down
+2-0:5;1:2;2:2;3:2;4:2-clmb
+3-0:2;1:2;2:2;3:2;4:3-pkup
+4-0:0;1:1;2:3;3:4;4:4-lowd
+5-0:0;1:1;2:0;3:4;4:0-drop
+####
+

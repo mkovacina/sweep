@@ -1,0 +1,7 @@
+1	   # number of grids
+40
+40	   # size of grids
+0	   # support grid ID number, Neighbor
+F	   # file initialization grid
+exps/bridge2/bridge2.dat
+S	   # grid update is static

@@ -1,0 +1,21 @@
+1 
+#
+10
+#
+wander:safe_wander;split_wander_info-0,1;#
+h_split_r:split_info-0(1);split_vortex_info-2(1),3(1);#
+h_split_l:split_info-0(2);split_vortex_info-2(2),3(2);#
+v_split_u:split_info-1(3);split_vortex_info-2(3),3(3);#
+v_split_d:split_info-1(4);split_vortex_info-2(4),3(4);#
+h_end_r:split_info-0(5);split_vortex_info-2(1),3(1);#
+h_end_l:split_info-0(5);split_vortex_info-2(2),3(2);#
+v_end_u:split_info-1(6);split_vortex_info-2(3),3(3);#
+v_end_d:split_info-1(6);split_vortex_info-2(4),3(4);#
+vortex_follow:split_vortex_follow-2,3;#
+####		
+
+
+# grid 0: horizontal neighbor info
+# grid 1: vertical   neighbor info
+# grid 2: horizontal follow   info
+# grid 3: vertical   follow   info

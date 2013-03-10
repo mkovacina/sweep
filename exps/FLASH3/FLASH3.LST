@@ -1,0 +1,14 @@
+2  # 2 sets of actions
+#
+2  # 2 actions in the fsa
+#
+no_op:no_op;# 
+flash:flash-0;#
+##
+3  # 3 actions in the fsa
+#
+ldfl:lflash-0;#
+wndr:safe_str;#
+lnop:no_op;#
+####	
+

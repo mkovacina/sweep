@@ -1,0 +1,29 @@
+1    # there is 1 thing to count
+Animation   
+# Counts (agent-based)
+# number of agent-based counts
+0
+# Counts (grid-based)
+1
+# grid counts
+C0 : G0 == 2#
+# Probe-actions repeated
+3   # number of probe actions
+# comment about first one
+C0 >= 25: T
+C0 >= 25: I
+I > 5000: T
+
+# Animation Information
+1  # time_step
+W  # include world in animation
+A  # include agents in animation
+
+
+
+
+
+
+
+
+
