@@ -1,9 +1,12 @@
+// todo: define the trace level enum
+// todo: replace int placeholder for the trace level enum
+
 #include "trace.h"
 
 #include <stdarg.h>
 
-// todo: define the trace level enum
-// todo: replace int placeholder for the trace level enum
+int _Trace(int traceLevel, const char* fmt, va_list args);
+int _TraceLine(int traceLevel, const char* fmt, va_list args);
 
 void TraceVerbose(const char* fmt, ...)
 {
