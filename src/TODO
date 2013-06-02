@@ -1,0 +1,15 @@
+* move all print_*() to a debug module
+** should they only print at level VERBOSE (or maybe a DEBUG)
+* create EmitHeader() in gen_probes.c
+* create a ERROR trace level and possible remove/refactor the error() method
+
+* get copy of VIMRC
+* setup bash for VIM
+
+* install gvim
+* install indent
+* install todo.txt
+* fix the wifi
+* remap keyboard
+* figure out hibernate issue with ibook
+

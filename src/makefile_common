@@ -1,0 +1,16 @@
+SHELL=/bin/sh
+
+CC = gcc
+CFLAGS =  -g -Wall -I.
+LDFLAGS =  -L. -lm
+
+objdir = ../obj
+#includedir = ../include
+
+# the .d files are dependency files
+# gcc is used to figure out source file dependencies automagically
+%.d: %.c
+	set -e; $(CC) -MM $(CFLAGS) $< \
+		| sed 's/\($*\)\.o[ :]*/\1.o $@ : /g' > $@; \
+		[ -s $@ ] || rm -f $@
+
