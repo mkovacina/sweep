@@ -3,6 +3,7 @@
 
 #include "trace.h"
 
+#include <stdio.h>
 #include <stdarg.h>
 
 int _Trace(int traceLevel, const char* fmt, va_list args);
@@ -46,6 +47,6 @@ int _TraceLine(int traceLevel, const char* fmt, va_list args)
 {
 	// todo: implement level filtering
 	int ret = vprintf(fmt, args);
-	vprintf("\n");
+	puts("");
 	return ret;
 }
