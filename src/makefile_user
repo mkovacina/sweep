@@ -8,6 +8,7 @@ TOUCH_DIR = exp_touch
 all: new_experiment $(V)
 
 new_experiment:
+	mkdir -p $(TOUCH_DIR)
 # if the file $(V).last is in not the $(TOUCH_DIR), then the current
 # experiment was not the last one run, and so all the user_* files
 # need to be replaced
