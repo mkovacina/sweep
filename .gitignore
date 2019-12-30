@@ -3,6 +3,11 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# SWEEP intermediary files
+src/gen_priority
+src/priority.*
+src/exp_touch
+
 # C intermediary files
 *.o
 
