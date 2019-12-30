@@ -1,9 +1,9 @@
 SHELL = /bin/sh
 
-new: main
-
 all:
 	$(if $(V), $(MAKE) -f makefile_user V=$(V) ; $(MAKE) -f makefile_system all,$(error Usage: make V=<experiment name>))
+
+new: main
 
 allclean: clean
 	-rm -f *.d
