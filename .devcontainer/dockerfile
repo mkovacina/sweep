@@ -22,9 +22,5 @@ RUN apk add --no-cache bash make gcc musl-dev git tmux vim \
     && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME\
     && chmod 0440 /etc/sudoers.d/$USERNAME
 
-#RUN mkdir sweep
-#COPY . sweep
-#ENTRYPOINT ["/bin/sh"]
-
 # notes
 # - bash was not included in the image, contrary to what the alpine sample indicated
