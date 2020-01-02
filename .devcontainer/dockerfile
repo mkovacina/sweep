@@ -21,6 +21,8 @@ RUN apk add --no-cache bash make gcc musl-dev git tmux vim \
     && apk add --no-cache sudo \
     && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME\
     && chmod 0440 /etc/sudoers.d/$USERNAME
+    # add /sweep directory for non-VSCode develoment
+    && mkdir -p /sweep
 
 # notes
 # - bash was not included in the image, contrary to what the alpine sample indicated
