@@ -1,0 +1,28 @@
+# reference: https://github.com/microsoft/vscode-dev-containers/blob/master/containers/alpine-3.10-git/.devcontainer/Dockerfile
+
+FROM alpine:3.10
+
+# This Dockerfile adds a non-root user with sudo access. Use the "remoteUser"
+# property in devcontainer.json to use it. On Linux, the container user's GID/UIDs
+# will be updated to match your local UID/GID (when using the dockerFile property).
+# See https://aka.ms/vscode-remote/containers/non-root-user for details.
+ARG USERNAME=vscode
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+
+# need the musl-dev library to get stdio, etc to work
+# alpine uses musl not glibc
+RUN apk add --no-cache bash make gcc musl-dev git tmux vim \
+	#
+    # Create a non-root user to use if preferred - see https://aka.ms/vscode-remote/containers/non-root-user.
+    && addgroup -g $USER_GID $USERNAME \
+    && adduser -S -s /bin/bash -u $USER_UID -G $USERNAME $USERNAME \
+    # [Optional] Add sudo support for the non-root user
+    && apk add --no-cache sudo \
+    && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME\
+    && chmod 0440 /etc/sudoers.d/$USERNAME
+    # add /sweep directory for non-VSCode develoment
+    && mkdir -p /sweep
+
+# notes
+# - bash was not included in the image, contrary to what the alpine sample indicated
