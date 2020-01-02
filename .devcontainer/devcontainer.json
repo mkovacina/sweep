@@ -1,0 +1,15 @@
+// reference: https://code.visualstudio.com/docs/remote/containers#_devcontainerjson-reference
+// reference: https://github.com/microsoft/vscode-dev-containers/blob/master/containers/alpine-3.10-git/.devcontainer/devcontainer.json
+
+{
+	"name": "SWEEP Development Environment",
+	"dockerFile": "dockerfile",
+	"remoteUser": "vscode",
+	"settings":
+	{
+		"terminal.integrated.shell.linux": "/bin/bash"
+	},
+	"postCreateCommand": ""
+	// An array of Docker CLI arguments that should be used when running the container.
+	"runArgs": []
+}
