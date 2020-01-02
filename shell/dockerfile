@@ -1,7 +1,0 @@
-FROM alpine:3.7
-# need the musl-dev library to get stido, etc to work
-# alpine uses musl not glibc
-RUN apk add --no-cache make gcc musl-dev git tmux vim
-RUN mkdir sweep
-COPY . sweep
-ENTRYPOINT ["/bin/sh"]
