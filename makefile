@@ -2,16 +2,12 @@ SHELL=/bin/sh
 
 SRC_DIR = src
 
-all: sweep test
+#all: sweep test
 
-sweep: trace
+all-follow:
+	$(MAKE) --directory=src V=all_follow
+	./sweep exp/all_follow.exp 1234
 
-test: trace
 
-TRACE_DIR = $(SRC_DIR)/trace
-TRACE_MAKEFILE = $(TRACE_DIR)/makefile
-
-trace: 
-	$(MAKE) -f $(TRACE_MAKEFILE)
 
 
