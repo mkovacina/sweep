@@ -11,6 +11,7 @@ src/gen_probe
 src/probe.dat
 src/probes.c
 sweep
+sweep-tests
 
 # C intermediary files
 *.o
