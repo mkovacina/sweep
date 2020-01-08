@@ -1,0 +1,15 @@
+include makefile_common
+
+SOURCES = \
+    tests.c \
+    string-util.c \
+    tests-string-util.c
+
+OBJECTS = $(SOURCES:.c=.o)
+
+include $(SOURCES:.c=.d)
+
+tests: $(OBJECTS)
+	$(CC) $(CFLAGS) $^ $(LDFLAGS) -o ../sweep-tests
+
+include makefile_common
