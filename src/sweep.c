@@ -2,6 +2,7 @@
 #include <string.h>
 
 #include "trace.h"
+#include "string-util.h"
 
 #include "useful.h"
 #include "file.h"
@@ -109,7 +110,11 @@ int main ( int argc, char *argv[] )
 
 			fclose( FILE_NAME_FILE );
 
-			clear_nls( file_names, 5 );
+			for( int x = 0; x < 5; x++ )
+			{
+				trim_right_inplace(file_names[x]);
+			}
+
 			assign_fptrs( file_names, 0, 5 );
 
 			/* Build up the name of each file from given name */

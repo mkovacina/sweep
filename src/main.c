@@ -70,6 +70,9 @@ struct ConfigurationFiles* ReadConfigurationFromFile(const char* configurationFi
     fclose( FILE_NAME_FILE );
     
     clear_nls( file_names, 5 );
+        
+        replaced clear_nls() with trim_right_inplace()
+
     assign_fptrs( file_names, 0, 5 );
    */
     return NULL;
