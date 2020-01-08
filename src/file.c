@@ -1,12 +1,12 @@
 /* Contains all functions and structs dealing with files */
 
-# include <string.h>
-# include <stdlib.h>
+#include <string.h>
+#include <stdlib.h>
 #include <stdio.h>
 
-# include "errors.h"
+#include "errors.h"
 #include "trace.h"
-# include "constants.h"
+#include "constants.h"
 
 extern char* FSA_FILE_NAME;
 extern char* AGENT_FILE_NAME;
