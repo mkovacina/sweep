@@ -8,92 +8,78 @@
 #include "trace.h"
 #include "constants.h"
 
+#define MAX_FILENAME_LENGTH (255)
+
+typedef struct
+{
+	char fsaFileName[MAX_FILENAME_LENGTH];
+	char agentFileName[MAX_FILENAME_LENGTH];
+	char agentFunctionFileName[MAX_FILENAME_LENGTH];
+	char swarmFileName[MAX_FILENAME_LENGTH];
+	char supportGridsFileName[MAX_FILENAME_LENGTH];
+} ExperimentFiles;
+
 void assign_fptrs ( char * file_names[], int start_num, int num_file_names )
 {
+	ExperimentFiles experimentFiles = {'\0'};
+
 	TraceVerboseLine("Output of filenames in assign_fptrs");
 	for (int i=start_num;i< num_file_names; i++)
 	{   
 		TraceVerboseLine("%s\n", file_names[i]);
 	}
 
+	int error_ExtensionMismatch = 0;
 	for ( int i = start_num; i < num_file_names; i++ ) 
 	{
 		/* FSA file */
 		if ( strstr( file_names[i], ".fsa" ) ) 
 		{
-			FSA_FILE_NAME = malloc( 1 + strlen( file_names[i] ) );
-			strcpy( FSA_FILE_NAME, file_names[i] );
-
+			strncpy( experimentFiles.fsaFileName, file_names[i], MAX_FILENAME_LENGTH );
 		} 
 		else if ( strstr( file_names[i], ".agt" ) ) 
 		{
-			AGENT_FILE_NAME = malloc( 1 + strlen( file_names[i] ) );
-			strcpy( AGENT_FILE_NAME, file_names[i] );
-
+			strncpy( experimentFiles.agentFileName, file_names[i], MAX_FILENAME_LENGTH );
 		}
 		else if ( strstr( file_names[i], ".lst" ) )
 		{
-			AGENT_FUNCTION_FILE_NAME = malloc( 1 + strlen( file_names[i] ) );
-			strcpy( AGENT_FUNCTION_FILE_NAME, file_names[i] );
+			strncpy( experimentFiles.agentFunctionFileName, file_names[i], MAX_FILENAME_LENGTH);
 		}
 		else if ( strstr( file_names[i], ".swm" ) ) 
 		{
-			SWARM_FILE_NAME = malloc( 1 + strlen( file_names[i] ) );
-			strcpy( SWARM_FILE_NAME, file_names[i] );
+			strncpy( experimentFiles.swarmFileName, file_names[i], MAX_FILENAME_LENGTH );
 		} 
 		else if ( strstr( file_names[i], ".sgd" ) )
 		{
-			SUPPORT_GRIDS_FILE_NAME = malloc( 1 + strlen( file_names[i] ) );
-			strcpy( SUPPORT_GRIDS_FILE_NAME, file_names[i] );
+			strncpy( experimentFiles.supportGridsFileName, file_names[i], MAX_FILENAME_LENGTH );
+		}
+		else
+		{
+			error_ExtensionMismatch = 1;
+			// don't break the loop here
+			// let it go so we can see if the other files are correct
 		}
 	}
 
-	if ( num_file_names != CORRECT_FILE_NUMBER ) 
+	if ( !error_ExtensionMismatch && num_file_names != CORRECT_FILE_NUMBER ) 
 	{
-		error( "Incorrect number of files\nFiles Missing:\n" );
+		error( "Files Missing:\n" );
 
-		if ( !FSA_FILE_NAME )            error( "Fsa File\n"            );
-		if ( !AGENT_FILE_NAME )          error( "Agent File\n"          );
-		if ( !SWARM_FILE_NAME )          error( "Swarm File\n"          );
-		if ( !AGENT_FUNCTION_FILE_NAME ) error( "Agent Function File\n" );
-		if ( !SUPPORT_GRIDS_FILE_NAME )  error( "Support Grids File\n"  );
+		if ( strlen(experimentFiles.fsaFileName) == 0 )            
+			error( "Fsa File\n"            );
+		if ( strlen(experimentFiles.agentFileName) == 0 )          
+			error( "Agent File\n"          );
+		if ( strlen(experimentFiles.swarmFileName) == 0 )         
+			error( "Swarm File\n"          );
+		if ( strlen(experimentFiles.agentFunctionFileName) == 0 )
+			error( "Agent Function File\n" );
+		if ( strlen(experimentFiles.supportGridsFileName) == 0) 
+			error( "Support Grids File\n"  );
 	}
 
-	TraceVerboseLine("FSA: %s", FSA_FILE_NAME );
-	TraceVerboseLine("AGT: %s", AGENT_FILE_NAME );
-	TraceVerboseLine("SWM: %s", SWARM_FILE_NAME );
-	TraceVerboseLine("AFF: %s", AGENT_FUNCTION_FILE_NAME );
-	TraceVerboseLine("SGD: %s", SUPPORT_GRIDS_FILE_NAME );
+	TraceVerboseLine("FSA: %s", experimentFiles.fsaFileName );
+	TraceVerboseLine("AGT: %s", experimentFiles.agentFileName );
+	TraceVerboseLine("SWM: %s", experimentFiles.swarmFileName );
+	TraceVerboseLine("AFF: %s", experimentFiles.agentFunctionFileName );
+	TraceVerboseLine("SGD: %s", experimentFiles.supportGridsFileName );
 }
-
-void build_file_names ( char* base ) {
-
-	char temp[MAX_BUFFER];
-
-	strcpy( temp, base );
-	FSA_FILE_NAME = malloc( strlen( strcat( temp, ".fsa" ) ) );
-	strcpy( FSA_FILE_NAME, temp );
-
-	strcpy( temp, base );
-	AGENT_FILE_NAME = malloc( strlen( strcat( temp, ".agt") ) );
-	strcpy( AGENT_FILE_NAME, temp );
-
-	strcpy( temp,base );
-	SWARM_FILE_NAME = malloc( strlen( strcat( temp, ".swm") ) );
-	strcpy( SWARM_FILE_NAME, temp );
-
-	strcpy( temp,base );
-	AGENT_FUNCTION_FILE_NAME = malloc( strlen( strcat( temp, ".lst") ) );
-	strcpy( AGENT_FUNCTION_FILE_NAME, temp );
-
-	strcpy( temp,base );
-	SUPPORT_GRIDS_FILE_NAME = malloc( strlen( strcat( temp, ".sgd") ) );
-	strcpy( SUPPORT_GRIDS_FILE_NAME, temp );
-
-}
-
-
-
-
-
-
