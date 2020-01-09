@@ -8,23 +8,6 @@
 #include "trace.h"
 #include "constants.h"
 
-void clear_nls ( char * strings[], int num_strings ) {
-	/* Clears the \n from the end of strings and replaces it with a null terminator */
-
-	int i;
-
-	for ( i = 0; i < num_strings; i++ ) {
-
-		if ( (strings[i])[ strlen( strings[i] ) - 1 ] == '\n' )  {
-
-			(strings[i])[ strlen( strings[i] ) - 1 ] = '\0';
-
-		}
-
-	}
-
-}
-
 void assign_fptrs ( char * file_names[], int start_num, int num_file_names )
 {
 	TraceVerboseLine("Output of filenames in assign_fptrs");
