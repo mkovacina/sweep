@@ -117,21 +117,7 @@ int main ( int argc, char *argv[] )
 
 			assign_fptrs( file_names, 0, 5 );
 
-			/* Build up the name of each file from given name */
-		} else {
-
-			build_file_names( argv[1] );
-
-			printf("\n%s\n%s\n%s\n%s\n%s\n", FSA_FILE_NAME,
-					AGENT_FILE_NAME,
-					SWARM_FILE_NAME,
-					AGENT_FUNCTION_FILE_NAME,
-					SUPPORT_GRIDS_FILE_NAME );;
-
-		}
-
-		RANDOM_NUMBER = atoi( argv[2] );
-
+		} 
 	} else if ( argc == 7 ) {
 
 		assign_fptrs( argv, 1, 5 );
