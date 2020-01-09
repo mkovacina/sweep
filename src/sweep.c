@@ -26,7 +26,11 @@ swarm_element_struct  *swarm;
 swarm_element_struct  *master_swarm_types;
 int file_flag = 0;
 
-
+char  *FSA_FILE_NAME,
+	  *AGENT_FILE_NAME,
+	  *AGENT_FUNCTION_FILE_NAME,
+	  *SWARM_FILE_NAME,
+	  *SUPPORT_GRIDS_FILE_NAME;
 
 FILE  *SIM_FILE,
 	  *PROBE_FILE,
@@ -114,7 +118,17 @@ int main ( int argc, char *argv[] )
 			assign_fptrs( file_names, 0, 5 );
 
 			/* Build up the name of each file from given name */
-		} 
+		} else {
+
+			build_file_names( argv[1] );
+
+			printf("\n%s\n%s\n%s\n%s\n%s\n", FSA_FILE_NAME,
+					AGENT_FILE_NAME,
+					SWARM_FILE_NAME,
+					AGENT_FUNCTION_FILE_NAME,
+					SUPPORT_GRIDS_FILE_NAME );;
+
+		}
 
 		RANDOM_NUMBER = atoi( argv[2] );
 
