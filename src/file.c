@@ -8,12 +8,6 @@
 #include "trace.h"
 #include "constants.h"
 
-extern char* FSA_FILE_NAME;
-extern char* AGENT_FILE_NAME;
-extern char* AGENT_FUNCTION_FILE_NAME;
-extern char* SWARM_FILE_NAME;
-extern char* SUPPORT_GRIDS_FILE_NAME;
-
 void clear_nls ( char * strings[], int num_strings ) {
 	/* Clears the \n from the end of strings and replaces it with a null terminator */
 
