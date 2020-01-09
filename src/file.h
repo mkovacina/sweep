@@ -1,2 +1,3 @@
-void clear_nls ( char*[], int );
+#pragma once
+
 void assign_fptrs ( char*[], int, int );

@@ -4,7 +4,7 @@
 */
 
 /* NOTHING GOES ABOVE THIS LINE!!!  (Multiple include protection) */
-#pragma _swarm_
+#pragma once
 
 /*--------------- Includes Needed for Definitions Below --------------*/
 
