@@ -4,20 +4,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "file.h"
+
 #include "errors.h"
 #include "trace.h"
 #include "constants.h"
 
-#define MAX_FILENAME_LENGTH (255)
-
-typedef struct
-{
-	char fsaFileName[MAX_FILENAME_LENGTH];
-	char agentFileName[MAX_FILENAME_LENGTH];
-	char agentFunctionFileName[MAX_FILENAME_LENGTH];
-	char swarmFileName[MAX_FILENAME_LENGTH];
-	char supportGridsFileName[MAX_FILENAME_LENGTH];
-} ExperimentFiles;
 
 void assign_fptrs ( char * file_names[], int start_num, int num_file_names )
 {
