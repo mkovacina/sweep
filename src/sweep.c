@@ -73,7 +73,7 @@ int main ( int argc, char *argv[] )
 
 	int                  i,done=0;
 	char                 **file_names;
-	FILE                 *FILE_NAME_FILE;
+	//FILE                 *FILE_NAME_FILE;
 
 	TraceVerboseLine("INITIALIZING SWARM EXPERIMENTATION AND EVALUATION PLATFORM");
 
@@ -93,7 +93,7 @@ int main ( int argc, char *argv[] )
 
 	} else if ( argc == 3 ) {
 
-		FILE_NAME_FILE = fopen ( argv[1], "r" );
+		FILE* FILE_NAME_FILE = fopen ( argv[1], "r" );
 
 		/* Read file names from file */
 		if ( FILE_NAME_FILE ) {
@@ -149,7 +149,7 @@ int main ( int argc, char *argv[] )
 	agent_grid = init_agent_grid();
 
 	/* Initialize swarm */  
-	if ( initialize_swarm( agent_grid ) ) {
+	if ( initialize_swarm( agent_grid, AGENT_FUNCTION_FILE_NAME) ) {
 
 		error( "Couldn't initialize swarm\n" );
 		stop();

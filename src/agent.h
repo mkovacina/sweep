@@ -127,7 +127,24 @@ typedef agent_struct* agent_ptr;
 /*------------------------- Function Prototypes ----------------------*/
 /* void sample (char *, int, Real);                                   */
 
-int initialize_agent_function_table ( agent_function_table_struct* );
+
+// PURPOSE: This function will open the agent file and create the    
+//          table of function lists for each agent specified by the  
+//          agent file                                               
+// INPUT:   
+//          agent_function_table  
+//            - Pointer to agent function table        
+//          agent_function_file_ptr
+//            - File pointer to the agent file
+// OUTPUT:  
+//          agent_function_table
+//            - Pointer to initialized function table  
+// RETURN:  
+//          SUCCESS
+//            - Indicates successful initialization             
+//          FAILURE
+//            - Indicates unsuccessful initialization           
+int initialize_agent_function_table ( agent_function_table_struct*, FILE* );
 int initialize_agent_table          ( agent_table_struct* );
 int initialize_agent                ( agent_ptr*, list_struct,
                                       agent_field_struct,

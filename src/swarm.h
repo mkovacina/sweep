@@ -4,12 +4,12 @@
 */
 
 /* NOTHING GOES ABOVE THIS LINE!!!  (Multiple include protection) */
-#ifndef _swarm_
-#define _swarm_
+#pragma _swarm_
 
 /*--------------- Includes Needed for Definitions Below --------------*/
 
 #include "agent.h"
+#include "support_grids.h"
 
 /*---------------------------- Constants -----------------------------*/
 
@@ -28,11 +28,27 @@ typedef struct swarm_element_hold {
 /*------------------------- Function Prototypes ----------------------*/
 /* void Sample (char *, int, Real);                                   */
 
-int  initialize_swarm (  );
+// PURPOSE
+//          This function initializes the swarm of agents to the size 
+//          specified by the swarm initialization file                
+// INPUT
+//          agent_grid
+//            - Pointer to the agent grid
+//          agentFunctionFileName
+//            - The name of the file to read the agent information from.
+// OUTPUT
+//          swarm     
+//            - Ptr to first agent in linked list of agents     
+// RETURN
+//          SUCCESS
+//            - Indicates successful initialization of swarm    
+//          FAILURE
+//            - Indicates failure to initialize swarm           
+
+int  initialize_swarm (  fgrid_ptr agent_grid, char* agentFunctionFileName );
 void update_swarm     (  );
 
 /*------------------------------ Globals -----------------------------*/
 /* GLOBAL  float  example;                                            */
 
 /* NOTHING GOES BEYOND THIS LINE !!!! */
-#endif /* _swarm_ */

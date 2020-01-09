@@ -37,14 +37,8 @@ void strip_white( char **str );
 
 /*---------------------- Function Definitions ------------------------*/
 
-int initialize_swarm ( fgrid_ptr agent_grid ) {
-/* PURPOSE: This function initializes the swarm of agents to the size */
-/*          specified by the swarm initialization file                */
-/* INPUT:   swarm     Uninitialized ptr to linked list of swarm       */
-/* OUTPUT:  swarm     Ptr to first agent in linked list of agents     */
-/* RETURN:  SUCCESS   Indicates successful initialization of swarm    */
-/*          FAILURE   Indicates failure to initialize swarm           */
-
+int initialize_swarm ( fgrid_ptr agent_grid, char* agentFunctionFileName) 
+{
   /* Swarm file */
   FILE  *swarm_file;
   char  buffer[MAX_BUFFER], *current_char;
@@ -71,13 +65,24 @@ int initialize_swarm ( fgrid_ptr agent_grid ) {
   
   }
 
+  FILE *agent_function_file = fopen( agentFunctionFileName, "r");
+
+  if ( agent_function_file == NULL ) 
+  {
+    error( "Can't open agent function file: ");
+    error( agentFunctionFileName );
+    error( "\n" );
+    return FAILURE;
+  }
+
   /* Get the agent function table */
-  if ( initialize_agent_function_table(&agent_function_table) ) {
-  
+  if ( initialize_agent_function_table(&agent_function_table, agent_function_file) )
+  {
     error( "Agent Function Table not initialized.\n" );
     return FAILURE;
-    
   }
+
+  fclose(agent_function_file);
 
   /* Get the agent table */
   if ( initialize_agent_table( &agent_table ) ) {

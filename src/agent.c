@@ -11,7 +11,6 @@
 
 /*------------------------ Externs Needed --------------------------- */
 
-extern char* AGENT_FUNCTION_FILE_NAME;
 extern char* AGENT_FILE_NAME;
 
 /*------------------------- Local Macros -----------------------------*/
@@ -78,29 +77,10 @@ int copy_grid     ( update_grid_struct*, update_grid_struct* );
 
 /*---------------------- Function Definitions ------------------------*/
 
-int initialize_agent_function_table ( agent_function_table_struct *agent_function_table ) {
-/* PURPOSE: This function will open the agent file and create the    */
-/*          table of function lists for each agent specified by the  */
-/*          agent file                                               */
-/* INPUT:   agent_function_table  Ptr to agent function table        */
-/* OUTPUT:  agent_function_table  Ptr to initialized function table  */
-/* RETURN:  SUCCESS  Indicates successful initialization             */
-/*          FAILURE  Indicates unsuccessful initialization           */
-
-  FILE *agent_function_file;
+int initialize_agent_function_table ( agent_function_table_struct *agent_function_table, FILE* agent_function_file )
+{
   char buffer[MAX_BUFFER];
   int  i = 0, j = 0;
-  
-  /* Open agent file */
-  agent_function_file = fopen( AGENT_FUNCTION_FILE_NAME, "r");
-  if ( agent_function_file == NULL ) {
-  
-    error( "Can't open agent function file: ");
-    error( AGENT_FUNCTION_FILE_NAME );
-    error( "\n" );
-    return FAILURE;
-    
-  }
   
   fgets ( buffer, MAX_BUFFER, agent_function_file );
   agent_function_table->number_agent_lists = atoi( buffer );
@@ -140,10 +120,7 @@ int initialize_agent_function_table ( agent_function_table_struct *agent_functio
     
   }
   
-  fclose( agent_function_file );
-  
   return SUCCESS;
-  
 }
 
 int initialize_agent_table ( agent_table_struct* agent_table ) {

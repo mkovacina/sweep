@@ -31,66 +31,55 @@ void clear_nls ( char * strings[], int num_strings ) {
 
 }
 
-void assign_fptrs ( char * file_names[], int start_num, int num_file_names ) {
-
-	int i, error_flag = 0;
-
-	if ( num_file_names != CORRECT_FILE_NUMBER ) {
-
-		error_flag = 1;
-		error( "Incorrect number of files\nFiles Missing:\n" );
-
+void assign_fptrs ( char * file_names[], int start_num, int num_file_names )
+{
+	TraceVerboseLine("Output of filenames in assign_fptrs");
+	for (int i=start_num;i< num_file_names; i++)
+	{   
+		TraceVerboseLine("%s\n", file_names[i]);
 	}
 
-	if (IsTraceLevelVerbose())
+	for ( int i = start_num; i < num_file_names; i++ ) 
 	{
-		TraceVerboseLine("Output of filenames in assign_fptrs");
-		for (i=start_num;i< num_file_names; i++)
-		{   
-			TraceVerboseLine("%s\n", file_names[i]);
-		}
-	}
-
-	for ( i = start_num; i < num_file_names; i++ ) {
-
 		/* FSA file */
-		if ( strstr( file_names[i], ".fsa" ) ) {
-
+		if ( strstr( file_names[i], ".fsa" ) ) 
+		{
 			FSA_FILE_NAME = malloc( 1 + strlen( file_names[i] ) );
 			strcpy( FSA_FILE_NAME, file_names[i] );
 
-		} else if ( strstr( file_names[i], ".agt" ) ) {
-
+		} 
+		else if ( strstr( file_names[i], ".agt" ) ) 
+		{
 			AGENT_FILE_NAME = malloc( 1 + strlen( file_names[i] ) );
 			strcpy( AGENT_FILE_NAME, file_names[i] );
 
-		} else if ( strstr( file_names[i], ".lst" ) ) {
-
+		}
+		else if ( strstr( file_names[i], ".lst" ) )
+		{
 			AGENT_FUNCTION_FILE_NAME = malloc( 1 + strlen( file_names[i] ) );
 			strcpy( AGENT_FUNCTION_FILE_NAME, file_names[i] );
-
-		} else if ( strstr( file_names[i], ".swm" ) ) {
-
+		}
+		else if ( strstr( file_names[i], ".swm" ) ) 
+		{
 			SWARM_FILE_NAME = malloc( 1 + strlen( file_names[i] ) );
 			strcpy( SWARM_FILE_NAME, file_names[i] );
-
-		} else if ( strstr( file_names[i], ".sgd" ) ) {
-
+		} 
+		else if ( strstr( file_names[i], ".sgd" ) )
+		{
 			SUPPORT_GRIDS_FILE_NAME = malloc( 1 + strlen( file_names[i] ) );
 			strcpy( SUPPORT_GRIDS_FILE_NAME, file_names[i] );
-
 		}
-
 	}
 
-	if ( error_flag ) {
+	if ( num_file_names != CORRECT_FILE_NUMBER ) 
+	{
+		error( "Incorrect number of files\nFiles Missing:\n" );
 
 		if ( !FSA_FILE_NAME )            error( "Fsa File\n"            );
 		if ( !AGENT_FILE_NAME )          error( "Agent File\n"          );
 		if ( !SWARM_FILE_NAME )          error( "Swarm File\n"          );
 		if ( !AGENT_FUNCTION_FILE_NAME ) error( "Agent Function File\n" );
 		if ( !SUPPORT_GRIDS_FILE_NAME )  error( "Support Grids File\n"  );
-
 	}
 
 	TraceVerboseLine("FSA: %s", FSA_FILE_NAME );
