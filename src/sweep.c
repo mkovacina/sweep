@@ -72,7 +72,8 @@ int main ( int argc, char *argv[] )
 	/* Order does not matter but must include sgd, swm, agt, and fsa      */
 
 	int                  i,done=0;
-	char                 **file_names;
+	ExperimentFiles experimentFiles = {'\0'};
+
 	//FILE                 *FILE_NAME_FILE;
 
 	TraceVerboseLine("INITIALIZING SWARM EXPERIMENTATION AND EVALUATION PLATFORM");
@@ -96,10 +97,10 @@ int main ( int argc, char *argv[] )
 		FILE* FILE_NAME_FILE = fopen ( argv[1], "r" );
 
 		/* Read file names from file */
-		if ( FILE_NAME_FILE ) {
-
-			file_names = malloc( sizeof( char* ) * 5 );
-			for ( i = 0; i < 5; i++ ) file_names[i] = malloc( sizeof(char) * MAX_BUFFER ) ;
+		if ( FILE_NAME_FILE ) 
+		{
+			char file_names[5][300];
+			//for ( i = 0; i < 5; i++ ) file_names[i] = malloc( sizeof(char) * MAX_BUFFER ) ;
 
 			TraceVerboseLine("Files read in from filename file");
 			for ( i = 0; i < 5; i++ ) {
@@ -115,12 +116,14 @@ int main ( int argc, char *argv[] )
 				trim_right_inplace(file_names[x]);
 			}
 
-			assign_fptrs( file_names, 0, 5 );
+			addFileToExperiment(file_names[0], &experimentFiles);
+			
+			assign_fptrs( file_names, 0, 5, &experimentFiles );
 
 		} 
 	} else if ( argc == 7 ) {
 
-		assign_fptrs( argv, 1, 5 );
+		assign_fptrs( argv, 1, 5, &experimentFiles );
 
 		RANDOM_NUMBER = atoi( argv[6] );
 

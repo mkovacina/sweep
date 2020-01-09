@@ -11,4 +11,6 @@ typedef struct
 	char supportGridsFileName[MAX_FILENAME_LENGTH];
 } ExperimentFiles;
 
-void assign_fptrs ( char*[], int, int );
+
+int addFileToExperiment(char* filename, ExperimentFiles* experimentFiles);
+void assign_fptrs ( char[][MAX_FILENAME_LENGTH], int, int, ExperimentFiles* );

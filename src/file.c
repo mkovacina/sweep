@@ -11,10 +11,8 @@
 #include "constants.h"
 
 
-void assign_fptrs ( char * file_names[], int start_num, int num_file_names )
+void assign_fptrs ( char file_names[][MAX_FILENAME_LENGTH], int start_num, int num_file_names, ExperimentFiles* experimentFiles)
 {
-	ExperimentFiles experimentFiles = {'\0'};
-
 	TraceVerboseLine("Output of filenames in assign_fptrs");
 	for (int i=start_num;i< num_file_names; i++)
 	{   
@@ -27,23 +25,23 @@ void assign_fptrs ( char * file_names[], int start_num, int num_file_names )
 		/* FSA file */
 		if ( strstr( file_names[i], ".fsa" ) ) 
 		{
-			strncpy( experimentFiles.fsaFileName, file_names[i], MAX_FILENAME_LENGTH );
+			strncpy( experimentFiles->fsaFileName, file_names[i], MAX_FILENAME_LENGTH );
 		} 
 		else if ( strstr( file_names[i], ".agt" ) ) 
 		{
-			strncpy( experimentFiles.agentFileName, file_names[i], MAX_FILENAME_LENGTH );
+			strncpy( experimentFiles->agentFileName, file_names[i], MAX_FILENAME_LENGTH );
 		}
 		else if ( strstr( file_names[i], ".lst" ) )
 		{
-			strncpy( experimentFiles.agentFunctionFileName, file_names[i], MAX_FILENAME_LENGTH);
+			strncpy( experimentFiles->agentFunctionFileName, file_names[i], MAX_FILENAME_LENGTH);
 		}
 		else if ( strstr( file_names[i], ".swm" ) ) 
 		{
-			strncpy( experimentFiles.swarmFileName, file_names[i], MAX_FILENAME_LENGTH );
+			strncpy( experimentFiles->swarmFileName, file_names[i], MAX_FILENAME_LENGTH );
 		} 
 		else if ( strstr( file_names[i], ".sgd" ) )
 		{
-			strncpy( experimentFiles.supportGridsFileName, file_names[i], MAX_FILENAME_LENGTH );
+			strncpy( experimentFiles->supportGridsFileName, file_names[i], MAX_FILENAME_LENGTH );
 		}
 		else
 		{
@@ -57,21 +55,85 @@ void assign_fptrs ( char * file_names[], int start_num, int num_file_names )
 	{
 		error( "Files Missing:\n" );
 
-		if ( strlen(experimentFiles.fsaFileName) == 0 )            
+		if ( strlen(experimentFiles->fsaFileName) == 0 )            
 			error( "Fsa File\n"            );
-		if ( strlen(experimentFiles.agentFileName) == 0 )          
+		if ( strlen(experimentFiles->agentFileName) == 0 )          
 			error( "Agent File\n"          );
-		if ( strlen(experimentFiles.swarmFileName) == 0 )         
+		if ( strlen(experimentFiles->swarmFileName) == 0 )         
 			error( "Swarm File\n"          );
-		if ( strlen(experimentFiles.agentFunctionFileName) == 0 )
+		if ( strlen(experimentFiles->agentFunctionFileName) == 0 )
 			error( "Agent Function File\n" );
-		if ( strlen(experimentFiles.supportGridsFileName) == 0) 
+		if ( strlen(experimentFiles->supportGridsFileName) == 0) 
 			error( "Support Grids File\n"  );
 	}
 
-	TraceVerboseLine("FSA: %s", experimentFiles.fsaFileName );
-	TraceVerboseLine("AGT: %s", experimentFiles.agentFileName );
-	TraceVerboseLine("SWM: %s", experimentFiles.swarmFileName );
-	TraceVerboseLine("AFF: %s", experimentFiles.agentFunctionFileName );
-	TraceVerboseLine("SGD: %s", experimentFiles.supportGridsFileName );
+	TraceVerboseLine("FSA: %s", experimentFiles->fsaFileName );
+	TraceVerboseLine("AGT: %s", experimentFiles->agentFileName );
+	TraceVerboseLine("SWM: %s", experimentFiles->swarmFileName );
+	TraceVerboseLine("AFF: %s", experimentFiles->agentFunctionFileName );
+	TraceVerboseLine("SGD: %s", experimentFiles->supportGridsFileName );
+}
+
+
+int addFileToExperiment(char* filename, ExperimentFiles* experimentFiles)
+{
+	TraceVerboseLine("Assigning file to experiment: '%s'", filename);
+#if 0
+	int error_ExtensionMismatch = 0;
+	for ( int i = start_num; i < num_file_names; i++ ) 
+	{
+		/* FSA file */
+		if ( strstr( file_names[i], ".fsa" ) ) 
+		{
+			strncpy( experimentFiles->fsaFileName, file_names[i], MAX_FILENAME_LENGTH );
+		} 
+		else if ( strstr( file_names[i], ".agt" ) ) 
+		{
+			strncpy( experimentFiles->agentFileName, file_names[i], MAX_FILENAME_LENGTH );
+		}
+		else if ( strstr( file_names[i], ".lst" ) )
+		{
+			strncpy( experimentFiles->agentFunctionFileName, file_names[i], MAX_FILENAME_LENGTH);
+		}
+		else if ( strstr( file_names[i], ".swm" ) ) 
+		{
+			strncpy( experimentFiles->swarmFileName, file_names[i], MAX_FILENAME_LENGTH );
+		} 
+		else if ( strstr( file_names[i], ".sgd" ) )
+		{
+			strncpy( experimentFiles->supportGridsFileName, file_names[i], MAX_FILENAME_LENGTH );
+		}
+		else
+		{
+			error_ExtensionMismatch = 1;
+			// don't break the loop here
+			// let it go so we can see if the other files are correct
+		}
+	}
+
+	if ( !error_ExtensionMismatch && num_file_names != CORRECT_FILE_NUMBER ) 
+	{
+		error( "Files Missing:\n" );
+
+		if ( strlen(experimentFiles->fsaFileName) == 0 )            
+			error( "Fsa File\n"            );
+		if ( strlen(experimentFiles->agentFileName) == 0 )          
+			error( "Agent File\n"          );
+		if ( strlen(experimentFiles->swarmFileName) == 0 )         
+			error( "Swarm File\n"          );
+		if ( strlen(experimentFiles->agentFunctionFileName) == 0 )
+			error( "Agent Function File\n" );
+		if ( strlen(experimentFiles->supportGridsFileName) == 0) 
+			error( "Support Grids File\n"  );
+	}
+
+	TraceVerboseLine("FSA: %s", experimentFiles->fsaFileName );
+	TraceVerboseLine("AGT: %s", experimentFiles->agentFileName );
+	TraceVerboseLine("SWM: %s", experimentFiles->swarmFileName );
+	TraceVerboseLine("AFF: %s", experimentFiles->agentFunctionFileName );
+	TraceVerboseLine("SGD: %s", experimentFiles->supportGridsFileName );
+	#endif
+
+	return 0;
+
 }
