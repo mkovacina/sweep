@@ -5,7 +5,7 @@
 
 void start_log();
 
-void error(char*);
+void error(const char*, ...);
 
 void stop_log();
 

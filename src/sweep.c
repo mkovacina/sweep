@@ -26,12 +26,6 @@ swarm_element_struct  *swarm;
 swarm_element_struct  *master_swarm_types;
 int file_flag = 0;
 
-char  *FSA_FILE_NAME,
-	  *AGENT_FILE_NAME,
-	  *AGENT_FUNCTION_FILE_NAME,
-	  *SWARM_FILE_NAME,
-	  *SUPPORT_GRIDS_FILE_NAME;
-
 FILE  *SIM_FILE,
 	  *PROBE_FILE,
 	  *ERROR_FILE;
@@ -72,7 +66,8 @@ int main ( int argc, char *argv[] )
 	/* Order does not matter but must include sgd, swm, agt, and fsa      */
 
 	int                  i,done=0;
-	char                 **file_names;
+	ExperimentFiles experimentFiles = {'\0'};
+
 	//FILE                 *FILE_NAME_FILE;
 
 	TraceVerboseLine("INITIALIZING SWARM EXPERIMENTATION AND EVALUATION PLATFORM");
@@ -86,79 +81,49 @@ int main ( int argc, char *argv[] )
 	start_log();
 
 	/* If none CLA supplied, error */
-	if ( ( argc == 1 ) || ( ( argc > 3 ) && ( argc < 7 ) ) || ( argc > 7 ) ) {
-
-		printf( "Usage:  sweep <filename> <random number> or \n         sweep <list of filenames> <random number>\n" );
+	if (argc != 3) 
+	{
+		printf( "Usage:  sweep <filename> <random number>\n" );
 		stop();
-
-	} else if ( argc == 3 ) {
-
+	} 
+	else if ( argc == 3 ) 
+	{
 		FILE* FILE_NAME_FILE = fopen ( argv[1], "r" );
 
 		/* Read file names from file */
-		if ( FILE_NAME_FILE ) {
-
-			file_names = malloc( sizeof( char* ) * 5 );
-			for ( i = 0; i < 5; i++ ) file_names[i] = malloc( sizeof(char) * MAX_BUFFER ) ;
-
+		if ( FILE_NAME_FILE ) 
+		{
 			TraceVerboseLine("Files read in from filename file");
-			for ( i = 0; i < 5; i++ ) {
-
-				fgets( file_names[i], MAX_BUFFER, FILE_NAME_FILE );
-				TraceVerboseLine(file_names[i]);
+			for ( i = 0; i < 5; i++ ) 
+			{
+				char filename[MAX_BUFFER];
+				fgets( filename, MAX_BUFFER, FILE_NAME_FILE );
+				trim_right_inplace(filename);
+				addFileToExperiment(filename, &experimentFiles);
 			}
 
 			fclose( FILE_NAME_FILE );
-
-			for( int x = 0; x < 5; x++ )
-			{
-				trim_right_inplace(file_names[x]);
-			}
-
-			assign_fptrs( file_names, 0, 5 );
-
-			/* Build up the name of each file from given name */
-		} else {
-
-			build_file_names( argv[1] );
-
-			printf("\n%s\n%s\n%s\n%s\n%s\n", FSA_FILE_NAME,
-					AGENT_FILE_NAME,
-					SWARM_FILE_NAME,
-					AGENT_FUNCTION_FILE_NAME,
-					SUPPORT_GRIDS_FILE_NAME );;
-
-		}
-
-		RANDOM_NUMBER = atoi( argv[2] );
-
-	} else if ( argc == 7 ) {
-
-		assign_fptrs( argv, 1, 5 );
-
-		RANDOM_NUMBER = atoi( argv[6] );
-
-	}
+		} 
+	} 
 
 	init_priority_funcs( priority_grid );
 
 	/* Initialize support grids */
-	all_support_grids = init_support_grids( SUPPORT_GRIDS_FILE_NAME );
+	all_support_grids = init_support_grids( experimentFiles.supportGridsFileName );
 
 	/* Initialize agent grid */
 	agent_grid = init_agent_grid();
 
 	/* Initialize swarm */  
-	if ( initialize_swarm( agent_grid, AGENT_FUNCTION_FILE_NAME) ) {
-
+	if ( initialize_swarm( agent_grid, &experimentFiles) ) 
+	{
 		error( "Couldn't initialize swarm\n" );
 		stop();
-
 	}
 
 	/* primary "workhorse" loop for the SWEEP system */
-	for ( iter_count = 0; !done ; iter_count++ ) {
-
+	for ( iter_count = 0; !done ; iter_count++ ) 
+	{
 		update_swarm( swarm );
 		update_all_grids();
 		probe_swarm(&done, swarm);
