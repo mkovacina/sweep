@@ -14,7 +14,6 @@
 
 /*------------------------ Externs Needed --------------------------- */
 
-extern char                 *SWARM_FILE_NAME;
 extern int                  RANDOM_NUMBER;
 extern s_grids_ptr          all_support_grids;
 extern pri_func_ptr         priority_grid[];
@@ -37,7 +36,7 @@ void strip_white( char **str );
 
 /*---------------------- Function Definitions ------------------------*/
 
-int initialize_swarm ( fgrid_ptr agent_grid, char* agentFunctionFileName) 
+int initialize_swarm ( fgrid_ptr agent_grid, const ExperimentFiles* experimentFiles) 
 {
   /* Swarm file */
   FILE  *swarm_file;
@@ -58,24 +57,32 @@ int initialize_swarm ( fgrid_ptr agent_grid, char* agentFunctionFileName)
   agent_ptr temp_agent = NULL;
 
   /* Get the FSA table */  
-  if ( initialize_fsa_table(&fsa_table) ) {
+  FILE *fsaFunctionFile = fopen( experimentFiles->fsaFileName, "r");
+
+  if ( fsaFunctionFile == NULL ) 
+  {
+    error( "Can't open FSA function file: '%s'\n", experimentFiles->fsaFileName );
+    return FAILURE;
+  }
+
+
+  if ( initialize_fsa_table(&fsa_table, fsaFunctionFile) ) {
   
     error("FSA Table not initialized.\n");
     return FAILURE;
-  
   }
 
-  FILE *agent_function_file = fopen( agentFunctionFileName, "r");
+  fclose(fsaFunctionFile);
+
+  /* Get the agent function table */
+  FILE *agent_function_file = fopen( experimentFiles->agentFunctionFileName, "r");
 
   if ( agent_function_file == NULL ) 
   {
-    error( "Can't open agent function file: ");
-    error( agentFunctionFileName );
-    error( "\n" );
+    error( "Can't open agent function file: '%s'\n", experimentFiles->agentFunctionFileName );
     return FAILURE;
   }
 
-  /* Get the agent function table */
   if ( initialize_agent_function_table(&agent_function_table, agent_function_file) )
   {
     error( "Agent Function Table not initialized.\n" );
@@ -85,20 +92,28 @@ int initialize_swarm ( fgrid_ptr agent_grid, char* agentFunctionFileName)
   fclose(agent_function_file);
 
   /* Get the agent table */
-  if ( initialize_agent_table( &agent_table ) ) {
+  FILE *agentFile = fopen( experimentFiles->agentFileName, "r");
 
+  if ( agentFile == NULL ) 
+  {
+    error( "Can't open agent file: '%s'\n", experimentFiles->agentFileName );
+    return FAILURE;
+  }
+
+  if ( initialize_agent_table( &agent_table, agentFile ) ) 
+  {
     error( "Agent Table not initialized.\n" );
     return FAILURE;
-
   }
+
+  fclose(agentFile);
 
   /* If agent table and FSA table do not have same number of elements */
   /* indicate error.                                                  */
-  if ( fsa_table.number_fsa != agent_function_table.number_agent_lists ) {
-  
+  if ( fsa_table.number_fsa != agent_function_table.number_agent_lists ) 
+  {
     error( "Mismatch between number of fsa and number of agent function lists.\n" );
     return FAILURE;
-    
   }
 
   /* Also check against agent table */
@@ -112,11 +127,10 @@ int initialize_swarm ( fgrid_ptr agent_grid, char* agentFunctionFileName)
   srand( RANDOM_NUMBER );
   
   /* Open the swarm file */
-  swarm_file = fopen(SWARM_FILE_NAME, "r");
-  if ( swarm_file == NULL ) {  
-    error("Can't open file ");
-    error(SWARM_FILE_NAME);
-    error("\n");
+  swarm_file = fopen(experimentFiles->swarmFileName, "r");
+  if ( swarm_file == NULL ) 
+  {  
+    error("Could not open swarm file '%s'\n", experimentFiles->swarmFileName);
     return FAILURE;
   }
   
@@ -532,11 +546,9 @@ int place_agents ( swarm_element_struct *first_agent,
     fp = fopen( filename, "r" );
     
     if ( fp == NULL )
-      {
-	sprintf( errorbuf, "Agent placement file %s not found.\n", filename );
-	error( errorbuf);
-	sprintf( errorbuf, "Please check %s.\n", SWARM_FILE_NAME );
-	error( errorbuf );
+    {
+	error( "Agent placement file %s not found.\n", filename );
+	error( "Please check the swarm file.\n" );
 	exit(1);
       } 
 

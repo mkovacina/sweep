@@ -8,6 +8,7 @@
 
 /*--------------- Includes Needed for Definitions Below --------------*/
 
+#include "file.h"
 #include "agent.h"
 #include "support_grids.h"
 
@@ -34,8 +35,8 @@ typedef struct swarm_element_hold {
 // INPUT
 //          agent_grid
 //            - Pointer to the agent grid
-//          agentFunctionFileName
-//            - The name of the file to read the agent information from.
+//          experimentFiles
+//            - The set of files that define the experiment
 // OUTPUT
 //          swarm     
 //            - Ptr to first agent in linked list of agents     
@@ -45,7 +46,7 @@ typedef struct swarm_element_hold {
 //          FAILURE
 //            - Indicates failure to initialize swarm           
 
-int  initialize_swarm (  fgrid_ptr agent_grid, char* agentFunctionFileName );
+int  initialize_swarm (  fgrid_ptr agent_grid, const ExperimentFiles* experimentFiles );
 void update_swarm     (  );
 
 /*------------------------------ Globals -----------------------------*/

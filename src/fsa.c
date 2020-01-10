@@ -9,8 +9,6 @@
 
 /*------------------------ Externs Needed --------------------------- */
 
-extern char* FSA_FILE_NAME;
-
 /*------------------------ Local Constants ---------------------------*/
 
 /*------------------------- Local Macros -----------------------------*/
@@ -28,7 +26,7 @@ int copy_transition ( transition_struct*, transition_struct* );
 
 /*---------------------- Function Definitions ------------------------*/
 
-int initialize_fsa_table ( fsa_table_struct *fsa_table ) {
+int initialize_fsa_table ( fsa_table_struct *fsa_table, FILE* fsa_file) {
 /* PURPOSE: Open the fsa initialization file and parse it to create a */
 /*          a table of fsa structs                                    */
 /* INPUT:   fsa_table  Uninitialized array of fsas                    */
@@ -36,7 +34,6 @@ int initialize_fsa_table ( fsa_table_struct *fsa_table ) {
 /* RETURN:  SUCCESS    Indicates successful initialization            */
 /*          FAILURE    Indicates unsuccessful initialization          */
 
-  FILE *fsa_file;
   char *current_char, buffer[MAX_BUFFER];
   
   int i,j,k;
@@ -44,17 +41,6 @@ int initialize_fsa_table ( fsa_table_struct *fsa_table ) {
   char  current_input;
   int   current_sum;
 
-  fsa_file = fopen( FSA_FILE_NAME, "r" );
-  
-  if ( fsa_file == NULL ) {
-  
-    error( "Can't open FSA file: " );
-    error( FSA_FILE_NAME );
-    error( "\n" );
-    return FAILURE;
-    
-  }
-  
   /* Read in from the file the number of fsas */
   fgets( buffer, MAX_BUFFER, fsa_file );
 
@@ -171,10 +157,7 @@ int initialize_fsa_table ( fsa_table_struct *fsa_table ) {
     
   }
   
-  fclose( fsa_file );
-  
   return SUCCESS;
-  
 }
 
 int delete_fsa ( fsa_struct* fsa ) {
