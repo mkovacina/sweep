@@ -245,13 +245,10 @@ int initialize_agent ( agent_ptr *agent, list_struct agent_function_list,
     }
     
     /* If j is max size, indicate error */
-    if ( j == agent_function_list.list_size ) {
-    
-      error( "State description, " );
-      error( (*agent)->fsa->state[i].description );
-      error( ", not found in agent file\n" );
+    if ( j == agent_function_list.list_size ) 
+    {
+      error( "State description not found in agent file: '%s'\n",  (*agent)->fsa->state[i].description );
       return FAILURE;
-      
     }
     
     /* Found proper description set up functions and support grid */
