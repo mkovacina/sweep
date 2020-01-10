@@ -4,11 +4,11 @@
 */
 
 /* NOTHING GOES ABOVE THIS LINE!!!  (Multiple include protection) */
-#ifndef _fsa_
-#define _fsa_
+#pragma once
 
 /*--------------- Includes Needed for Definitions Below --------------*/
 
+#include <stdio.h>
 #include "constants.h"
 
 /*---------------------------- Constants -----------------------------*/
@@ -51,7 +51,7 @@ typedef struct {
 /*------------------------- Function Prototypes ----------------------*/
 /* void sample (char *, int, Real);                                   */
 
-int  initialize_fsa_table ( fsa_table_struct* );
+int  initialize_fsa_table ( fsa_table_struct*, FILE*);
 int  copy_fsa             ( fsa_struct*, fsa_struct* );
 int  delete_fsa           ( fsa_struct* );
 int  clear_fsa_table      ( fsa_table_struct* );
@@ -62,6 +62,3 @@ void print_fsa_table      ( fsa_table_struct* );
 
 /*------------------------------ Globals -----------------------------*/
 /* GLOBAL  float  example;                                            */
-
-/* NOTHING GOES BEYOND THIS LINE !!!! */
-#endif /* _fsa_ */

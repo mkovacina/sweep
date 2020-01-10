@@ -11,8 +11,6 @@
 
 /*------------------------ Externs Needed --------------------------- */
 
-extern char* AGENT_FILE_NAME;
-
 /*------------------------- Local Macros -----------------------------*/
 
 /*-------------------------- Local Types -----------------------------*/
@@ -123,27 +121,15 @@ int initialize_agent_function_table ( agent_function_table_struct *agent_functio
   return SUCCESS;
 }
 
-int initialize_agent_table ( agent_table_struct* agent_table ) {
+int initialize_agent_table ( agent_table_struct* agent_table, FILE* agent_file ) {
 /* PURPOSE:  This function will create the table of user defined fields */
 /* INPUT:    agent_table  Ptr to the agent table to initialize          */
 /* OUTPUT:   agent_table  Ptr to the initialized agent table            */
 /* RETURN:   SUCCESS      Indicates successful initialization           */
 /*           FAILURE      Indicates unsuccessful initialization         */
 
-  FILE *agent_file;
   char buffer[MAX_BUFFER];
   int  i = 0, j = 0;
-  
-  /* Open agent file */
-  agent_file = fopen( AGENT_FILE_NAME, "r");
-  if ( agent_file == NULL ) {
-  
-    error( "Can't open agent file: ");
-    error( AGENT_FILE_NAME );
-    error( "\n" );
-    return FAILURE;
-    
-  }
   
   fgets ( buffer, MAX_BUFFER, agent_file );
   agent_table->number_field_lists = atoi( buffer );
@@ -195,11 +181,7 @@ int initialize_agent_table ( agent_table_struct* agent_table ) {
     
   }
   
-  fclose( agent_file );
-
   return SUCCESS;
-
-
 }
 
 int initialize_agent ( agent_ptr *agent, list_struct agent_function_list,
