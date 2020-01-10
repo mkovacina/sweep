@@ -81,9 +81,9 @@ int main ( int argc, char *argv[] )
 	start_log();
 
 	/* If none CLA supplied, error */
-	if ( ( argc == 1 ) || ( ( argc > 3 ) && ( argc < 7 ) ) || ( argc > 7 ) ) 
+	if (argc != 3) 
 	{
-		printf( "Usage:  sweep <filename> <random number> or \n         sweep <list of filenames> <random number>\n" );
+		printf( "Usage:  sweep <filename> <random number>\n" );
 		stop();
 	} 
 	else if ( argc == 3 ) 
@@ -105,12 +105,6 @@ int main ( int argc, char *argv[] )
 			fclose( FILE_NAME_FILE );
 		} 
 	} 
-	else if ( argc == 7 ) 
-	{
-		assign_fptrs( argv, 1, 5, &experimentFiles );
-
-		RANDOM_NUMBER = atoi( argv[6] );
-	}
 
 	init_priority_funcs( priority_grid );
 
