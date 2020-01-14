@@ -34,79 +34,38 @@ int place_agents( swarm_element_struct*, int, char*, fgrid_ptr );
 void random_position( agent_struct *agent );
 void strip_white( char **str );
 
+int handleFsaInitialization(const char* filename, const fsa_table_struct* fsaTable);
+int handleAgentFunctionInitialization(const char* filename, const agent_function_table_struct* agentFunctionTable);
+int handleAgentTableInitialization(const char* filename, const agent_table_struct* agentTable);
+int handleSwarmInitialization(const char* filename, agent_table_struct* agent_table, fsa_table_struct* fsa_table, agent_function_table_struct* agent_function_table);
+
 /*---------------------- Function Definitions ------------------------*/
 
 int initialize_swarm ( fgrid_ptr agent_grid, const ExperimentFiles* experimentFiles) 
 {
-  /* Swarm file */
-  FILE  *swarm_file;
-  char  buffer[MAX_BUFFER], *current_char;
-  
-  /* Current agent information */
-  int current_type, current_priority, current_support_grid, current_size;
-      
-  /* Pointers to agents in swarm list */
-  swarm_element_struct *first_agent;
-      
-  /* FSA and agent function tables */
-  agent_table_struct          agent_table;
-  fsa_table_struct            fsa_table;
-  agent_function_table_struct agent_function_table;
-
-  /* Agent */
-  agent_ptr temp_agent = NULL;
-
   /* Get the FSA table */  
-  FILE *fsaFunctionFile = fopen( experimentFiles->fsaFileName, "r");
-
-  if ( fsaFunctionFile == NULL ) 
+  int fsaInitializationStatus = handleFsaInitialization(experimentFiles->fsaFileName, &fsa_table);
+  if (fsaInitializationStatus == FAILURE)
   {
-    error( "Can't open FSA function file: '%s'\n", experimentFiles->fsaFileName );
+    error("There was a problem initializing the FSAs\n");
     return FAILURE;
   }
-
-
-  if ( initialize_fsa_table(&fsa_table, fsaFunctionFile) ) {
-  
-    error("FSA Table not initialized.\n");
-    return FAILURE;
-  }
-
-  fclose(fsaFunctionFile);
 
   /* Get the agent function table */
-  FILE *agent_function_file = fopen( experimentFiles->agentFunctionFileName, "r");
-
-  if ( agent_function_file == NULL ) 
+  int agentFunctionInitializationStatus = handleAgentFunctionInitialization(experimentFiles->agentFunctionFileName, &agent_function_table);
+  if (agentFunctionInitializationStatus == FAILURE)
   {
-    error( "Can't open agent function file: '%s'\n", experimentFiles->agentFunctionFileName );
+    error("There was a problem initializing the agent functions\n");
     return FAILURE;
   }
-
-  if ( initialize_agent_function_table(&agent_function_table, agent_function_file) )
-  {
-    error( "Agent Function Table not initialized.\n" );
-    return FAILURE;
-  }
-
-  fclose(agent_function_file);
 
   /* Get the agent table */
-  FILE *agentFile = fopen( experimentFiles->agentFileName, "r");
-
-  if ( agentFile == NULL ) 
+  int agentTableInitializationStatus = handleAgentTableInitialization(experimentFiles->agentFileName, &agent_table);
+  if (agentTableInitializationStatus == FAILURE)
   {
-    error( "Can't open agent file: '%s'\n", experimentFiles->agentFileName );
+    error("There was a problem initializing the agent table\n");
     return FAILURE;
   }
-
-  if ( initialize_agent_table( &agent_table, agentFile ) ) 
-  {
-    error( "Agent Table not initialized.\n" );
-    return FAILURE;
-  }
-
-  fclose(agentFile);
 
   /* If agent table and FSA table do not have same number of elements */
   /* indicate error.                                                  */
@@ -117,137 +76,23 @@ int initialize_swarm ( fgrid_ptr agent_grid, const ExperimentFiles* experimentFi
   }
 
   /* Also check against agent table */
-  if ( fsa_table.number_fsa != agent_table.number_field_lists ) {
-
+  if ( fsa_table.number_fsa != agent_table.number_field_lists ) 
+  {
     error( "Mismatch between number of agent field lists and number of agent types\n" );
     return FAILURE;
-
   }
 
   srand( RANDOM_NUMBER );
   
-  /* Open the swarm file */
-  swarm_file = fopen(experimentFiles->swarmFileName, "r");
-  if ( swarm_file == NULL ) 
-  {  
-    error("Could not open swarm file '%s'\n", experimentFiles->swarmFileName);
+  int swarmInitializationStatus = handleSwarmInitialization(experimentFiles->swarmFileName, agent_table, fsa_table, agent_function_table);
+
+  if (swarmInitializationStatus == FAILURE)
+  {
+    error("There was a problem initializing the swarm\n");
     return FAILURE;
   }
-  
-  /* Skip past the comments */
-  fgets( buffer, MAX_BUFFER, swarm_file );
-  while ( buffer[0] == '#' ) fgets( buffer, MAX_BUFFER, swarm_file );
-  
-  /* Loop until ## encountered */
-  while ( ( buffer[0] != '#' ) && ( buffer[1] != '#' ) ) {
-  
-    current_char = &(buffer[0]);
-    
-    /* Get amount of current type */
-    for (; (*current_char < 48) || (*current_char > 57); current_char++);
-    current_size = atoi( current_char );
-    
-    /* Get type of FSA to use */
-    /* Find position of next number */
-    
-    for ( ; (*current_char >= 48) && (*current_char <= 57); current_char++ );
-    for ( ; (*current_char < 48) || (*current_char > 57); current_char++ );
-    
-    current_type = atoi( current_char );
-    current_type--;
-    
-    /* Check against one of the ranges in either table */
-    if ( current_type > fsa_table.number_fsa ) {
-    
-      error( "Agent type not defined\n" );
-      return FAILURE;
-      
-    }
-    
-    /* Get Priority ID for agent */
-    for ( ; (*current_char >= 48) && (*current_char <= 57); current_char++ );
-    for ( ; (*current_char < 48) || (*current_char > 57); current_char++ );
-    
-    current_priority = atoi( current_char );
-    
-    /* Get Support Grid ID for agent */
-    for ( ; (*current_char >= 48) && (*current_char <= 57); current_char++ );
-    for ( ; (*current_char < 48) || (*current_char > 57); current_char++ );
-    
-    current_support_grid = atoi( current_char );    
 
-    /* Initialize agent */
-    if ( initialize_agent( &(temp_agent), 
-                           agent_function_table.agent_list[current_type],
-                           agent_table.agent_field_list[current_type],
-                           &(fsa_table.fsa[current_type]), 
-                           current_priority, current_support_grid ) ) {
-                            
-
-      error( "Agent not initialized\n");
-      return FAILURE;
-      
-    }
-
-	if (IsTraceLevelVerbose())
-	{
-		TraceVerboseLine("Made agents\n");
-		print_agent(temp_agent);
-	}
-
-    /* Trace up to last agent */
-    first_agent = swarm;
-    while ( first_agent->next_agt != NULL ) {
-
-      first_agent = first_agent->next_agt; 
-
-    }
-
-    /* Add agent to swarm proper number of times */
-    if ( addntimes( temp_agent, current_size ) ) {
-    
-      error( "Agents cannot be added to swarm\n" );
-      return FAILURE;
-      
-    }
-
-    /* Moves to first agent of next type, as long as size != 0 */
-    //first_agent = first_agent->next_agt;
-
-# if 0
-    
-    /* Add agent to master swarm index of types */
-    if ( addntimes( temp_agent, 1, &master_swarm_types ) ) {
-    
-      error( "Agents cannot be added to master swarm types\n" );
-      return FAILURE;
-      
-    }
-
-# endif
-
-    /* Get rid of temp_agent */
-    delete_agent( &(temp_agent) );
-
-    /* Move to first character of placement */
-    for ( ; (*current_char >= 48) && (*current_char <= 57); current_char++ );
-    for ( ; (*current_char == 9); current_char++ );
-
-    if ( place_agents( first_agent, current_size, current_char, agent_grid ) ) {
- 
-      error ( "Cannot place agents\n" );
-      return FAILURE;
-
-    }
-      
-    /* Eat line */
-    fgets( buffer, MAX_BUFFER, swarm_file );
-
-  }
-  fclose( swarm_file );
-  
   return SUCCESS;
-  
 }
 
 /* strips excess white spaces from a string */
@@ -832,3 +677,193 @@ int addntimes( agent_ptr agent, int n  ) {
 
 }
 
+
+int handleFsaInitialization(const char* filename, const fsa_table_struct* fsaTable)
+{
+  TraceVerboseLine("Opening FSA file '%s'", filename);
+
+  FILE *fsaFunctionFile = fopen( filename, "r");
+
+  if ( fsaFunctionFile == NULL ) 
+  {
+    error( "Can't open FSA function file: '%s'\n", filename );
+    return FAILURE;
+  }
+
+  int status = initialize_fsa_table(fsaTable, fsaFunctionFile);
+  if ( status == FAILURE ) 
+  {
+    error("FSA Table not initialized.\n");
+  }
+
+  fclose(fsaFunctionFile);
+
+  return SUCCESS;
+}
+
+int handleAgentFunctionInitialization(const char* filename, const agent_function_table_struct* agentFunctionTable)
+{
+  FILE *agent_function_file = fopen( filename, "r");
+
+  if ( agent_function_file == NULL ) 
+  {
+    error( "Can't open agent function file: '%s'\n", filename);
+    return FAILURE;
+  }
+
+  if ( initialize_agent_function_table(&agentFunctionTable, agent_function_file) )
+  {
+    error( "Agent Function Table not initialized.\n" );
+    return FAILURE;
+  }
+
+  fclose(agent_function_file);
+}
+
+
+int handleAgentTableInitialization(const char* filename, const agent_table_struct* agentTable)
+{
+  FILE *agentFile = fopen( filename, "r");
+
+  if ( agentFile == NULL ) 
+  {
+    error( "Can't open agent file: '%s'\n", filename);
+    return FAILURE;
+  }
+
+  if ( initialize_agent_table( &agentTable, agentFile ) ) 
+  {
+    error( "Agent Table not initialized.\n" );
+    return FAILURE;
+  }
+
+  fclose(agentFile);
+
+  return SUCCESS;
+}
+
+int handleSwarmInitialization(const char* filename,
+  agent_table_struct*          agent_table,
+  fsa_table_struct*            fsa_table,
+  agent_function_table_struct* agent_function_table
+)
+{
+  char buffer[MAX_BUFFER];
+  
+  /* Open the swarm file */
+  FILE* swarm_file = fopen(filename, "r");
+  if ( swarm_file == NULL ) 
+  {  
+    error("Could not open swarm file '%s'\n", filename);
+    return FAILURE;
+  }
+  
+  /* Skip past the comments */
+  fgets( buffer, MAX_BUFFER, swarm_file );
+  while ( buffer[0] == '#' ) fgets( buffer, MAX_BUFFER, swarm_file );
+  
+  /* Loop until ## encountered */
+  while ( ( buffer[0] != '#' ) && ( buffer[1] != '#' ) ) 
+  {
+    char *current_char = &(buffer[0]);
+
+    /* Get amount of current type */
+    for (; (*current_char < 48) || (*current_char > 57); current_char++);
+    int current_size = atoi( current_char );
+    
+    /* Get type of FSA to use */
+    /* Find position of next number */
+    
+    for ( ; (*current_char >= 48) && (*current_char <= 57); current_char++ );
+    for ( ; (*current_char < 48) || (*current_char > 57); current_char++ );
+    
+    int current_type = atoi( current_char );
+    current_type--;
+    
+    /* Check against one of the ranges in either table */
+    if ( current_type > fsa_table->number_fsa ) 
+    {
+      error( "Agent type not defined\n" );
+      return FAILURE;
+    }
+    
+    /* Get Priority ID for agent */
+    for ( ; (*current_char >= 48) && (*current_char <= 57); current_char++ );
+    for ( ; (*current_char < 48) || (*current_char > 57); current_char++ );
+    
+    int current_priority = atoi( current_char );
+    
+    /* Get Support Grid ID for agent */
+    for ( ; (*current_char >= 48) && (*current_char <= 57); current_char++ );
+    for ( ; (*current_char < 48) || (*current_char > 57); current_char++ );
+    
+    int current_support_grid = atoi( current_char );    
+
+    /* Initialize agent */
+    agent_ptr temp_agent = NULL;
+    if ( initialize_agent( &(temp_agent), 
+                           agent_function_table->agent_list[current_type],
+                           agent_table->agent_field_list[current_type],
+                           &(fsa_table->fsa[current_type]), 
+                           current_priority, current_support_grid ) )
+    {
+      error( "Agent not initialized\n");
+      return FAILURE;
+    }
+
+    if (IsTraceLevelVerbose())
+    {
+      TraceVerboseLine("Made agents\n");
+      print_agent(temp_agent);
+    }
+
+    /* Trace up to last agent */
+    swarm_element_struct* first_agent = swarm;
+    while ( first_agent->next_agt != NULL ) 
+    {
+      first_agent = first_agent->next_agt; 
+    }
+
+    /* Add agent to swarm proper number of times */
+    if ( addntimes( temp_agent, current_size ) ) 
+    {
+      error( "Agents cannot be added to swarm\n" );
+      return FAILURE;
+    }
+
+    /* Moves to first agent of next type, as long as size != 0 */
+    //first_agent = first_agent->next_agt;
+
+# if 0
+    
+    /* Add agent to master swarm index of types */
+    if ( addntimes( temp_agent, 1, &master_swarm_types ) ) {
+    
+      error( "Agents cannot be added to master swarm types\n" );
+      return FAILURE;
+      
+    }
+
+# endif
+
+    /* Get rid of temp_agent */
+    delete_agent( &(temp_agent) );
+
+    /* Move to first character of placement */
+    for ( ; (*current_char >= 48) && (*current_char <= 57); current_char++ );
+    for ( ; (*current_char == 9); current_char++ );
+
+    if ( place_agents( first_agent, current_size, current_char, agent_grid ) ) 
+    {
+      error ( "Cannot place agents\n" );
+      return FAILURE;
+    }
+      
+    /* Eat line */
+    fgets( buffer, MAX_BUFFER, swarm_file );
+  }
+
+  fclose( swarm_file );
+  
+  return SUCCESS;
+}
