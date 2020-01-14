@@ -43,6 +43,10 @@ int handleSwarmInitialization(const char* filename, agent_table_struct* agent_ta
 
 int initialize_swarm ( fgrid_ptr agent_grid, const ExperimentFiles* experimentFiles) 
 {
+  agent_table_struct          agent_table;
+  fsa_table_struct            fsa_table;
+  agent_function_table_struct agent_function_table;
+
   /* Get the FSA table */  
   int fsaInitializationStatus = handleFsaInitialization(experimentFiles->fsaFileName, &fsa_table);
   if (fsaInitializationStatus == FAILURE)
@@ -71,7 +75,7 @@ int initialize_swarm ( fgrid_ptr agent_grid, const ExperimentFiles* experimentFi
   /* indicate error.                                                  */
   if ( fsa_table.number_fsa != agent_function_table.number_agent_lists ) 
   {
-    error( "Mismatch between number of fsa and number of agent function lists.\n" );
+    error( "Mismatch between number of fsa and number of agent function lists '%d' != '%d'.\n", fsa_table.number_fsa, agent_function_table.number_agent_lists );
     return FAILURE;
   }
 
@@ -84,7 +88,7 @@ int initialize_swarm ( fgrid_ptr agent_grid, const ExperimentFiles* experimentFi
 
   srand( RANDOM_NUMBER );
   
-  int swarmInitializationStatus = handleSwarmInitialization(experimentFiles->swarmFileName, agent_table, fsa_table, agent_function_table);
+  int swarmInitializationStatus = handleSwarmInitialization(experimentFiles->swarmFileName, &agent_table, &fsa_table, &agent_function_table);
 
   if (swarmInitializationStatus == FAILURE)
   {
