@@ -76,9 +76,6 @@ int main ( int argc, char *argv[] )
 	swarm->next_agt = NULL;
 	swarm->prev_agt = NULL;
 
-	/* Start error log */
-	start_log();
-
 	/* If none CLA supplied, error */
 	if (argc != 3) 
 	{
@@ -127,9 +124,6 @@ int main ( int argc, char *argv[] )
 		update_all_grids();
 		probe_swarm(&done, swarm);
 	}
-
-	/* Stop the error log */
-	stop_log();
 
 	return 0;
 }
