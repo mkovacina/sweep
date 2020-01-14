@@ -1,10 +1,3 @@
-/* Error log for swarm engine */
-
-# ifndef _errors_
-# define _errors_
-
+#pragma once 
 
 void error(const char*, ...);
-
-
-# endif
