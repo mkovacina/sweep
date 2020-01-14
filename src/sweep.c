@@ -134,7 +134,6 @@ void stop( ) {
 	/* OUTPUT:   NONE                                */
 	/* RETURN:   NONE                                */
 
-	stop_log();
 	exit( 1 );
 
 }
