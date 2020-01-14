@@ -27,8 +27,7 @@ swarm_element_struct  *master_swarm_types;
 int file_flag = 0;
 
 FILE  *SIM_FILE,
-	  *PROBE_FILE,
-	  *ERROR_FILE;
+	  *PROBE_FILE;
 
 int   RANDOM_NUMBER;
 
