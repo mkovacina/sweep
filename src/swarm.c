@@ -34,8 +34,8 @@ int place_agents( swarm_element_struct*, int, char*, fgrid_ptr );
 void random_position( agent_struct *agent );
 void strip_white( char **str );
 
-int handleFsaInitialization(const char* filename, const fsa_table_struct* fsaTable);
-int handleAgentFunctionInitialization(const char* filename, const agent_function_table_struct* agentFunctionTable);
+int handleFsaInitialization(const char* filename, fsa_table_struct* fsaTable);
+int handleAgentFunctionInitialization(const char* filename, agent_function_table_struct* agentFunctionTable);
 int handleAgentTableInitialization(const char* filename, const agent_table_struct* agentTable);
 int handleSwarmInitialization(const char* filename, agent_table_struct* agent_table, fsa_table_struct* fsa_table, agent_function_table_struct* agent_function_table);
 
@@ -71,6 +71,8 @@ int initialize_swarm ( fgrid_ptr agent_grid, const ExperimentFiles* experimentFi
     return FAILURE;
   }
 
+
+  printf("xxx %d\n", agent_function_table.number_agent_lists);
   /* If agent table and FSA table do not have same number of elements */
   /* indicate error.                                                  */
   if ( fsa_table.number_fsa != agent_function_table.number_agent_lists ) 
@@ -682,7 +684,7 @@ int addntimes( agent_ptr agent, int n  ) {
 }
 
 
-int handleFsaInitialization(const char* filename, const fsa_table_struct* fsaTable)
+int handleFsaInitialization(const char* filename, fsa_table_struct* fsaTable)
 {
   TraceVerboseLine("Opening FSA file '%s'", filename);
 
@@ -705,7 +707,7 @@ int handleFsaInitialization(const char* filename, const fsa_table_struct* fsaTab
   return SUCCESS;
 }
 
-int handleAgentFunctionInitialization(const char* filename, const agent_function_table_struct* agentFunctionTable)
+int handleAgentFunctionInitialization(const char* filename, agent_function_table_struct* agentFunctionTable)
 {
   FILE *agent_function_file = fopen( filename, "r");
 
@@ -715,7 +717,7 @@ int handleAgentFunctionInitialization(const char* filename, const agent_function
     return FAILURE;
   }
 
-  if ( initialize_agent_function_table(&agentFunctionTable, agent_function_file) )
+  if ( initialize_agent_function_table(agentFunctionTable, agent_function_file) )
   {
     error( "Agent Function Table not initialized.\n" );
     return FAILURE;
