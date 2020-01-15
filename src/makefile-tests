@@ -3,13 +3,14 @@ include makefile_common
 SOURCES = \
     tests.c \
     string-util.c \
-    tests-string-util.c
+    tests-string-util.c \
+    fsa.c \
+    tests-fsa.c \
+    errors.c \
 
 OBJECTS = $(SOURCES:.c=.o)
 
-include $(SOURCES:.c=.d)
-
-tests: $(OBJECTS)
+../sweep-tests: $(OBJECTS)
 	$(CC) $(CFLAGS) $^ $(LDFLAGS) -o ../sweep-tests
-
-include makefile_common
+    
+include $(SOURCES:.c=.d)

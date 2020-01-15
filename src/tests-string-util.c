@@ -5,8 +5,12 @@
 
 #include "string-util.h"
 
+#include "testing.h"
+
 void test_trim_right_inplace_NoModification()
 {
+    ANNOUNCE_TEST();
+
     char actual[] = "spaceman";
     const char* expected = "spaceman";
     trim_right_inplace(actual);
@@ -16,6 +20,8 @@ void test_trim_right_inplace_NoModification()
 
 void test_trim_right_inplace_WhitespaceAtEnd()
 {
+    ANNOUNCE_TEST();
+
     char actual[] = "spaceman \t\n";
     const char* expected = "spaceman";
     trim_right_inplace(actual);

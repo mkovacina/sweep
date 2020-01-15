@@ -26,7 +26,7 @@ int copy_transition ( transition_struct*, transition_struct* );
 
 /*---------------------- Function Definitions ------------------------*/
 
-int initialize_fsa_table ( fsa_table_struct *fsa_table, FILE* fsa_file) {
+int initialize_fsa_table (fsa_table_struct *fsa_table, FILE* fsa_file) {
 /* PURPOSE: Open the fsa initialization file and parse it to create a */
 /*          a table of fsa structs                                    */
 /* INPUT:   fsa_table  Uninitialized array of fsas                    */
