@@ -6,7 +6,7 @@ void error(const char* fmt, ...)
   va_list args;
   va_start(args, fmt);
     
-  fprintf(stdout, fmt, args);
+  vfprintf(stdout, fmt, args);
 
   va_end(args);
 }
