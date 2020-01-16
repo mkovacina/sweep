@@ -84,7 +84,8 @@ int initialize_swarm ( fgrid_ptr agent_grid, const ExperimentFiles* experimentFi
   /* Also check against agent table */
   if ( fsa_table.number_fsa != agent_table.number_field_lists ) 
   {
-    error( "Mismatch between number of agent field lists and number of agent types\n" );
+    error( "Mismatch between number of agent field lists and number of agent types '%d' != '%d'\n",
+      fsa_table.number_fsa, agent_table.number_field_lists );
     return FAILURE;
   }
 
@@ -737,7 +738,7 @@ int handleAgentTableInitialization(const char* filename, const agent_table_struc
     return FAILURE;
   }
 
-  if ( initialize_agent_table( &agentTable, agentFile ) ) 
+  if ( initialize_agent_table( agentTable, agentFile ) ) 
   {
     error( "Agent Table not initialized.\n" );
     return FAILURE;
