@@ -111,7 +111,6 @@ int initialize_fsa_table (fsa_table_struct *fsa_table, FILE* fsa_file) {
         trim_right_inplace(current_char);
         fsa_table->fsa[k].state[i].description = malloc( strlen( current_char ) );
         strcpy( fsa_table->fsa[k].state[i].description, current_char );
-        //*(strstr( fsa_table->fsa[k].state[i].description, "\n" ) ) = 0;
         
       } else {
       
