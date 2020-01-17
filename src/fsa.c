@@ -3,6 +3,7 @@
 #include "fsa.h"
 #include "errors.h"
 #include "useful.h"
+#include "string-util.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -53,8 +54,8 @@ int initialize_fsa_table (fsa_table_struct *fsa_table, FILE* fsa_file) {
   k = 0;
   
   /* Loop until EOF is encountered, first buffer char is null */
-  while ( !strstr( buffer, "####" ) ) {
-  
+  while ( !strstr( buffer, "####" ) ) 
+  {
     /* Retrieve the number of states and allocate space for them */
     fgets( buffer,MAX_BUFFER,fsa_file);
     fsa_table->fsa[k].number_states = atoi( buffer );
@@ -106,10 +107,11 @@ int initialize_fsa_table (fsa_table_struct *fsa_table, FILE* fsa_file) {
       
       /* Copy function name to list of functions */
       if ( ( *current_char != 10 ) || ( *current_char != 32 ) ) {
-      
+
+        trim_right_inplace(current_char);
         fsa_table->fsa[k].state[i].description = malloc( strlen( current_char ) );
         strcpy( fsa_table->fsa[k].state[i].description, current_char );
-        *(strstr( fsa_table->fsa[k].state[i].description, "\n" ) ) = 0;
+        //*(strstr( fsa_table->fsa[k].state[i].description, "\n" ) ) = 0;
         
       } else {
       
@@ -428,7 +430,7 @@ int copy_state( state_struct *source, state_struct *destination ) {
     return FAILURE;
     
   }
-  
+
   strcpy( destination->description, source->description );
   
   /* Allocate space for transitions */
