@@ -1,4 +1,4 @@
-SHELL = /bin/sh
+include makefile_common
 
 EXPERIMENT_DIR = ../exps
 
@@ -41,17 +41,10 @@ $(TOUCH_DIR)/$(V)_actions: $(EXPERIMENT_DIR)/$(V)/$(V).c $(EXPERIMENT_DIR)/$(V)/
 
 ###
 
-CC = gcc
-
-CFLAGS =  -g -Wall -I.
-LDFLAGS =  -L. -lm
-
 gen_priority.o : gen_priority.c support_grids.h
 
 gen_priority: gen_priority.o
-	$(CC) $(CFLAGS) gen_priority.o $(LDFLAGS) -o gen_priority
 
 gen_probe.o : gen_probe.c print_grid.h
 
 gen_probe: gen_probe.o
-	$(CC) $(CFLAGS) gen_probe.o $(LDFLAGS) -o gen_probe

@@ -1,9 +1,4 @@
-SHELL = /bin/sh
-
-CC = gcc
-
-CFLAGS = -ggdb -Wall -I.
-LDFLAGS = -L. -lm
+include makefile_common
 
 SOURCES = 	\
 		actions.c \
