@@ -14,7 +14,7 @@ ARG USER_GID=$USER_UID
 # alpine uses musl not glibc
 RUN apk add --no-cache bash make gcc musl-dev git tmux vim \
                         # this makes `man` work for the standard 'C' library
-                        man man-pages \
+                        man man-pages git \
 	#
     # Create a non-root user to use if preferred - see https://aka.ms/vscode-remote/containers/non-root-user.
     && addgroup -g $USER_GID $USERNAME \
@@ -24,7 +24,10 @@ RUN apk add --no-cache bash make gcc musl-dev git tmux vim \
     && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME\
     && chmod 0440 /etc/sudoers.d/$USERNAME \
     # add /sweep directory for non-VSCode develoment
-    && mkdir -p /sweep
+    && mkdir -p /sweep \
+    && git clone https://github.com/mkovacina/dotfiles.git \
+    && cd dotfiles \
+    && make install-vim \
 
 # notes
 # - bash was not included in the image, contrary to what the alpine sample indicated
