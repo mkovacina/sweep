@@ -9,11 +9,20 @@ all-follow: build-all-follow build-tests run-sweep run-tests
 build-all-follow:
 	$(MAKE) --directory=src V=all_follow
 
+build-life:
+	$(MAKE) --directory=src V=life
+
 build-tests:
 	$(MAKE) --directory=src -f makefile-tests
 
 run-sweep:
 	./sweep exp/all_follow.exp 1234
 
+run-life: 
+	./sweep exp/life.exp 1234
+
 run-tests:
 	./sweep-tests
+
+clean:
+	$(MAKE) --directory=src allclean

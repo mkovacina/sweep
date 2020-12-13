@@ -1,4 +1,4 @@
-/*----------------------- Includes Needed ----------------------------*/
+/*---------------------- Includes Needed ----------------------------*/
 
 #include "agent.h"
 #include "constants.h"
@@ -121,7 +121,7 @@ int initialize_agent_function_table ( agent_function_table_struct *agent_functio
   return SUCCESS;
 }
 
-int initialize_agent_table ( agent_table_struct* agent_table, FILE* agent_file ) {
+int initialize_agent_table ( const agent_table_struct* agent_table, FILE* agent_file ) {
 /* PURPOSE:  This function will create the table of user defined fields */
 /* INPUT:    agent_table  Ptr to the agent table to initialize          */
 /* OUTPUT:   agent_table  Ptr to the initialized agent table            */
@@ -201,12 +201,17 @@ int initialize_agent ( agent_ptr *agent, list_struct agent_function_list,
   int i = 0, j;
   static int id_count = 1;
 
+puts("x4");
+printf("%ld\n", sizeof(agent_struct));
+printf("%d\n", agent == NULL);
   /* Create memory for agent */
   (*agent) = malloc( sizeof( agent_struct ) );
   
+puts("x5");
   /* Create memory for fsa */
   (*agent)->fsa = malloc( sizeof( fsa_struct ) );
   
+puts("x6");
   /* Copy fsa */
   copy_fsa( fsa, (*agent)->fsa );
 

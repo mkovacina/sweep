@@ -91,7 +91,9 @@ int initialize_swarm ( fgrid_ptr agent_grid, const ExperimentFiles* experimentFi
 
   srand( RANDOM_NUMBER );
   
+  puts("x1");
   int swarmInitializationStatus = handleSwarmInitialization(experimentFiles->swarmFileName, &agent_table, &fsa_table, &agent_function_table);
+  puts("x2");
 
   if (swarmInitializationStatus == FAILURE)
   {
@@ -503,8 +505,43 @@ int place_agents ( swarm_element_struct *first_agent,
 	trace = trace->next_agt;
       }
 
-  } 
+  } else if ( strstr( place_string, "Fill(" ) ) 
+  {
+	  // this method will place the agents in a raster fashion
+	  // starting from the top-left position of the grid area
+	  //
+	  // no parameters for now.
+	  // default to the whole world
+	  // maybe extend to take a rectangle or starting (r,c)
 
+    // move past the closing parenthesis
+    for( ; *(place_string) != ')'; place_string++ );
+    place_string++;
+
+
+    swarm_element_struct *tracer = first_agent;
+
+	for( int row = 0; row < GGETR(0); row++ )
+	{
+		for( int col = 0; col < GGETC(0); col++)
+		{
+			if ( tracer == NULL ) goto NoMoreAgents;	
+
+			// todo: maybe emit a warning message if there aren't enough agents
+			tracer = tracer->next_agt;
+			tracer->agent->x_pos = col;
+			tracer->agent->y_pos = row;
+		}
+	}
+
+NoMoreAgents:
+	tracer = NULL;
+		
+  }
+else
+{
+	return FAILURE;
+}
 
 
   return SUCCESS;
@@ -725,6 +762,8 @@ int handleAgentFunctionInitialization(const char* filename, agent_function_table
   }
 
   fclose(agent_function_file);
+
+  return SUCCESS;
 }
 
 

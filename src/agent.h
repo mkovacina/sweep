@@ -145,7 +145,7 @@ typedef agent_struct* agent_ptr;
 //          FAILURE
 //            - Indicates unsuccessful initialization           
 int initialize_agent_function_table ( agent_function_table_struct*, FILE* );
-int initialize_agent_table          ( agent_table_struct*, FILE* );
+int initialize_agent_table          ( const agent_table_struct*, FILE* );
 int initialize_agent                ( agent_ptr*, list_struct,
                                       agent_field_struct,
                                       fsa_struct*, int, int );
