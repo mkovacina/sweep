@@ -49,14 +49,6 @@ typedef struct {
 
 } state_functions_struct;
 
-typedef struct item_hold {
-
-  float fields[MAX_FIELDS];
-
-  struct item_hold *next_item, *prev_item;
-
-} item_struct;
-
 typedef struct {
 
   int x_pos, 
@@ -83,8 +75,6 @@ float update_amt,
   
   state_functions_struct *state_functions;
 
-  item_struct *inventory;
-  
   int target[2][10];  /*Added 8-8-00, holds target preference list */
 
 } agent_struct;

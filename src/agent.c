@@ -215,9 +215,6 @@ puts("x6");
   /* Copy fsa */
   copy_fsa( fsa, (*agent)->fsa );
 
-  /* Empty items */
-  (*agent)->inventory = NULL;
-
   /* Make active */
   (*agent)->active = 1;
   
