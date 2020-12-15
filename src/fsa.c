@@ -109,7 +109,7 @@ int initialize_fsa_table (fsa_table_struct *fsa_table, FILE* fsa_file) {
       if ( ( *current_char != 10 ) || ( *current_char != 32 ) ) {
 
         trim_right_inplace(current_char);
-        fsa_table->fsa[k].state[i].description = malloc( strlen( current_char ) );
+        fsa_table->fsa[k].state[i].description = malloc( strlen( current_char )+1 );
         strcpy( fsa_table->fsa[k].state[i].description, current_char );
         
       } else {
