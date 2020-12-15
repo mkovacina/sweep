@@ -4,6 +4,9 @@ SRC_DIR = src
 
 #all: sweep test
 
+life: build-life run-life
+#life: build-life build-tests run-life run-tests
+
 all-follow: build-all-follow build-tests run-sweep run-tests
 
 build-all-follow:
