@@ -15,6 +15,7 @@ ARG USER_GID=$USER_UID
 RUN apk add --no-cache bash make gcc musl-dev git tmux vim \
                         # this makes `man` work for the standard 'C' library
                         man man-pages git \
+						valgrind \ 
 	#
     # Create a non-root user to use if preferred - see https://aka.ms/vscode-remote/containers/non-root-user.
     && addgroup -g $USER_GID $USERNAME \
