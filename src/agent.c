@@ -121,7 +121,7 @@ int initialize_agent_function_table ( agent_function_table_struct *agent_functio
   return SUCCESS;
 }
 
-int initialize_agent_table ( const agent_table_struct* agent_table, FILE* agent_file ) {
+int initialize_agent_table ( agent_table_struct* agent_table, FILE* agent_file ) {
 /* PURPOSE:  This function will create the table of user defined fields */
 /* INPUT:    agent_table  Ptr to the agent table to initialize          */
 /* OUTPUT:   agent_table  Ptr to the initialized agent table            */

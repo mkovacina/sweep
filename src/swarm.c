@@ -36,7 +36,7 @@ void strip_white( char **str );
 
 int handleFsaInitialization(const char* filename, fsa_table_struct* fsaTable);
 int handleAgentFunctionInitialization(const char* filename, agent_function_table_struct* agentFunctionTable);
-int handleAgentTableInitialization(const char* filename, const agent_table_struct* agentTable);
+int handleAgentTableInitialization(const char* filename, agent_table_struct* agentTable);
 int handleSwarmInitialization(const char* filename, agent_table_struct* agent_table, fsa_table_struct* fsa_table, agent_function_table_struct* agent_function_table);
 
 /*---------------------- Function Definitions ------------------------*/
@@ -767,7 +767,7 @@ int handleAgentFunctionInitialization(const char* filename, agent_function_table
 }
 
 
-int handleAgentTableInitialization(const char* filename, const agent_table_struct* agentTable)
+int handleAgentTableInitialization(const char* filename, agent_table_struct* agentTable)
 {
   FILE *agentFile = fopen( filename, "r");
 
