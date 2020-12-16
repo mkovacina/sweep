@@ -105,7 +105,7 @@ int initialize_agent_function_table ( agent_function_table_struct *agent_functio
     /* Loop through every line and copy in strings for function names */
     while ( buffer[0] != '#' ) {
     
-      agent_function_table->agent_list[i].list[j] = malloc( strlen( buffer ) );
+      agent_function_table->agent_list[i].list[j] = malloc( strlen( buffer )+1 );
       strcpy( agent_function_table->agent_list[i].list[j], buffer ); 
       fgets( buffer, MAX_BUFFER, agent_function_file );
       j++;
