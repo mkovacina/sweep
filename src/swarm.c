@@ -525,7 +525,7 @@ int place_agents ( swarm_element_struct *first_agent,
 	{
 		for( int col = 0; col < GGETC(0); col++)
 		{
-			if ( tracer == NULL ) goto NoMoreAgents;	
+			if ( tracer->next_agt == NULL ) goto NoMoreAgents;	
 
 			// todo: maybe emit a warning message if there aren't enough agents
 			tracer = tracer->next_agt;
