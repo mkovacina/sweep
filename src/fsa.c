@@ -421,7 +421,7 @@ int copy_state( state_struct *source, state_struct *destination ) {
   destination->number_transitions = source->number_transitions;
   
   /* Copy string */
-  destination->description = malloc( strlen( source->description ) );
+  destination->description = malloc( strlen( source->description )+1 );
   
   if ( destination->description == NULL ) {
   
