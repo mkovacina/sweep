@@ -144,8 +144,12 @@ int initialize_agent_table ( agent_table_struct* agent_table, FILE* agent_file )
   while ( !strstr( buffer, "####" ) ) {
 
     fgets( buffer, MAX_BUFFER, agent_file );
-    agent_table->agent_field_list[i].number_fields = atoi( buffer );
+	if ( strstr( buffer, "####" )  )
+	{
+		break;
+	}
 
+    agent_table->agent_field_list[i].number_fields = atoi( buffer );
     /* Eat the next line, then get another line */
     fgets( buffer, MAX_BUFFER, agent_file );
     fgets( buffer, MAX_BUFFER, agent_file );
@@ -176,9 +180,13 @@ int initialize_agent_table ( agent_table_struct* agent_table, FILE* agent_file )
     /* Eat delimeter between agent function lists */
     // N.B.  this is actually done at the top of the loop
 
+	// 2020....actually, no, it's not.
+	// the '##' for the end of the agent list is last in `buffer`
+	// that is why we need the second "if strstr" after reading the first line
+	// there is room to refactor here
+	// xxx: use a for-loop maybe and reconsider dynamic allocations
     i++;
     j = 0;
-    
   }
   
   return SUCCESS;
