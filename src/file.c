@@ -12,7 +12,7 @@
 
 int addFileToExperiment(char* filename, ExperimentFiles* experimentFiles)
 {
-	TraceVerboseLine("Assigning file to experiment: '%s'", filename);
+	TraceVerbose("Assigning file to experiment: '%s'", filename);
 
 	/* FSA file */
 	if ( strstr( filename, ".fsa" ) ) 

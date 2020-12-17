@@ -282,7 +282,6 @@ void change_state ( fsa_struct *fsa, char input ) {
 /* OUTPUT:   fsa    Ptr to fsa in new state                         */
 /* RETURN:   NONE                                                   */
 
-  int i = 0;
   
   float probability;
   
@@ -296,12 +295,35 @@ void change_state ( fsa_struct *fsa, char input ) {
     probability = 100.0 * ( (double) rand() / (double) RAND_MAX );
     
     /* Look thru transition array until correct input is found */
-    while ( fsa->state[fsa->current_state].transition[i].input != input )  i++;
+	state_struct* currentState = &(fsa->state[fsa->current_state]);
+	transition_struct* currentTransition = NULL;
+	for( int x = 0; x < currentState->number_transitions; x++ )
+	{
+		if ( currentState->transition[x].input == input )
+		{
+			currentTransition = &(currentState->transition[x]);
+			break;
+		}
+	}
 
-    while ( (probability > fsa->state[fsa->current_state].transition[i].probability)
-            && (fsa->state[fsa->current_state].transition[i].probability != 100) ) i++;
+	if (currentTransition == NULL)
+	{
+		printf("Unable to find a transition for input '%c'(%d)\n", input, input);
+		puts("ERROR");
+
+		exit(1);
+	}
+
+    //while ( fsa->state[fsa->current_state].transition[i].input != input )  i++;
+	// todo: really need to bound this loop by the number of transitions
+
+	// todo: this needs some testing...
+    while ( (probability > currentTransition->probability)
+            && (currentTransition->probability != 100) ) currentTransition++;
+//    while ( (probability > fsa->state[fsa->current_state].transition[i].probability)
+ //           && (fsa->state[fsa->current_state].transition[i].probability != 100) ) i++;
             
-    fsa->current_state = fsa->state[fsa->current_state].transition[i].destination;
+    fsa->current_state = currentTransition->destination;
    
   } else {
 

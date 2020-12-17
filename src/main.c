@@ -60,11 +60,11 @@ struct ConfigurationFiles* ReadConfigurationFromFile(const char* configurationFi
     file_names = malloc( sizeof( char* ) * 5 );
     for ( i = 0; i < 5; i++ ) file_names[i] = malloc( sizeof(char) * MAX_BUFFER ) ;
     
-    TraceVerboseLine("Files read in from filename file");
+    TraceVerbose("Files read in from filename file");
     for ( i = 0; i < 5; i++ ) {
         
         fgets( file_names[i], MAX_BUFFER, FILE_NAME_FILE );
-        TraceVerboseLine(file_names[i]);
+        TraceVerbose(file_names[i]);
     }
     
     fclose( FILE_NAME_FILE );

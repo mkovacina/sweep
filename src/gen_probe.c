@@ -389,7 +389,7 @@ int main()
 		}; /* eat spaces */
 
 		if (buffer[index] == 'T' || buffer[index] == 't'){
-			printf("      TraceVerboseLine(\"Probe action  %d -> TERMINATE\\n\");\n",count);
+			printf("      TraceVerbose(\"Probe action  %d -> TERMINATE\\n\");\n",count);
 
 			printf("       terminate = 1;\n");
 		}
@@ -404,7 +404,7 @@ int main()
 		}
 		else if (buffer[index] == 'I'){
 			index++;
-			printf("       TraceVerboseLine(\"Iteration: \");");
+			printf("       TraceVerbose(\"Iteration: \");");
 			printf("       printf(\" %%d\\n\", iter_track);\n");
 		}
 		else if (buffer[index] == 'C'){
@@ -481,7 +481,7 @@ int main()
 		printf("       fclose(ANI_FILE);\n");
 	}
 
-	printf("       TraceVerboseLine(\" Program Terminating!\");\n");
+	printf("       TraceVerbose(\" Program Terminating!\");\n");
 
 	printf("       *done = 1;\n");
 	printf("    }\n");

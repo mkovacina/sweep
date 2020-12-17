@@ -69,7 +69,7 @@ int main ( int argc, char *argv[] )
 
 	//FILE                 *FILE_NAME_FILE;
 
-	TraceVerboseLine("INITIALIZING SWARM EXPERIMENTATION AND EVALUATION PLATFORM");
+	TraceVerbose("INITIALIZING SWARM EXPERIMENTATION AND EVALUATION PLATFORM");
 
 	swarm = malloc( sizeof( swarm_element_struct ) );
 	swarm->agent = NULL;
@@ -89,7 +89,7 @@ int main ( int argc, char *argv[] )
 		/* Read file names from file */
 		if ( FILE_NAME_FILE ) 
 		{
-			TraceVerboseLine("Files read in from filename file");
+			TraceVerbose("Files read in from filename file");
 			for ( i = 0; i < 5; i++ ) 
 			{
 				char filename[MAX_BUFFER];

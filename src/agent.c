@@ -355,8 +355,7 @@ void function_set ( agent_ptr* agent, int state,
   }
 }
 
-void grid_set ( agent_ptr *agent, int state, int function_num, 
-                char* grid_list ) {
+void grid_set ( agent_ptr *agent, int state, int function_num, char* grid_list ) {
 /* PURPOSE:  Sets up the grids to be changed for a particular         */
 /*           function call                                            */
 /* INPUT:    agent         Ptr to the agent to be set                 */

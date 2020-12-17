@@ -724,7 +724,7 @@ int addntimes( agent_ptr agent, int n  ) {
 
 int handleFsaInitialization(const char* filename, fsa_table_struct* fsaTable)
 {
-  TraceVerboseLine("Opening FSA file '%s'", filename);
+  TraceVerbose("Opening FSA file '%s'", filename);
 
   FILE *fsaFunctionFile = fopen( filename, "r");
 
@@ -857,9 +857,11 @@ int handleSwarmInitialization(const char* filename,
       return FAILURE;
     }
 
-    if (IsTraceLevelVerbose())
+    //if (IsTraceLevelVerbose())
+    if (1)
     {
-      TraceVerboseLine("Made agents\n");
+		// todo: replace when log level is available
+      TraceVerbose("Made agents\n");
       print_agent(temp_agent);
     }
 
