@@ -9,6 +9,7 @@ typedef struct
 	char agentFunctionFileName[MAX_FILENAME_LENGTH];
 	char swarmFileName[MAX_FILENAME_LENGTH];
 	char supportGridsFileName[MAX_FILENAME_LENGTH];
+	unsigned int seed;
 } ExperimentFiles;
 
 
