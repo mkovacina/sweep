@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "trace.h"
 #include "support_grids.h"
 
 
@@ -728,17 +729,23 @@ s_grids_ptr init_support_grids(char file_name[])
 	/* determines method of UPDATE for each support grid */
 	switch (buffer[0]){
 	       /*  "S"tatic updates */
-	       case 'S': support_ptr->update_grid = no_update;
-		         support_ptr->num_params = 0;
-	                 break;
+	       case 'S': 
+			   TraceVerbose("Grid set for static updates");
+			   support_ptr->update_grid = no_update;
+			   support_ptr->num_params = 0;
+			   break;
 
 	       /* Clear grid update */		 
-	       case 'X': support_ptr->update_grid = clear_update;
+	       case 'X': 
+					 TraceVerbose("Grid set to clear on update");
+			   support_ptr->update_grid = clear_update;
 		         support_ptr->num_params = 0;
 			 break;
 
 	       /* "M"ovement update */
-	       case 'M': support_ptr->update_grid = move_update;
+	       case 'M': 
+					 TraceVerbose("Grid set to move update");
+			 support_ptr->update_grid = move_update;
 		         support_ptr->num_params = 2;
 
 		         strip_read_file(buffer, support_file);
@@ -762,6 +769,7 @@ s_grids_ptr init_support_grids(char file_name[])
 	       /* "D"iffusion update */
 	       case 'D': /* chemical diffusion with decay update */
 
+					 TraceVerbose("Grid set to diffusion update");
 		         support_ptr->update_grid = diffuse_update;
 		         support_ptr->num_params = 2;
 
@@ -788,7 +796,9 @@ s_grids_ptr init_support_grids(char file_name[])
 	       case 'L': support_ptr->update_grid = library_update;
 		         break;
 	       case 'E': break; */
-
+	default:
+				 TraceError("Unknown update method '%c' encountered", buffer[0]);
+				 exit(1);
 	}
 #endif
     }

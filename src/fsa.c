@@ -3,6 +3,7 @@
 #include "fsa.h"
 #include "errors.h"
 #include "useful.h"
+#include "trace.h"
 #include "string-util.h"
 
 #include <stdlib.h>
@@ -299,6 +300,7 @@ void change_state ( fsa_struct *fsa, char input ) {
 	transition_struct* currentTransition = NULL;
 	for( int x = 0; x < currentState->number_transitions; x++ )
 	{
+		printf("%d %d\n", currentState->transition[x].input, input);
 		if ( currentState->transition[x].input == input )
 		{
 			currentTransition = &(currentState->transition[x]);
@@ -308,9 +310,7 @@ void change_state ( fsa_struct *fsa, char input ) {
 
 	if (currentTransition == NULL)
 	{
-		printf("Unable to find a transition for input '%c'(%d)\n", input, input);
-		puts("ERROR");
-
+		TraceError("Unable to find a transition for input '%c'(%d)", input, input);
 		exit(1);
 	}
 
