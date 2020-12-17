@@ -116,6 +116,10 @@ int main()
                if (buffer[pos] == 'G') {
                   printf("GET(%c,row,col)", buffer[++pos]);
                }
+			   // todo: fix the parsing
+			   // 1 > 0 : G1 => if (1 > 0) return ' '
+			   // 1 > 0 :G1  => if (1 > 0) return GGET(1...)
+			   // ...
                /* # sign is comment character for priority file, ignore */
                /* everything after it until the end of line             */
                if (buffer[pos] == '#') {
