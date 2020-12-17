@@ -26,9 +26,6 @@ swarm_element_struct  *swarm;
 swarm_element_struct  *master_swarm_types;
 int file_flag = 0;
 
-FILE  *SIM_FILE,
-	  *PROBE_FILE;
-
 int   RANDOM_NUMBER;
 
 /* REPLACE AT LATER TIME */
@@ -105,8 +102,10 @@ int main ( int argc, char *argv[] )
 		{
 			TraceError("Failed to open experiment file '%s'", argv[1]);
 			stop();
-
 		}
+
+		experimentFiles.seed = atoi(argv[2]);
+		TraceVerbose("Setting random seed to %d", experimentFiles.seed);
 	} 
 
 	init_priority_funcs( priority_grid );
