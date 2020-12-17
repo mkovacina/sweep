@@ -11,6 +11,7 @@
 
 static const char* TraceLevelNames[] = 
 {
+	"ERROR",
 	"VERBOSE"
 };
 

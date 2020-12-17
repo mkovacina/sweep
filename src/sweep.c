@@ -84,22 +84,29 @@ int main ( int argc, char *argv[] )
 	} 
 	else if ( argc == 3 ) 
 	{
-		FILE* FILE_NAME_FILE = fopen ( argv[1], "r" );
+		TraceVerbose("Trying to open experiment file '%s'", argv[1]);
+		FILE* file = fopen ( argv[1], "r" );
 
 		/* Read file names from file */
-		if ( FILE_NAME_FILE ) 
+		if ( file ) 
 		{
-			TraceVerbose("Files read in from filename file");
+			TraceVerbose("Reading experiment file");
 			for ( i = 0; i < 5; i++ ) 
 			{
 				char filename[MAX_BUFFER];
-				fgets( filename, MAX_BUFFER, FILE_NAME_FILE );
+				fgets( filename, MAX_BUFFER, file );
 				trim_right_inplace(filename);
 				addFileToExperiment(filename, &experimentFiles);
 			}
 
-			fclose( FILE_NAME_FILE );
+			fclose( file );
 		} 
+		else
+		{
+			TraceError("Failed to open experiment file '%s'", argv[1]);
+			stop();
+
+		}
 	} 
 
 	init_priority_funcs( priority_grid );

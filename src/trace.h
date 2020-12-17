@@ -11,9 +11,11 @@
 
 enum TraceLevel
 {
+	TraceLevelError,
 	TraceLevelVerbose
 };
 
 #define TraceVerbose(...) (TraceMessageEmit(TraceLevelVerbose, __FILE__, __LINE__, __VA_ARGS__ ))
+#define TraceError(...) (TraceMessageEmit(TraceLevelError, __FILE__, __LINE__, __VA_ARGS__ ))
 
 void TraceMessageEmit(enum TraceLevel traceLevel, const char* filename, int line, const char* format, ...);
