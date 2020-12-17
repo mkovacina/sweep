@@ -21,14 +21,11 @@
 s_grids_ptr           all_support_grids;
 fgrid_ptr             agent_grid;
 pri_func_ptr          priority_grid[20];
-int                   iter_count;
 swarm_element_struct  *swarm;
 swarm_element_struct  *master_swarm_types;
-int file_flag = 0;
-
-/* REPLACE AT LATER TIME */
-int first = 1;
-int found = 0;
+// currently used for the time_tag action (which is not currently used)
+// todo: ponder this
+int iter_count;
 
 /*------------------------ Local Constants ---------------------------*/
 
