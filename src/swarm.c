@@ -89,7 +89,7 @@ int initialize_swarm ( fgrid_ptr agent_grid, const ExperimentFiles* experimentFi
     return FAILURE;
   }
 
-  srand( RANDOM_NUMBER );
+  srand( experimentFiles->seed );
   
   puts("x1");
   int swarmInitializationStatus = handleSwarmInitialization(experimentFiles->swarmFileName, &agent_table, &fsa_table, &agent_function_table);

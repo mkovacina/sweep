@@ -26,8 +26,6 @@ swarm_element_struct  *swarm;
 swarm_element_struct  *master_swarm_types;
 int file_flag = 0;
 
-int   RANDOM_NUMBER;
-
 /* REPLACE AT LATER TIME */
 int first = 1;
 int found = 0;
