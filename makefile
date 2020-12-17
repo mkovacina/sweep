@@ -28,4 +28,6 @@ run-tests:
 	./sweep-tests
 
 clean:
+	rm -f sweep
+	rm -f sweep-tests
 	$(MAKE) --directory=src allclean
