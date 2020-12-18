@@ -12,9 +12,11 @@
 enum TraceLevel
 {
 	TraceLevelError,
-	TraceLevelVerbose
+	TraceLevelVerbose,
+	TraceLevelDebug
 };
 
+#define TraceDebug(...) (TraceMessageEmit(TraceLevelDebug, __FILE__, __LINE__, __VA_ARGS__ ))
 #define TraceVerbose(...) (TraceMessageEmit(TraceLevelVerbose, __FILE__, __LINE__, __VA_ARGS__ ))
 #define TraceError(...) (TraceMessageEmit(TraceLevelError, __FILE__, __LINE__, __VA_ARGS__ ))
 

@@ -12,7 +12,8 @@
 static const char* TraceLevelNames[] = 
 {
 	"ERROR",
-	"VERBOSE"
+	"VERBOSE",
+	"DEBUG"
 };
 
 void TraceMessageEmit(enum TraceLevel traceLevel, const char* filename, int line, const char* fmt, ...)
