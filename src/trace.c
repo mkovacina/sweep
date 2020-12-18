@@ -28,7 +28,11 @@ void TraceMessageEmit(enum TraceLevel traceLevel, const char* filename, int line
 
 	va_list args;
 	va_start(args, fmt);
-	fprintf(stderr, "%-5s\t%s\t%s:%d\t", TraceLevelNames[traceLevel], timestamp, filename, line);
+	// note the format string
+	// - space and alignment used to make columns fit
+	// - tabs used so that the data can be parsed in a tab-separated format
+	//		- this is a "good enough for now" step towards structured logging
+	fprintf(stdout, "%-5s\t%s\t%20s:%-4d\t", TraceLevelNames[traceLevel], timestamp, filename, line);
 	vprintf(fmt, args);
 	// fwiw, trying `puts` with the "hope" that the correct line ending marker will be used
 	puts("");
