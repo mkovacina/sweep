@@ -507,6 +507,7 @@ int place_agents ( swarm_element_struct *first_agent,
 
   } else if ( strstr( place_string, "Fill(" ) ) 
   {
+	  TraceVerbose("Swarm initialized using 'Fill'");
 	  // this method will place the agents in a raster fashion
 	  // starting from the top-left position of the grid area
 	  //
@@ -525,12 +526,13 @@ int place_agents ( swarm_element_struct *first_agent,
 	{
 		for( int col = 0; col < GGETC(0); col++)
 		{
-			if ( tracer->next_agt == NULL ) goto NoMoreAgents;	
+			if ( tracer == NULL ) goto NoMoreAgents;	
 
 			// todo: maybe emit a warning message if there aren't enough agents
-			tracer = tracer->next_agt;
+			TraceVerbose("Placing agent at [r,c] = [%d,%d]", row, col);
 			tracer->agent->x_pos = col;
 			tracer->agent->y_pos = row;
+			tracer = tracer->next_agt;
 		}
 	}
 
