@@ -5,6 +5,7 @@
 #include "errors.h"
 #include "actions.h"
 #include "useful.h"
+#include "trace.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -383,6 +384,10 @@ void grid_set ( agent_ptr *agent, int state, int function_num, char* grid_list )
     /* Get number of grids and allocate */
     (*agent)->state_functions[state].function_list[function_num].number_grids = 
       getnumbergrids( grid_list );
+
+	TraceVerbose("state = %d, function_num = %d, number_grids = %d",
+			state, function_num, 
+      (*agent)->state_functions[state].function_list[function_num].number_grids );
 
     (*agent)->state_functions[state].function_list[function_num].update_grids = 
       malloc( sizeof( update_grid_struct ) * 
