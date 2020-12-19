@@ -10,12 +10,12 @@ C1 : A1
 # number of grid-based counts
 
 # Probe-actions repeated
-0   # number of probe actions
+1   # number of probe actions
 # comment about first one
-#I > 1000 : T
+I > 2 : T
 
 # Animation Information
-10  # time_step
+1  # time_step
 W  # include world in animation
 A  # include agents in animation
 
