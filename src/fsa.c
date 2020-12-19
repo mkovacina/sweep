@@ -300,7 +300,6 @@ void change_state ( fsa_struct *fsa, char input ) {
 	transition_struct* currentTransition = NULL;
 	for( int x = 0; x < currentState->number_transitions; x++ )
 	{
-		printf("%d %d\n", currentState->transition[x].input, input);
 		if ( currentState->transition[x].input == input )
 		{
 			currentTransition = &(currentState->transition[x]);
