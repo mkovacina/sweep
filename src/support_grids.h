@@ -52,6 +52,7 @@ typedef feature_grid  *fgrid_ptr;
 typedef struct s_grid_hold *sgrid_ptr;
 
 typedef struct s_grid_hold{
+			   int id;
                fgrid_ptr curr_grid, prev_grid;
                sgrid_ptr co_grid;
                int xoffset, yoffset;
