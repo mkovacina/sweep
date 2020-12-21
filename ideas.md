@@ -26,3 +26,5 @@ use GLOBAL in useful.h
 
 normalize comment formats for exp files
 - look at string_read_file, it doesn't use the came comment format
+
+should uniform (or any) initialization be applied to the `prev_grid` only and not to `curr_grid` since the rule is "read from the past, write to the current"?
