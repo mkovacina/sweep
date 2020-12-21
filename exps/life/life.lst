@@ -2,10 +2,12 @@
 #
 2  # 2 actions in the first fsa
 #
-dead:place-0(0);#
-alive:place-0(1);set_neighborhood-0;#
+dead:set_neighborhood-0;#
+alive:set_neighborhood-0;#
 ####	
 
+#dead:place-0(0);#
+#alive:place-0(1);set_neighborhood-0;#
 
 
 
