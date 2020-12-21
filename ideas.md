@@ -16,3 +16,13 @@ separate out the reading of config from the application of configuration
 add in a way such that if an FSA doesn't find a transition then it just stays in the current state
 
 add in a way such that if an FSA doesn't find a transition then it goes to a default state
+
+remove dynamic allocations in favor of static with bounds checking
+- need to recompile anyways, can #define a new size or something IF needed
+
+experiment what it would look like to remove the `*_ptr` stuff
+
+use GLOBAL in useful.h
+
+normalize comment formats for exp files
+- look at string_read_file, it doesn't use the came comment format
