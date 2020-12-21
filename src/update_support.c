@@ -497,8 +497,8 @@ s_grids_ptr init_support_grids(char file_name[])
 
 		(*(all_grids_ptr->grids))[entries] = support_ptr;
 
-		fgrid_ptr c_grid = (fgrid_ptr)malloc(sizeof(feature_grid));
-		fgrid_ptr p_grid = (fgrid_ptr)malloc(sizeof(feature_grid));
+		fgrid_ptr c_grid = (fgrid_ptr)calloc(1,sizeof(feature_grid));
+		fgrid_ptr p_grid = (fgrid_ptr)calloc(1,sizeof(feature_grid));
 
 		/*
 		   c_grid = (fgrid_ptr)malloc(sg_rows * sg_cols *sizeof(float));

@@ -563,16 +563,20 @@ void update_swarm ( ) {
   
   int current_function = 0;
   
-  char agent_view;
-
   /* Loop until tracer points to NULL */
   while ( tracer != NULL ) {
     if ( tracer->agent->active ) {
 
       /* THIS IS WHERE AGENT GETS ITS PARTICULAR VIEW OF THE WORLD */
-      agent_view = priority_grid[tracer->agent->priority_id]
+      char agent_view = priority_grid[tracer->agent->priority_id]
                     (all_support_grids, tracer->agent->y_pos, 
                      tracer->agent->x_pos);
+	  TraceDebug("Agent view of priority grid %d at [r,c]=[%d,%d] is '%c' (%d)",
+			  tracer->agent->priority_id,
+			  tracer->agent->y_pos,
+			  tracer->agent->x_pos,
+			  agent_view,
+			  agent_view);
       
       change_state(tracer->agent->fsa, agent_view);
 

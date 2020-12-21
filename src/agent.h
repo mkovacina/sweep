@@ -24,8 +24,6 @@ typedef struct {
 
   int grid;
   
-  int num_parameters;
-
   // allows for MAX_NUM_PARAMS in a action function call */
   float grid_value;  /* [ MAX_NUM_PARAMS ]; */
   

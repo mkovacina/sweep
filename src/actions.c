@@ -8,6 +8,7 @@ Output: agent The updated agent
 #include "support_grids.h"
 #include "agent.h"
 #include "useful.h"
+#include "trace.h"
 #include <stdlib.h>
 
 extern int iter_count;
@@ -590,6 +591,7 @@ void circle(agent_struct *agent, int action_index)
    are the value to place and the grid on which to place it */
 {
     
+	TraceDebug("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
   int                row, col, state, i, r, c, rsqd, marker;
   int beg_row,end_row,beg_col,end_col;
   function_struct    temp_func;
