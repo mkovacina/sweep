@@ -15,7 +15,7 @@ ARG USER_GID=$USER_UID
 RUN apk add --no-cache bash make gcc musl-dev git tmux vim \
                         # this makes `man` work for the standard 'C' library
                         man man-pages git \
-						valgrind \ 
+						valgrind \
 	#
     # Create a non-root user to use if preferred - see https://aka.ms/vscode-remote/containers/non-root-user.
     && addgroup -g $USER_GID $USERNAME \
@@ -28,7 +28,7 @@ RUN apk add --no-cache bash make gcc musl-dev git tmux vim \
     && mkdir -p /sweep \
     && git clone https://github.com/mkovacina/dotfiles.git \
     && cd dotfiles \
-    && make install-vim \
+    && make install-vim 
 
 # notes
 # - bash was not included in the image, contrary to what the alpine sample indicated
