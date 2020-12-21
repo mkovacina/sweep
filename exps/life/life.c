@@ -8,11 +8,9 @@ void set_neighborhood(agent_struct *agent, int action_index)
   /* acquire the FSA state of the current agent */
   int state = agent->fsa->current_state;
 
-  /* access the support grid to be updated by this function */
-  function_struct temp_func = agent->state_functions[state].function_list[action_index];
-
   /* determines which support grid contains pertinent information */
-  int action_grid = temp_func.update_grids[0].grid;
+  /* by accessing the support grid to be updated by this function */
+  int action_grid = agent->state_functions[state].function_list[action_index].update_grids[0].grid;
 
   int rows = GGETR(0);
   int cols = GGETC(0);
