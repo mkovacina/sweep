@@ -9,3 +9,10 @@ note how I couldn't just return the value under the agent
 this is because the FSA works on characters and the value of the grid is an integer
 
 remember, support grids are of type `float` which means you can blindly do an `==` in the priority file and expect it to be right
+
+use a file to initialize small worlds
+- 0 for dead
+- 3 for alive
+- the sim starts up and the agents bootstrap their FSA state by reading these values
+	- there could be other ways to bootstrap the swarm, like a bootstrap state possibly in the FSA
+	- but there is still the matter of getting the agent synced with their state
