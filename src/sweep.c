@@ -57,7 +57,7 @@ int main ( int argc, char *argv[] )
 	/* Order does not matter but must include sgd, swm, agt, and fsa      */
 
 	int                  i,done=0;
-	ExperimentFiles experimentFiles = {'\0'};
+	ExperimentFiles experimentFiles;
 
 	//FILE                 *FILE_NAME_FILE;
 
