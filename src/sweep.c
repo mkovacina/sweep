@@ -56,10 +56,14 @@ int main ( int argc, char *argv[] )
 	/*                                                                    */
 	/* Order does not matter but must include sgd, swm, agt, and fsa      */
 
-	int                  i,done=0;
-	ExperimentFiles experimentFiles;
+	/* If none CLA supplied, error */
+	if (argc != 3) 
+	{
+		puts("Usage:  sweep <filename> <random number>");
+		stop();
+	} 
 
-	//FILE                 *FILE_NAME_FILE;
+	ExperimentFiles experimentFiles;
 
 	TraceVerbose("INITIALIZING SWARM EXPERIMENTATION AND EVALUATION PLATFORM");
 
@@ -68,40 +72,32 @@ int main ( int argc, char *argv[] )
 	swarm->next_agt = NULL;
 	swarm->prev_agt = NULL;
 
-	/* If none CLA supplied, error */
-	if (argc != 3) 
-	{
-		printf( "Usage:  sweep <filename> <random number>\n" );
-		stop();
-	} 
-	else if ( argc == 3 ) 
-	{
-		TraceVerbose("Trying to open experiment file '%s'", argv[1]);
-		FILE* file = fopen ( argv[1], "r" );
+	TraceVerbose("Trying to open experiment file '%s'", argv[1]);
 
-		/* Read file names from file */
-		if ( file ) 
-		{
-			TraceVerbose("Reading experiment file");
-			for ( i = 0; i < 5; i++ ) 
-			{
-				char filename[MAX_BUFFER];
-				fgets( filename, MAX_BUFFER, file );
-				trim_right_inplace(filename);
-				addFileToExperiment(filename, &experimentFiles);
-			}
+	FILE* file = fopen ( argv[1], "r" );
 
-			fclose( file );
-		} 
-		else
+	/* Read file names from file */
+	if ( file ) 
+	{
+		TraceVerbose("Reading experiment file");
+		for( int i = 0; i < 5; i++ ) 
 		{
-			TraceError("Failed to open experiment file '%s'", argv[1]);
-			stop();
+			char filename[MAX_BUFFER];
+			fgets( filename, MAX_BUFFER, file );
+			trim_right_inplace(filename);
+			addFileToExperiment(filename, &experimentFiles);
 		}
 
-		experimentFiles.seed = atoi(argv[2]);
-		TraceVerbose("Setting random seed to %d", experimentFiles.seed);
+		fclose( file );
 	} 
+	else
+	{
+		TraceError("Failed to open experiment file '%s'", argv[1]);
+		stop();
+	}
+
+	experimentFiles.seed = atoi(argv[2]);
+	TraceVerbose("Setting random seed to %d", experimentFiles.seed);
 
 	init_priority_funcs( priority_grid );
 
@@ -118,8 +114,10 @@ int main ( int argc, char *argv[] )
 		stop();
 	}
 
+	int done = 0;
+
 	/* primary "workhorse" loop for the SWEEP system */
-	for ( iter_count = 0; !done ; iter_count++ ) 
+	for( int iter_count = 0; !done ; iter_count++ ) 
 	{
 		update_swarm( swarm );
 		update_all_grids();
