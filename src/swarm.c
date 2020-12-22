@@ -910,8 +910,8 @@ int handleSwarmInitialization(const char* filename,
     delete_agent( &(temp_agent) );
 
     /* Move to first character of placement */
-    for ( ; (*current_char >= 48) && (*current_char <= 57); current_char++ );
-    for ( ; (*current_char == 9); current_char++ );
+    for ( ; *current_char >= 48 && (*current_char <= 57); current_char++ );
+    for ( ; *current_char == 9; current_char++ );
 
     if ( place_agents( first_agent, current_size, current_char, agent_grid ) ) 
     {
