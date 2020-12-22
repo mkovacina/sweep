@@ -534,51 +534,50 @@ void print_agent ( agent_ptr agent_to_print ) {
 }
 
 
-void print_function_list ( agent_ptr agent_to_print ) {
-/* PURPOSE:  This function prints out the function list to screen */
-/* INPUT:    agent_to_print  Ptr to agent to print out            */
-/* OUTPUT:   NONE                                                 */
-/* RETURN:   NONE                                                 */
+void print_function_list ( agent_ptr agent_to_print ) 
+{
+	/* PURPOSE:  This function prints out the function list to screen */
+	/* INPUT:    agent_to_print  Ptr to agent to print out            */
+	/* OUTPUT:   NONE                                                 */
+	/* RETURN:   NONE                                                 */
 
-  int i, j, k, x;
-  
-  printf( "\n\nFunction List:\n");
-  
-  /* Loop through all functions assigned to agent */
-  for ( i = 0; i < agent_to_print->fsa->number_states; i++ ) {
-  
-    printf( "\n\nState: %d", i );
-    
-    /* Loop through every function in function list */
-    for ( j = 0; j < agent_to_print->state_functions[i].number_functions; j++ ) {
-    
-      printf( "\nFunction Number: %d", j );
-      printf( "\nFunction: " );
-      
-    for( x = 0; strncmp( "", function_table[ x ].function_name, strlen( function_table[ x ].function_name ) ); x++ )
-      {
-	/* Figure out function name */
-	if ( agent_to_print->state_functions[i].function_list[j].function == function_table[ x ].function )           
-	  printf( function_table[ x ].function_name );
-      }
-      /* Loop through each grid to print */
-      printf( "\nNumber of grids to update: %d", 
-            agent_to_print->state_functions[i].function_list[j].number_grids );
-      
-      for ( k = 0; k < agent_to_print->state_functions[i].function_list[j].number_grids; k++ ) {
-      
-        printf( "\nGrid to update: %d", 
-                agent_to_print->state_functions[i].function_list[j].update_grids[k].grid );
-        
-        printf( "\nValue to update grid with: %f", 
-                agent_to_print->state_functions[i].function_list[j].update_grids[k].grid_value );
-        
-      }
-      
-    }
-    
-  }
-  
+	int i, j, k, x;
+
+	printf( "\n\nFunction List:\n");
+
+	/* Loop through all functions assigned to agent */
+	for ( i = 0; i < agent_to_print->fsa->number_states; i++ ) 
+	{
+		printf( "\n\nState: %d", i );
+
+		/* Loop through every function in function list */
+		for ( j = 0; j < agent_to_print->state_functions[i].number_functions; j++ )
+		{
+			printf( "\nFunction Number: %d", j );
+			printf( "\nFunction: " );
+
+			for( x = 0; strncmp( "", function_table[ x ].function_name, strlen( function_table[ x ].function_name ) ); x++ )
+			{
+				/* Figure out function name */
+				if ( agent_to_print->state_functions[i].function_list[j].function == function_table[ x ].function )           
+				{
+					printf( "%s", function_table[ x ].function_name );
+				}
+			}
+			/* Loop through each grid to print */
+			printf( "\nNumber of grids to update: %d", 
+					agent_to_print->state_functions[i].function_list[j].number_grids );
+
+			for ( k = 0; k < agent_to_print->state_functions[i].function_list[j].number_grids; k++ ) 
+			{
+				printf( "\nGrid to update: %d", 
+						agent_to_print->state_functions[i].function_list[j].update_grids[k].grid );
+
+				printf( "\nValue to update grid with: %f", 
+						agent_to_print->state_functions[i].function_list[j].update_grids[k].grid_value );
+			}
+		}
+	}
 }
 
 int getnumberfunctions ( char* string ) {
