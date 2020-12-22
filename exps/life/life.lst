@@ -2,7 +2,7 @@
 #
 2  # 2 actions in the first fsa
 #
-dead:set_neighborhood-0;#
+dead:no_op;#
 alive:set_neighborhood-0;#
 ####	
 
