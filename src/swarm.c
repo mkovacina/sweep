@@ -578,23 +578,28 @@ void update_swarm ( ) {
 			  agent_view,
 			  agent_view);
       
+	  int oldState = tracer->agent->fsa->current_state;
       change_state(tracer->agent->fsa, agent_view);
+	  TraceDebug("Agent in state '%d' transitioning to state '%d' on input '%c'", 
+			  oldState,
+			  tracer->agent->fsa->current_state,
+			  agent_view);
 
       current_function = 0;
 
-      while ( current_function < tracer->agent->state_functions[tracer->agent->fsa->current_state].number_functions ) {
-
-	if( (*tracer->agent->state_functions[tracer->agent->fsa->current_state].function_list[current_function].function) == NULL )
+      while ( current_function < tracer->agent->state_functions[tracer->agent->fsa->current_state].number_functions ) 
 	  {
-	    printf("func #: %d     state: %d\n",current_function,tracer->agent->fsa->current_state);
-	    print_function_list( tracer->agent ); 
-	    error("\nFunction in agent action list not found");
-	    exit(-1);
-	  }
+		  if( (*tracer->agent->state_functions[tracer->agent->fsa->current_state].function_list[current_function].function) == NULL )
+		  {
+			  printf("func #: %d     state: %d\n",current_function,tracer->agent->fsa->current_state);
+			  print_function_list( tracer->agent ); 
+			  error("\nFunction in agent action list not found");
+			  exit(-1);
+		  }
 
-        (*tracer->agent->state_functions[tracer->agent->fsa->current_state].function_list[current_function].function)
-          (tracer->agent,current_function);
-        current_function++; 
+		  (*tracer->agent->state_functions[tracer->agent->fsa->current_state].function_list[current_function].function)
+			  (tracer->agent,current_function);
+		  current_function++; 
 
       }
 

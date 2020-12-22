@@ -114,7 +114,7 @@ int main ( int argc, char *argv[] )
 	/* Initialize swarm */  
 	if ( initialize_swarm( agent_grid, &experimentFiles) ) 
 	{
-		error( "Couldn't initialize swarm\n" );
+		TraceError( "Couldn't initialize swarm\n" );
 		stop();
 	}
 

@@ -35,9 +35,8 @@
 #define GGETC(n) ((*all_support_grids->grids)[n]->cols)
 
 #define GGET(n,r,c) ((*(*all_support_grids->grids)[n]->prev_grid)[r][c])
-#define GCURR(n,r,c) ((*(*all_support_grids->grids)[n]->curr_grid)[r][c])
-#define GSET(n,r,c,v) (((*(*all_support_grids->grids)[n]->curr_grid)[r][c])=v)
-
+#define GCURR(n,r,c)       ((*(*all_support_grids->grids)[n]->curr_grid)[r][c])
+#define GSET(n,r,c,v)     (((*(*all_support_grids->grids)[n]->curr_grid)[r][c])=v)
 #define GSET_CUM(n,r,c,v) (((*(*all_support_grids->grids)[n]->curr_grid)[r][c])=v+GCURR(n,r,c))
 
 #define CLRAGT(r,c) (((*agent_grid)[r][c])=0)

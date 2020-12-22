@@ -57,7 +57,9 @@ void file_init(sgrid_ptr grid, FILE *infile)
 	 fscanf(infile, "%d", &val);
 	 
 	 /* put values in both the past and future support grids */
-	 (*(grid->curr_grid))[row][col] = val;
+	 //(*(grid->curr_grid))[row][col] = val;
+	 // why are we writing to curr_grid
+	 // the rule is "read from the past, write to the future"
 	 (*(grid->prev_grid))[row][col] = val;
       }
    }
