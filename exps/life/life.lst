@@ -1,0 +1,16 @@
+1  # 1 different sets of actions
+#
+2  # 2 actions in the first fsa
+#
+dead:no_op;#
+alive:set_neighborhood-0;#
+####	
+
+#dead:place-0(0);#
+#alive:place-0(1);set_neighborhood-0;#
+
+
+
+
+
+

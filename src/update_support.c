@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "trace.h"
 #include "support_grids.h"
 
 
@@ -34,11 +35,13 @@ void strip_read_file(char buffer[], FILE *file)
 void uniform_init(sgrid_ptr grid, float val)
 /* initializes a support grid to a given value */
 {
-   int row, col;
+	TraceVerbose("Initializing support grid %d with value %f", grid->id, val);
 
-   for(row=0; row<grid->rows;row++){
-      for (col=0; col<grid->cols;col++){
-	  (*(grid->curr_grid))[row][col] = val;
+   for( int row=0; row<grid->rows;row++ )
+   {
+      for( int col=0; col<grid->cols;col++ )
+	  {
+		  (*(grid->curr_grid))[row][col] = val;
       }
    }
 }
@@ -54,7 +57,9 @@ void file_init(sgrid_ptr grid, FILE *infile)
 	 fscanf(infile, "%d", &val);
 	 
 	 /* put values in both the past and future support grids */
-	 (*(grid->curr_grid))[row][col] = val;
+	 //(*(grid->curr_grid))[row][col] = val;
+	 // why are we writing to curr_grid
+	 // the rule is "read from the past, write to the future"
 	 (*(grid->prev_grid))[row][col] = val;
       }
    }
@@ -443,357 +448,405 @@ fgrid_ptr init_agent_grid()
 
 s_grids_ptr init_support_grids(char file_name[])
 {
-    FILE *support_file, *init_file;
-    char buffer[MAX_BUFFER];
-    char *str_temp;
-    int count, entries;
-    int sg_rows, sg_cols;
-    int num_support_grids, support_grid_num;
-    int num_vals, val_number, default_val, low_left_row, low_left_col, up_right_row,
-        up_right_col;
-    int hole_ll_row, hole_ll_col, hole_ur_row, hole_ur_col;
-    int init_val, beg_range, end_range, num_dis_vals;
-    int num_prop_vals;
-    float dist_vals[50], init_prop, prop_vals[30][2];
+	char buffer[MAX_BUFFER];
 
-    /* variables below are for block distribution initialization */
-//  int i,j, rowblox, colblox, block_vals[10][10];
+	s_grids_ptr all_grids_ptr;
 
-    fgrid_ptr c_grid, p_grid;
-    sgrid_ptr support_ptr;
-    s_grids_ptr all_grids_ptr;
-    
-    /* open the priorities data file */
-    support_file = fopen(file_name, "r");
-    if (support_file == NULL) {
-       printf("Can't open file: %s%c\n", file_name, 'z');
-       exit(1);
-    }
-
-    /* Determine how many support grids there are */
-    strip_read_file(buffer, support_file);
-
-    num_support_grids = atoi(buffer);
-
-    /* printf("num_support_grids is: %d\n", num_support_grids); */
-
-    /* Get row dimension of the support grids */
-    strip_read_file(buffer, support_file);
-    sg_rows = atoi(buffer);
-    /* printf("sg_rows is %d\n", sg_rows); */
-
-    /* Get column dimension of the support grids */
-    strip_read_file(buffer, support_file);
-    sg_cols = atoi(buffer);
-    /* printf("sg_cols  is %d\n", sg_cols); */
-
-    all_grids_ptr = (s_grids_ptr)malloc(sizeof(all_grids));
-
-    all_grids_ptr->num_grids = num_support_grids;
-    
-    all_grids_ptr->grids = 
-                     (all_supports)malloc(num_support_grids*sizeof(sgrid_ptr));
-
-    /* Generate an app_priority function for each set of priorities */
-    for (entries=0; entries<num_support_grids;entries++){
-
-        support_ptr = (sgrid_ptr) malloc(sizeof(support_grid));
-
-	(*(all_grids_ptr->grids))[entries] = support_ptr;
-
-	c_grid = (fgrid_ptr)malloc(sizeof(feature_grid));
-	p_grid = (fgrid_ptr)malloc(sizeof(feature_grid));
-	
-/*
-        c_grid = (fgrid_ptr)malloc(sg_rows * sg_cols *sizeof(float));
-        p_grid = (fgrid_ptr)malloc(sg_rows * sg_cols *sizeof(float));
-*/
-	support_ptr->curr_grid = c_grid;
-	support_ptr->prev_grid = p_grid;
-	support_ptr->rows = sg_rows;
-	support_ptr->cols = sg_cols;
-
-        strip_read_file(buffer, support_file);
-        support_grid_num = atoi(buffer);
-
-	if (entries != support_grid_num){
-	   printf("Processing entry # %d\n", entries);
-	   printf("Initialize ID # is %d\n", support_grid_num);
-	   printf("These should have been equal\n");
-	   printf("Illegal support grid format, exiting program\n");
-	   exit(1);
+	TraceVerbose("Opening support grid file '%s'", file_name);
+	FILE* support_file = fopen(file_name, "r");
+	if (support_file == NULL) 
+	{
+		TraceError("Can't open file: %s%c", file_name, 'z');
+		exit(1);
 	}
-	
-	fflush(support_file);
-        fgets(buffer, MAX_BUFFER, support_file);
 
-	/* determines method of INITIALIZATION for each support grid */
+	/* Determine how many support grids there are */
+	strip_read_file(buffer, support_file);
 
-	/* printf("Buffer is: %s\n", buffer); */
-	switch (buffer[0]){
+	int num_support_grids = atoi(buffer);
 
-	       /* uniform - all grid locations get same initial value */
-	       case 'U': /* printf("Init code is 'U'\n"); */
-	                 strip_read_file(buffer, support_file);
-		         init_val = atof(buffer);
-		         /* printf("Init. val is %f\n", init_val); */
-		         uniform_init(support_ptr, init_val);
-		         /* printf("Completed initialization\n"); */
-	                 break;
+	TraceDebug("num_support_grids is: %d", num_support_grids);
 
-	       /* file - all grid locations specified in a named file */
-	       case 'F': strip_read_file(buffer, support_file);
+	/* Get row dimension of the support grids */
+	strip_read_file(buffer, support_file);
+	int sg_rows = atoi(buffer);
+	TraceDebug("sg_rows is %d", sg_rows); 
 
-                         /* open initialization data file */
-                         init_file = fopen(buffer, "r");
-                         if (init_file == NULL) {
-                            printf("Can't open file: %s\n", buffer);
-                            exit(1);
-                         }	
-	         
-		         file_init(support_ptr, init_file);
-		         fclose(init_file);
-		         break;
+	/* Get column dimension of the support grids */
+	strip_read_file(buffer, support_file);
+	int sg_cols = atoi(buffer);
+	TraceDebug("sg_cols  is %d", sg_cols);
 
-	       /* random - all grid locs get a random value in given range */
-	       case 'R': strip_read_file(buffer, support_file);
+	all_grids_ptr = (s_grids_ptr)malloc(sizeof(all_grids));
 
-		         /* beginning of range of random values to place */
-		         beg_range = atof(buffer);
-		 
-		         strip_read_file(buffer, support_file);
-		        
-		         /* end of range of random values to place in grid */
-		         end_range = atof(buffer);
+	all_grids_ptr->num_grids = num_support_grids;
 
-		         random_init(support_ptr, beg_range, end_range);
+	all_grids_ptr->grids = (all_supports)malloc(num_support_grids*sizeof(sgrid_ptr));
 
-		         break;
+	for (int entries=0; entries<num_support_grids;entries++)
+	{
+		strip_read_file(buffer, support_file);
+		int id = atoi(buffer);
 
-		         
+		// this enforces that the support grids are number sequentially
+		// from 0 in the input file
+		if (entries != id){
+			TraceError("Processing support grid with supplied ID of %d but expected %d", id, entries);
+			exit(1);
+		}
 
-	       /* computed - as yet unimplemented */
-	       case 'C': printf("Not yet implemented\n");
-		         exit(1);
-		         break;
+		sgrid_ptr support_ptr = (sgrid_ptr) malloc(sizeof(support_grid));
 
-	       /* distributed - all grid locs get one of a list of values */
-	       case 'D': 
+		(*(all_grids_ptr->grids))[entries] = support_ptr;
 
-		         strip_read_file(buffer, support_file);
-		         num_dis_vals = atoi(buffer);
+		fgrid_ptr c_grid = (fgrid_ptr)calloc(1,sizeof(feature_grid));
+		fgrid_ptr p_grid = (fgrid_ptr)calloc(1,sizeof(feature_grid));
 
-		         for (count=0;count<num_dis_vals;count++){
-			     strip_read_file(buffer, support_file);
-			     dist_vals[count] = atof(buffer);
-			     /* printf("Stored %f for distribution\n", 
-				     dist_vals[count]); */
-			 }
+		/*
+		   c_grid = (fgrid_ptr)malloc(sg_rows * sg_cols *sizeof(float));
+		   p_grid = (fgrid_ptr)malloc(sg_rows * sg_cols *sizeof(float));
+		   */
+		support_ptr->curr_grid = c_grid;
+		support_ptr->prev_grid = p_grid;
+		support_ptr->rows = sg_rows;
+		support_ptr->cols = sg_cols;
+		support_ptr->id = id;
 
-		         distribute_init(support_ptr, num_dis_vals, dist_vals);
-		         break;
+		// todo: why are we flushing if we are reading? 
+		// (Because Mike didn't know what he was doing back then??)
+		fflush(support_file);
+		fgets(buffer, MAX_BUFFER, support_file);
 
-	       /* proportional - all locs get a user-specified proportion */
-	       case 'P': 
+		/* determines method of INITIALIZATION for each support grid */
+		switch (buffer[0])
+		{
+			/* uniform - all grid locations get same initial value */
+			case 'U': 
+				{
+					TraceVerbose("Initializing grid %d using Uniform Initialization", support_ptr->id); 
+					strip_read_file(buffer, support_file);
+					int init_val = atof(buffer);
+					uniform_init(support_ptr, init_val);
+				}
+				break;
 
-		         strip_read_file(buffer, support_file);
-		         num_prop_vals = atoi(buffer);
+				/* file - all grid locations specified in a named file */
+			case 'F': 
+				{
+					TraceVerbose("Initializing grid %d using File Initialization", support_ptr->id);
 
-		         init_prop = 0;
+					strip_read_file(buffer, support_file);
 
-		         for (count=0;count<num_prop_vals;count++){
-			     strip_read_file(buffer, support_file);
-			     prop_vals[count][0] = atof(buffer);
+					/* open initialization data file */
+					FILE *init_file = fopen(buffer, "r");
+					if (init_file == NULL) {
+						printf("Can't open file: %s\n", buffer);
+						exit(1);
+					}	
 
-			     strip_read_file(buffer, support_file);
-			     init_prop  = init_prop + atof(buffer);
-			     prop_vals[count][1] = init_prop;
+					file_init(support_ptr, init_file);
+					fclose(init_file);
+				}
+				break;
 
-			     printf("Stored %f for %f distribution\n", 
-				    prop_vals[count][0], prop_vals[count][1]);
-                            
-			 }
+				/* random - all grid locs get a random value in given range */
+			case 'R': 
+				{
+					TraceVerbose("Initializing grid %d using Random Initialization", support_ptr->id);
 
-		         proportion_init(support_ptr, num_prop_vals, 
-					                         prop_vals);
-		         break;
+					strip_read_file(buffer, support_file);
 
-	       /* "toss" - randomly places a set number of values in a region*/
-	       case 'T': 
+					/* beginning of range of random values to place */
+					int beg_range = atof(buffer);
 
-   		         /* number of values to place */
-		         strip_read_file(buffer, support_file);
-		         num_vals = atoi(buffer);
+					strip_read_file(buffer, support_file);
 
-			 /* numeric value to place */
-			 strip_read_file(buffer, support_file);
-			 val_number = atoi(buffer);
+					/* end of range of random values to place in grid */
+					int end_range = atof(buffer);
 
-			 /* default value to place */
-			 strip_read_file(buffer, support_file);
-			 default_val = atoi(buffer);
+					random_init(support_ptr, beg_range, end_range);
+				}
+				break;
 
-			 /* region in which to place the values */
-			 strip_read_file(buffer, support_file);
-			 low_left_row = atoi(buffer);
-			 strip_read_file(buffer, support_file);
-			 low_left_col = atoi(buffer);
-			 strip_read_file(buffer, support_file);
-			 up_right_row= atoi(buffer);
-			 strip_read_file(buffer, support_file);
-			 up_right_col= atoi(buffer);
+				/* computed - as yet unimplemented */
+			case 'C': 
+				{
+					TraceVerbose("Initializing grid %d using Computed Initialization", support_ptr->id);
+					TraceError("Computed Initialization not yet implemented");
+					exit(1);
+				}
+				break;
+
+				/* distributed - all grid locs get one of a list of values */
+			case 'D': 
+				{
+					TraceVerbose("Initializing grid %d using Distributed Initialization", support_ptr->id);
+
+					strip_read_file(buffer, support_file);
+					int num_dis_vals = atoi(buffer);
+
+					if (num_dis_vals > 50)
+					{
+						TraceError("The specified number of values to distribute (%d) is greater than the maximum number allowed (%d)", num_dis_vals, 50);
+						exit(1);
+					}
+
+					float dist_vals[50];
+					for (int count=0;count<num_dis_vals;count++)
+					{
+						strip_read_file(buffer, support_file);
+						dist_vals[count] = atof(buffer);
+						TraceDebug("Stored %f for distribution in grid %d", dist_vals[count], support_ptr->id); 
+					}
+
+					distribute_init(support_ptr, num_dis_vals, dist_vals);
+				}
+				break;
+
+				/* proportional - all locs get a user-specified proportion */
+			case 'P': 
+				{
+					TraceVerbose("Initializing grid %d using Proportional Initialization", support_ptr->id);
+					strip_read_file(buffer, support_file);
+					int num_prop_vals = atoi(buffer);
+
+					if (num_prop_vals > 50)
+					{
+						TraceError("The specified number of values (%d) is greater than the maximum number allowed (%d)", num_prop_vals, 50);
+						exit(1);
+					}
+
+					float init_prop = 0;
+
+					float prop_vals[30][2];
+					for (int count=0;count<num_prop_vals;count++)
+					{
+						strip_read_file(buffer, support_file);
+						prop_vals[count][0] = atof(buffer);
+
+						strip_read_file(buffer, support_file);
+						init_prop  = init_prop + atof(buffer);
+						prop_vals[count][1] = init_prop;
+
+						TraceDebug("Stored %f for %f distribution in grid %d", prop_vals[count][0], prop_vals[count][1], support_ptr->id);
+					}
+
+					proportion_init(support_ptr, num_prop_vals, prop_vals);
+				}
+				break;
+
+				/* "toss" - randomly places a set number of values in a region*/
+			case 'T': 
+				{
+					TraceVerbose("Initializing grid %d using Toss Initialization", support_ptr->id);
+					/* number of values to place */
+					strip_read_file(buffer, support_file);
+					int num_vals = atoi(buffer);
+
+					/* numeric value to place */
+					strip_read_file(buffer, support_file);
+					int val_number = atoi(buffer);
+
+					/* default value to place */
+					strip_read_file(buffer, support_file);
+					int default_val = atoi(buffer);
+
+					/* region in which to place the values */
+					strip_read_file(buffer, support_file);
+					int low_left_row = atoi(buffer);
+					strip_read_file(buffer, support_file);
+					int low_left_col = atoi(buffer);
+					strip_read_file(buffer, support_file);
+					int up_right_row= atoi(buffer);
+					strip_read_file(buffer, support_file);
+					int up_right_col= atoi(buffer);
 
 
-		         toss_init(support_ptr, num_vals, val_number, default_val,
-				   low_left_row, low_left_col, up_right_row,
-				   up_right_col);
-		         break;
+					toss_init(support_ptr, num_vals, val_number, default_val,
+							low_left_row, low_left_col, up_right_row,
+							up_right_col);
+				}
+				break;
 
-	       /* "restricted-toss" - randomly places a set number of values in a 
-		                      within the difference between 2 regions */
-	     case 'H':   /* H is for "hole" places the objects in a 'holed' region */
+				/* "restricted-toss" - randomly places a set number of values in a 
+				   within the difference between 2 regions */
+			case 'H':   /* H is for "hole" places the objects in a 'holed' region */
+				{
+					TraceVerbose("Initializing grid %d using Restricted Toss Initialization", support_ptr->id);
+					/* number of values to place */
+					strip_read_file(buffer, support_file);
+					int num_vals = atoi(buffer);
 
-   		         /* number of values to place */
-		         strip_read_file(buffer, support_file);
-		         num_vals = atoi(buffer);
+					/* numeric value to place */
+					strip_read_file(buffer, support_file);
+					int val_number = atoi(buffer);
 
-			 /* numeric value to place */
-			 strip_read_file(buffer, support_file);
-			 val_number = atoi(buffer);
+					/* default value to place */
+					strip_read_file(buffer, support_file);
+					int default_val = atoi(buffer);
 
-			 /* default value to place */
-			 strip_read_file(buffer, support_file);
-			 default_val = atoi(buffer);
+					/* region in which to place the values */
+					strip_read_file(buffer, support_file);
+					int low_left_row = atoi(buffer);
+					strip_read_file(buffer, support_file);
+					int low_left_col = atoi(buffer);
+					strip_read_file(buffer, support_file);
+					int up_right_row= atoi(buffer);
+					strip_read_file(buffer, support_file);
+					int up_right_col= atoi(buffer);
 
-			 /* region in which to place the values */
-			 strip_read_file(buffer, support_file);
-			 low_left_row = atoi(buffer);
-			 strip_read_file(buffer, support_file);
-			 low_left_col = atoi(buffer);
-			 strip_read_file(buffer, support_file);
-			 up_right_row= atoi(buffer);
-			 strip_read_file(buffer, support_file);
-			 up_right_col= atoi(buffer);
-
-			 /* region in which to place the values */
-			 strip_read_file(buffer, support_file);
-			 hole_ll_row = atoi(buffer);
-			 strip_read_file(buffer, support_file);
-			 hole_ll_col = atoi(buffer);
-			 strip_read_file(buffer, support_file);
-			 hole_ur_row= atoi(buffer);
-			 strip_read_file(buffer, support_file);
-			 hole_ur_col= atoi(buffer);
+					/* region in which to place the values */
+					strip_read_file(buffer, support_file);
+					int hole_ll_row = atoi(buffer);
+					strip_read_file(buffer, support_file);
+					int hole_ll_col = atoi(buffer);
+					strip_read_file(buffer, support_file);
+					int hole_ur_row= atoi(buffer);
+					strip_read_file(buffer, support_file);
+					int hole_ur_col= atoi(buffer);
 
 
-		         restricted_toss_init(support_ptr, num_vals, val_number, 
-				   default_val, low_left_row, low_left_col, up_right_row,
-				   up_right_col, hole_ll_row, hole_ll_col, hole_ur_row,
-				   hole_ur_col);
-		         break;
+					restricted_toss_init(support_ptr, num_vals, val_number, 
+							default_val, low_left_row, low_left_col, up_right_row,
+							up_right_col, hole_ll_row, hole_ll_col, hole_ur_row,
+							hole_ur_col);
+				}
+				break;
 
 #if 0
-	       /* block - grid broken into regions that match given values */
-	       case 'B': 
-		         /* get number of blocks in a row */
-		         strip_read_file(buffer, support_file);
-		         rowblox = atoi(buffer);
+				/* block - grid broken into regions that match given values */
+			case 'B': 
+				/* get number of blocks in a row */
+				strip_read_file(buffer, support_file);
+				rowblox = atoi(buffer);
 
-		         /* get number of blocks in a column */
-		         strip_read_file(buffer, support_file);
-		         colblox = atoi(buffer);
+				/* get number of blocks in a column */
+				strip_read_file(buffer, support_file);
+				colblox = atoi(buffer);
 
-		         /* get the values that correspond to each block */
-		         for (i=0; i<rowblox;i++){
-			     for (j=0; j<colblox; j++){
-			       
-			         strip_read_file(buffer, support_file);
-			         block_vals[i][j] = atof(buffer);
-			     }
-			 }
+				/* get the values that correspond to each block */
+				for (i=0; i<rowblox;i++){
+					for (j=0; j<colblox; j++){
 
-		         /* put block values in the grid */
-		         block_init(support_ptr, rowblox, colblox, block_vals);
-		         break;
+						strip_read_file(buffer, support_file);
+						block_vals[i][j] = atof(buffer);
+					}
+				}
+
+				/* put block values in the grid */
+				block_init(support_ptr, rowblox, colblox, block_vals);
+				break;
 #endif
-	       default : printf("Illegal intialization type in support file");
-		         printf(", exiting program\n");
-		         exit(1);
-		         break;
+			default: 
+				{
+					TraceError("Unknown initialization type encountered: '%s'", buffer);
+					exit(1);
+				}
+				break;
+		}
+
+		fgets(buffer, MAX_BUFFER, support_file);
+
+		/* determines method of UPDATE for each support grid */
+		switch (buffer[0])
+		{
+			/*  "S"tatic updates */
+			case 'S': 
+				{
+					TraceVerbose("Grid update method set to Static Update");
+					support_ptr->update_grid = no_update;
+					support_ptr->num_params = 0;
+				}
+				break;
+
+			/* Clear grid update */		 
+			case 'X': 
+				{
+					TraceVerbose("Grid update method set to Clear Update");
+					support_ptr->update_grid = clear_update;
+					support_ptr->num_params = 0;
+				}
+				break;
+
+			/* "M"ovement update */
+			case 'M': 
+				{
+					TraceVerbose("Grid update method set to Move Update");
+					support_ptr->update_grid = move_update;
+					support_ptr->num_params = 2;
+
+					strip_read_file(buffer, support_file);
+
+					/* copies x-direction movement to parameter buffer */
+					char *str_temp = (char *)malloc(strlen(buffer));
+					strcpy(str_temp, buffer);
+
+					support_ptr->update_params[0] = str_temp;
+
+					strip_read_file(buffer, support_file);
+
+					/* copies y-direction movement to parameter buffer */
+					str_temp = (char *)malloc(strlen(buffer));
+					strcpy(str_temp, buffer);
+
+					support_ptr->update_params[1] = str_temp;
+				}
+				break;
+
+			/* "D"iffusion update */
+			case 'D': /* chemical diffusion with decay update */
+				{
+					TraceVerbose("Grid update method set to Diffusion Update");
+					support_ptr->update_grid = diffuse_update;
+					support_ptr->num_params = 2;
+
+					strip_read_file(buffer, support_file);
+
+					/* copies diffusion rate parameter buffer */
+					char* str_temp = (char *)malloc(strlen(buffer));
+					strcpy(str_temp, buffer);
+
+					support_ptr->update_params[0] = str_temp;
+
+					strip_read_file(buffer, support_file);
+
+					/* copies decay rate to parameter buffer */
+					str_temp = (char *)malloc(strlen(buffer));
+					strcpy(str_temp, buffer);
+
+					support_ptr->update_params[1] = str_temp;
+				}
+				break;
+			case 'C': 
+				{
+					TraceError("Cycle Update not yet implemented");
+					exit(1);
+					//support_ptr->update_grid = cycle_update;
+				}
+				break;
+			case 'L': 
+				{
+					TraceError("Library Update not yet implemented");
+					exit(1);
+					// support_ptr->update_grid = library_update;
+				}
+				break;
+			case 'E': 
+				{
+					TraceError("'E' Update not yet implemented");
+					exit(1);
+				}
+				break; 
+			default:
+				{
+					TraceError("Unknown update method '%c' (%s) encountered", buffer[0], buffer);
+					exit(1);
+				}
+		}
 	}
 
-        fgets(buffer, MAX_BUFFER, support_file);
-	/* printf("first position in buffer is: %c\n", buffer[0]); */
-#if 1
-	/* determines method of UPDATE for each support grid */
-	switch (buffer[0]){
-	       /*  "S"tatic updates */
-	       case 'S': support_ptr->update_grid = no_update;
-		         support_ptr->num_params = 0;
-	                 break;
-
-	       /* Clear grid update */		 
-	       case 'X': support_ptr->update_grid = clear_update;
-		         support_ptr->num_params = 0;
-			 break;
-
-	       /* "M"ovement update */
-	       case 'M': support_ptr->update_grid = move_update;
-		         support_ptr->num_params = 2;
-
-		         strip_read_file(buffer, support_file);
-
-		         /* copies x-direction movement to parameter buffer */
-		         str_temp = (char *)malloc(strlen(buffer));
-		         strcpy(str_temp, buffer);
-
-		         support_ptr->update_params[0] = str_temp;
-
-		         strip_read_file(buffer, support_file);
-
-		         /* copies y-direction movement to parameter buffer */
-		         str_temp = (char *)malloc(strlen(buffer));
-		         strcpy(str_temp, buffer);
-
-		         support_ptr->update_params[1] = str_temp;
-
-		         break;
-
-	       /* "D"iffusion update */
-	       case 'D': /* chemical diffusion with decay update */
-
-		         support_ptr->update_grid = diffuse_update;
-		         support_ptr->num_params = 2;
-
-		         strip_read_file(buffer, support_file);
-
-		         /* copies diffusion rate parameter buffer */
- 		         str_temp = (char *)malloc(strlen(buffer));
-		         strcpy(str_temp, buffer);
-
-		         support_ptr->update_params[0] = str_temp;
-
-		         strip_read_file(buffer, support_file);
-
-		         /* copies decay rate to parameter buffer */
-		         str_temp = (char *)malloc(strlen(buffer));
-		         strcpy(str_temp, buffer);
-
-		         support_ptr->update_params[1] = str_temp;
-
-		         break;
-/*
-	       case 'C': support_ptr->update_grid = cycle_update;
-		         break;
-	       case 'L': support_ptr->update_grid = library_update;
-		         break;
-	       case 'E': break; */
-
-	}
-#endif
-    }
-
-    return all_grids_ptr;
+	// todo: see if there is a better way than `exit(1)` to gracefully exit on an error
+	return all_grids_ptr;
 }
  
 void update_all_grids(void)

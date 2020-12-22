@@ -8,6 +8,7 @@ Output: agent The updated agent
 #include "support_grids.h"
 #include "agent.h"
 #include "useful.h"
+#include "trace.h"
 #include <stdlib.h>
 
 extern int iter_count;
@@ -33,20 +34,25 @@ void show_support_grid(int index)
 void verify_grid_access()
 {
   static int first_flag = 1;
-  static int st1, st2, st3, st4, st5, st6;
+  static s_grids_ptr st1;
+  static int st2;
+  static all_supports st3;
+  static sgrid_ptr st4;
+  static fgrid_ptr st5;
+  static fgrid_ptr st6;
 
   if (first_flag){
-     st1 = (int)all_support_grids; 
+     st1 = all_support_grids; 
      st2 = all_support_grids->num_grids; 
-     st3 = (int) (all_support_grids->grids);
-     st4 = (int) ((*(all_support_grids->grids))[0]); 
-     st5 = (int) ((*(all_support_grids->grids))[0]->curr_grid); 
-     st6 = (int) ((*(all_support_grids->grids))[0]->prev_grid);
+     st3 = all_support_grids->grids;
+     st4 = (*(all_support_grids->grids))[0]; 
+     st5 = (*(all_support_grids->grids))[0]->curr_grid; 
+     st6 = (*(all_support_grids->grids))[0]->prev_grid;
 
      first_flag = 0;
   }
 
-  if (st1 != (int)all_support_grids){
+  if (st1 != all_support_grids){
      printf("all_support_grids pointer has been corrupted\n");
      printf("Standard verification of all_support_grids: FAILED\n");
      exit(1);
@@ -56,24 +62,24 @@ void verify_grid_access()
      printf("Standard verification of all_support_grids: FAILED\n");
      exit(1);
   }; 
-  if (st3 != (int) (all_support_grids->grids)){
+  if (st3 != (all_support_grids->grids)){
      printf("The array of support grid pointers has been corrupted\n");
      printf("Standard verification of all_support_grids: FAILED\n");
      exit(1);   
   };
-  if (st4 != (int) ((*(all_support_grids->grids))[0])){
+  if (st4 != ((*(all_support_grids->grids))[0])){
      printf("Pointer to the first support grid has been corrupted\n");
      printf("Standard verification of all_support_grids: FAILED\n");
      exit(1);
   };
-  if (st5 != (int) ((*(all_support_grids->grids))[0]->curr_grid) &&
-      st5 != (int) ((*(all_support_grids->grids))[0]->prev_grid)){
+  if (st5 != ((*(all_support_grids->grids))[0]->curr_grid) &&
+      st5 != ((*(all_support_grids->grids))[0]->prev_grid)){
      printf("Ptr to curr_grid of support grid 0 has been corrupted\n");
      printf("Standard verification of all_support_grids: FAILED\n");
      exit(1);
   }; 
-  if (st6 != (int) ((*(all_support_grids->grids))[0]->prev_grid) && 
-      st6 != (int) ((*(all_support_grids->grids))[0]->curr_grid)){
+  if (st6 != ((*(all_support_grids->grids))[0]->prev_grid) && 
+      st6 != ((*(all_support_grids->grids))[0]->curr_grid)){
      printf("Ptr to prev_grid of support grid 0 has been corrupted\n");
      printf("Standard verification of all_support_grids: FAILED\n");
      exit(1);
@@ -585,6 +591,7 @@ void circle(agent_struct *agent, int action_index)
    are the value to place and the grid on which to place it */
 {
     
+	TraceDebug("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
   int                row, col, state, i, r, c, rsqd, marker;
   int beg_row,end_row,beg_col,end_col;
   function_struct    temp_func;

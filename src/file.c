@@ -6,13 +6,12 @@
 
 #include "file.h"
 
-#include "errors.h"
 #include "trace.h"
 #include "constants.h"
 
 int addFileToExperiment(char* filename, ExperimentFiles* experimentFiles)
 {
-	TraceVerboseLine("Assigning file to experiment: '%s'", filename);
+	TraceVerbose("Assigning file to experiment: '%s'", filename);
 
 	/* FSA file */
 	if ( strstr( filename, ".fsa" ) ) 
@@ -37,7 +36,7 @@ int addFileToExperiment(char* filename, ExperimentFiles* experimentFiles)
 	}
 	else
 	{
-		error("No experiment file found for file : '%s'", filename);
+		TraceError("No experiment file found for file : '%s'", filename);
 	}
 
 	return 0;

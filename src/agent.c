@@ -1,10 +1,11 @@
-/*----------------------- Includes Needed ----------------------------*/
+/*---------------------- Includes Needed ----------------------------*/
 
 #include "agent.h"
 #include "constants.h"
 #include "errors.h"
 #include "actions.h"
 #include "useful.h"
+#include "trace.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -105,7 +106,7 @@ int initialize_agent_function_table ( agent_function_table_struct *agent_functio
     /* Loop through every line and copy in strings for function names */
     while ( buffer[0] != '#' ) {
     
-      agent_function_table->agent_list[i].list[j] = malloc( strlen( buffer ) );
+      agent_function_table->agent_list[i].list[j] = malloc( strlen( buffer )+1 );
       strcpy( agent_function_table->agent_list[i].list[j], buffer ); 
       fgets( buffer, MAX_BUFFER, agent_function_file );
       j++;
@@ -144,8 +145,12 @@ int initialize_agent_table ( agent_table_struct* agent_table, FILE* agent_file )
   while ( !strstr( buffer, "####" ) ) {
 
     fgets( buffer, MAX_BUFFER, agent_file );
-    agent_table->agent_field_list[i].number_fields = atoi( buffer );
+	if ( strstr( buffer, "####" )  )
+	{
+		break;
+	}
 
+    agent_table->agent_field_list[i].number_fields = atoi( buffer );
     /* Eat the next line, then get another line */
     fgets( buffer, MAX_BUFFER, agent_file );
     fgets( buffer, MAX_BUFFER, agent_file );
@@ -176,9 +181,13 @@ int initialize_agent_table ( agent_table_struct* agent_table, FILE* agent_file )
     /* Eat delimeter between agent function lists */
     // N.B.  this is actually done at the top of the loop
 
+	// 2020....actually, no, it's not.
+	// the '##' for the end of the agent list is last in `buffer`
+	// that is why we need the second "if strstr" after reading the first line
+	// there is room to refactor here
+	// xxx: use a for-loop maybe and reconsider dynamic allocations
     i++;
     j = 0;
-    
   }
   
   return SUCCESS;
@@ -201,17 +210,19 @@ int initialize_agent ( agent_ptr *agent, list_struct agent_function_list,
   int i = 0, j;
   static int id_count = 1;
 
+puts("x4");
+printf("%ld\n", sizeof(agent_struct));
+printf("%d\n", agent == NULL);
   /* Create memory for agent */
   (*agent) = malloc( sizeof( agent_struct ) );
   
+puts("x5");
   /* Create memory for fsa */
   (*agent)->fsa = malloc( sizeof( fsa_struct ) );
   
+puts("x6");
   /* Copy fsa */
   copy_fsa( fsa, (*agent)->fsa );
-
-  /* Empty items */
-  (*agent)->inventory = NULL;
 
   /* Make active */
   (*agent)->active = 1;
@@ -301,129 +312,151 @@ int free_agent_function_table ( agent_function_table_struct *agent_function_tabl
 
 }
 
-void function_set ( agent_ptr* agent, int state, 
-                    char* func_description ) {
-/* PURPOSE:  This function sets up a list of functions for a          */
-/*           particular state.  All it does is it goes through its    */
-/*           list of known action routines and checks to see if that  */
-/*           string is contained in the state_description string      */
-/* INPUT:    agent            Ptr to the agent to be set              */
-/*           state            State functions are to be set for       */
-/*           func_description String to parse for functions           */
-/* OUTPUT:   agent            Ptr to the set agent                    */
-/* RETURN:   NONE                                                     */
+void function_set ( agent_ptr* agent, int state, char* func_description ) {
+	/* PURPOSE:  This function sets up a list of functions for a          */
+	/*           particular state.  All it does is it goes through its    */
+	/*           list of known action routines and checks to see if that  */
+	/*           string is contained in the state_description string      */
+	/* INPUT:    agent            Ptr to the agent to be set              */
+	/*           state            State functions are to be set for       */
+	/*           func_description String to parse for functions           */
+	/* OUTPUT:   agent            Ptr to the set agent                    */
+	/* RETURN:   NONE                                                     */
 
-  int i = 0, x;
-  
-  /* Go up to list of action routines */
-  for ( ; (*func_description) != ':'; func_description++ );
-  func_description++;
 
-  /* Get the total number of functions */
-  (*agent)->state_functions[state].number_functions = getnumberfunctions(func_description);
-  (*agent)->state_functions[state].function_list = malloc( sizeof( function_struct ) * (*agent)->state_functions[state].number_functions );
-  
-  /* Loop until final delimeter is found */
-  while ( *(func_description) != '#' ) {
+	// this data is coming out of the LST file
+	//
+	int i = 0;
 
-    for( x = 0; strncmp( "", function_table[ x ].function_name, strlen( function_table[ x ].function_name ) ); x++ )
-      {
-	if ( strncmp( func_description, function_table[ x ].function_name, strlen( function_table[ x ].function_name ) ) == 0 )
-	  {
-	    (*agent)->state_functions[state].function_list[i].function = function_table[ x ].function;
-	    grid_set( agent, state, i, strstr( func_description, function_table[ x ].function_name ) );
-	  }
-      }
+	/* Go up to list of action routines */
+	for ( ; (*func_description) != ':'; func_description++ );
+	func_description++;
 
-    i++;
-    
-    /* AT THIS POINT ANOTHER FUNCTION FOR CUSTOM ROUTINES */
-    
-    for ( ; *(func_description) != ';'; func_description++ );
-    func_description++;
-    
-  }
+	/* Get the total number of functions */
+	int numberOfFunctions = getnumberfunctions(func_description);
+	(*agent)->state_functions[state].number_functions = numberOfFunctions;
+	(*agent)->state_functions[state].function_list = 
+		malloc(sizeof( function_struct ) * numberOfFunctions);
+
+	/* Loop until final delimeter is found */
+	while ( *(func_description) != '#' ) 
+	{
+		for( int x = 0; ; x++)
+		{
+			if (function_table[x].function == 0)
+			{
+				TraceError("No function found named '%s'", func_description);
+				exit(1);
+			}
+
+			if ( strncmp( func_description, 
+						function_table[ x ].function_name, 
+						strlen( function_table[ x ].function_name ) ) == 0 )
+			{
+				(*agent)->state_functions[state].function_list[i].function = function_table[ x ].function;
+				grid_set( agent, state, i, strstr( func_description, function_table[ x ].function_name ) );
+				break;
+			}
+		}
+
+		i++;
+
+		/* AT THIS POINT ANOTHER FUNCTION FOR CUSTOM ROUTINES */
+
+		for ( ; *(func_description) != ';'; func_description++ );
+		func_description++;
+
+	}
 }
 
-void grid_set ( agent_ptr *agent, int state, int function_num, 
-                char* grid_list ) {
-/* PURPOSE:  Sets up the grids to be changed for a particular         */
-/*           function call                                            */
-/* INPUT:    agent         Ptr to the agent to be set                 */
-/*           state         State function to be set for               */
-/*           function_num  Number of function to set                  */
-/*           grid_list     String of grids to parse                   */
-/* OUTPUT:   agent         Ptr to set agent                           */
-/* RETURN:   NONE                                                     */
+void grid_set ( agent_ptr *agent, int state, int function_num, char* grid_list ) 
+{
+	/* PURPOSE:  Sets up the grids to be changed for a particular         */
+	/*           function call                                            */
+	/* INPUT:    agent         Ptr to the agent to be set                 */
+	/*           state         State function to be set for               */
+	/*           function_num  Number of function to set                  */
+	/*           grid_list     String of grids to parse                   */
+	/* OUTPUT:   agent         Ptr to set agent                           */
+	/* RETURN:   NONE                                                     */
 
-  int j = 0;
-  
-  /* Figure out what grid is to update with particular function */
-  for ( ; ( (*grid_list) != '-' ) && ( (*grid_list) != ';' ); grid_list++ );
- 
-  /* No Grids to Update */
-  if ( (*grid_list) == ';' ) {
-  
-    (*agent)->state_functions[state].function_list[function_num].number_grids = 0;
-    
-  } else {
-  
-    /* Update past - */
-    grid_list++;
-    
-    /* Get number of grids and allocate */
-    (*agent)->state_functions[state].function_list[function_num].number_grids = 
-      getnumbergrids( grid_list );
+	function_struct* function = &((*agent)->state_functions[state].function_list[function_num]);
 
-    (*agent)->state_functions[state].function_list[function_num].update_grids = 
-      malloc( sizeof( update_grid_struct ) * 
-      (*agent)->state_functions[state].function_list[function_num].number_grids );
-    
-    while ( (*grid_list) != ';' ) {
-    
-      if ( (*grid_list) == 'S' ) {
-      
-        /* Set update grid in array to priority id */
-        (*agent)->state_functions[state].function_list[function_num].update_grids[j].grid = (*agent)->support_grid_id;
-        
-      } else if ( (*grid_list) == 'D' ) {
-      
-        (*agent)->state_functions[state].function_list[function_num].update_grids[j].grid = -1;
-        
-      } else {
-      
-        /* Position contains a number and build number */
-        (*agent)->state_functions[state].function_list[function_num].update_grids[j].grid = atoi( grid_list );
-        
-      }
-      
-      /* Move to ( or , or ; */
-      for ( ; ( (*grid_list) != '(' ) && ( (*grid_list) != ';' ) && ( (*grid_list) != ',' ); grid_list++ );
-      
-      if ( (*grid_list) == '(' ) {
-      
-        /* Move to character */
-        grid_list++;
-        
-        (*agent)->state_functions[state].function_list[function_num].update_grids[j].grid_value = atof( grid_list );
-        
-        /* Move to ) character */
-        for ( ; ( (*grid_list) != ')' ); grid_list++ );
-        grid_list++;
-      } 
+	TraceDebug(grid_list);
+	/* Figure out what grid is to update with particular function */
+	for ( ; ( (*grid_list) != '-' ) && ( (*grid_list) != ';' ); grid_list++ );
 
-      if ( (*grid_list) == ',' ) {
-      
-        grid_list++;
-        
-      }
-      
-      j++;
-      
-    }
-    
-  }
-  
+	/* No Grids to Update */
+	if ( (*grid_list) == ';' ) 
+	{
+		TraceDebug("No grids to update for action '%s' in state %d", function_table[function_num].function_name, state);
+		function->number_grids = 0;
+	} 
+	else 
+	{
+		/* Update past - */
+		grid_list++;
+
+		/* Get number of grids and allocate */
+		function->number_grids = getnumbergrids( grid_list );
+
+		TraceDebug("state = %d, function_num = %d, number_grids = %d", state, function_num, function->number_grids );
+
+		function->update_grids = malloc( sizeof( update_grid_struct ) * function->number_grids );
+
+		TraceDebug("Allocating this: %d",sizeof(update_grid_struct)* function->number_grids );
+
+		int j = 0;
+		while ( (*grid_list) != ';' ) 
+		{
+			TraceDebug("Setting up grid for function %d",j);
+			update_grid_struct* grid = &(function->update_grids[j]);
+			grid->grid_value = 0;
+
+			if ( (*grid_list) == 'S' ) 
+			{
+				TraceDebug("Setting update grid to priority grid ID");
+				/* Set update grid in array to priority id */
+				grid->grid = (*agent)->support_grid_id;
+
+			} 
+			else if ( (*grid_list) == 'D' ) 
+			{
+				TraceDebug("Setting update grid to -1 for 'D' (?)");
+				grid->grid = -1;
+			} 
+			else 
+			{
+				int gridID = atoi(grid_list);
+				TraceDebug("Setting update grid to %d from '%s'", gridID, grid_list);
+				/* Position contains a number and build number */
+				grid->grid = gridID;
+			}
+
+			/* Move to ( or , or ; */
+			for ( ; ( (*grid_list) != '(' ) && ( (*grid_list) != ';' ) && ( (*grid_list) != ',' ); grid_list++ );
+
+			if ( (*grid_list) == '(' ) 
+			{
+				/* Move to character */
+				grid_list++;
+
+				grid->grid_value = atof( grid_list );
+				TraceDebug("Setting grid_value to %f from '%s'", grid->grid_value, grid_list);
+
+				/* Move to ) character */
+				for ( ; ( (*grid_list) != ')' ); grid_list++ );
+				grid_list++;
+			} 
+
+			if ( (*grid_list) == ',' ) 
+			{
+				grid_list++;
+			}
+
+			j++;
+		}
+	}
 }
 
 int delete_agent ( agent_ptr *agent ) {

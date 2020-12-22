@@ -21,19 +21,11 @@
 s_grids_ptr           all_support_grids;
 fgrid_ptr             agent_grid;
 pri_func_ptr          priority_grid[20];
-int                   iter_count;
 swarm_element_struct  *swarm;
 swarm_element_struct  *master_swarm_types;
-int file_flag = 0;
-
-FILE  *SIM_FILE,
-	  *PROBE_FILE;
-
-int   RANDOM_NUMBER;
-
-/* REPLACE AT LATER TIME */
-int first = 1;
-int found = 0;
+// currently used for the time_tag action (which is not currently used)
+// todo: ponder this
+int iter_count;
 
 /*------------------------ Local Constants ---------------------------*/
 
@@ -69,7 +61,7 @@ int main ( int argc, char *argv[] )
 
 	//FILE                 *FILE_NAME_FILE;
 
-	TraceVerboseLine("INITIALIZING SWARM EXPERIMENTATION AND EVALUATION PLATFORM");
+	TraceVerbose("INITIALIZING SWARM EXPERIMENTATION AND EVALUATION PLATFORM");
 
 	swarm = malloc( sizeof( swarm_element_struct ) );
 	swarm->agent = NULL;
@@ -84,22 +76,31 @@ int main ( int argc, char *argv[] )
 	} 
 	else if ( argc == 3 ) 
 	{
-		FILE* FILE_NAME_FILE = fopen ( argv[1], "r" );
+		TraceVerbose("Trying to open experiment file '%s'", argv[1]);
+		FILE* file = fopen ( argv[1], "r" );
 
 		/* Read file names from file */
-		if ( FILE_NAME_FILE ) 
+		if ( file ) 
 		{
-			TraceVerboseLine("Files read in from filename file");
+			TraceVerbose("Reading experiment file");
 			for ( i = 0; i < 5; i++ ) 
 			{
 				char filename[MAX_BUFFER];
-				fgets( filename, MAX_BUFFER, FILE_NAME_FILE );
+				fgets( filename, MAX_BUFFER, file );
 				trim_right_inplace(filename);
 				addFileToExperiment(filename, &experimentFiles);
 			}
 
-			fclose( FILE_NAME_FILE );
+			fclose( file );
 		} 
+		else
+		{
+			TraceError("Failed to open experiment file '%s'", argv[1]);
+			stop();
+		}
+
+		experimentFiles.seed = atoi(argv[2]);
+		TraceVerbose("Setting random seed to %d", experimentFiles.seed);
 	} 
 
 	init_priority_funcs( priority_grid );
@@ -113,7 +114,7 @@ int main ( int argc, char *argv[] )
 	/* Initialize swarm */  
 	if ( initialize_swarm( agent_grid, &experimentFiles) ) 
 	{
-		error( "Couldn't initialize swarm\n" );
+		TraceError( "Couldn't initialize swarm\n" );
 		stop();
 	}
 

@@ -3,6 +3,7 @@
 #include "fsa.h"
 #include "errors.h"
 #include "useful.h"
+#include "trace.h"
 #include "string-util.h"
 
 #include <stdlib.h>
@@ -109,7 +110,7 @@ int initialize_fsa_table (fsa_table_struct *fsa_table, FILE* fsa_file) {
       if ( ( *current_char != 10 ) || ( *current_char != 32 ) ) {
 
         trim_right_inplace(current_char);
-        fsa_table->fsa[k].state[i].description = malloc( strlen( current_char ) );
+        fsa_table->fsa[k].state[i].description = malloc( strlen( current_char )+1 );
         strcpy( fsa_table->fsa[k].state[i].description, current_char );
         
       } else {
@@ -282,7 +283,6 @@ void change_state ( fsa_struct *fsa, char input ) {
 /* OUTPUT:   fsa    Ptr to fsa in new state                         */
 /* RETURN:   NONE                                                   */
 
-  int i = 0;
   
   float probability;
   
@@ -296,12 +296,33 @@ void change_state ( fsa_struct *fsa, char input ) {
     probability = 100.0 * ( (double) rand() / (double) RAND_MAX );
     
     /* Look thru transition array until correct input is found */
-    while ( fsa->state[fsa->current_state].transition[i].input != input )  i++;
+	state_struct* currentState = &(fsa->state[fsa->current_state]);
+	transition_struct* currentTransition = NULL;
+	for( int x = 0; x < currentState->number_transitions; x++ )
+	{
+		if ( currentState->transition[x].input == input )
+		{
+			currentTransition = &(currentState->transition[x]);
+			break;
+		}
+	}
 
-    while ( (probability > fsa->state[fsa->current_state].transition[i].probability)
-            && (fsa->state[fsa->current_state].transition[i].probability != 100) ) i++;
+	if (currentTransition == NULL)
+	{
+		TraceError("Unable to find a transition for input '%c'(%d)", input, input);
+		exit(1);
+	}
+
+    //while ( fsa->state[fsa->current_state].transition[i].input != input )  i++;
+	// todo: really need to bound this loop by the number of transitions
+
+	// todo: this needs some testing...
+    while ( (probability > currentTransition->probability)
+            && (currentTransition->probability != 100) ) currentTransition++;
+//    while ( (probability > fsa->state[fsa->current_state].transition[i].probability)
+ //           && (fsa->state[fsa->current_state].transition[i].probability != 100) ) i++;
             
-    fsa->current_state = fsa->state[fsa->current_state].transition[i].destination;
+    fsa->current_state = currentTransition->destination;
    
   } else {
 
@@ -421,7 +442,7 @@ int copy_state( state_struct *source, state_struct *destination ) {
   destination->number_transitions = source->number_transitions;
   
   /* Copy string */
-  destination->description = malloc( strlen( source->description ) );
+  destination->description = malloc( strlen( source->description )+1 );
   
   if ( destination->description == NULL ) {
   

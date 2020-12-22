@@ -65,6 +65,7 @@ int main()
 		exit(1);
 	}
 
+	puts("#include <stdlib.h>");
 	printf("#include \"support_grids.h\"\n");
 	printf("#include \"agent.h\"\n");
 	printf("#include \"display.h\"\n");
@@ -233,20 +234,22 @@ int main()
 	printf("    int terminate = 0;\n");
 	printf("    static int initial_call = 1;\n");
 	printf("    static int iter_count = 0;\n");
-	printf("    int row, col, rows, cols, count;\n");
+	//printf("    int row, col, rows, cols, count;\n");
 
 	/*
 	   done so gcc will shut up about these vars being unused when
 	   in fact they MAY be used, but not always (within probes.c)
 	 */
-	printf("    row = col = rows = cols = 0;\n");
+	// the compiler got better and started complaining about this agin (2020).
+	// going to use newer C features to move the declarations closer to the usage.
+	//printf("    row = col = rows = cols = 0;\n");
 
 	printf("    iter_count++;\n\n");
 
 	printf("    if (initial_call){\n");
 	printf("       initial_call = 0;\n\n");
 
-	printf("       for (count=0; count<%d; count++){\n", num_count_items);
+	printf("       for (int count=0; count<%d; count++){\n", num_count_items);
 	printf("           count_array[count] = 0;\n");
 	printf("       }\n\n");
 
@@ -278,11 +281,11 @@ int main()
 	num_grid_count = atoi(buffer);
 
 	if (num_grid_count > 0){
-		printf("    rows = GGETR(0);\n");
-		printf("    cols = GGETC(0);\n\n");
+		printf("    int rows = GGETR(0);\n");
+		printf("    int cols = GGETC(0);\n\n");
 
-		printf("    for (row=0;row<rows;row++){\n");
-		printf("        for (col=0;col<cols;col++){\n");
+		printf("    for (int row=0;row<rows;row++){\n");
+		printf("        for (int col=0;col<cols;col++){\n");
 
 		for (count=0; count<num_grid_count;count++){
 			printf("           if ( ");
@@ -386,7 +389,7 @@ int main()
 		}; /* eat spaces */
 
 		if (buffer[index] == 'T' || buffer[index] == 't'){
-			printf("      TraceVerboseLine(\"Probe action  %d -> TERMINATE\\n\");\n",count);
+			printf("      TraceVerbose(\"Probe action  %d -> TERMINATE\\n\");\n",count);
 
 			printf("       terminate = 1;\n");
 		}
@@ -401,7 +404,7 @@ int main()
 		}
 		else if (buffer[index] == 'I'){
 			index++;
-			printf("       TraceVerboseLine(\"Iteration: \");");
+			printf("       TraceVerbose(\"Iteration: \");");
 			printf("       printf(\" %%d\\n\", iter_track);\n");
 		}
 		else if (buffer[index] == 'C'){
@@ -478,14 +481,14 @@ int main()
 		printf("       fclose(ANI_FILE);\n");
 	}
 
-	printf("       TraceVerboseLine(\" Program Terminating!\");\n");
+	printf("       TraceVerbose(\" Program Terminating!\");\n");
 
 	printf("       *done = 1;\n");
 	printf("    }\n");
 
 	printf("    iter_track = iter_count;\n");
 
-	printf("    for (count=0; count<%d; count++){\n", num_count_items);
+	printf("    for (int count=0; count<%d; count++){\n", num_count_items);
 	printf("        count_array[count] = 0;\n");
 	printf("    }\n\n");
 

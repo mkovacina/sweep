@@ -24,8 +24,6 @@ typedef struct {
 
   int grid;
   
-  int num_parameters;
-
   // allows for MAX_NUM_PARAMS in a action function call */
   float grid_value;  /* [ MAX_NUM_PARAMS ]; */
   
@@ -48,14 +46,6 @@ typedef struct {
   int number_functions;
 
 } state_functions_struct;
-
-typedef struct item_hold {
-
-  float fields[MAX_FIELDS];
-
-  struct item_hold *next_item, *prev_item;
-
-} item_struct;
 
 typedef struct {
 
@@ -83,8 +73,6 @@ float update_amt,
   
   state_functions_struct *state_functions;
 
-  item_struct *inventory;
-  
   int target[2][10];  /*Added 8-8-00, holds target preference list */
 
 } agent_struct;

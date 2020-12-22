@@ -30,6 +30,7 @@ typedef struct {
   char              *description;
   int               number_transitions;
   transition_struct *transition;
+  // todo: rename this to be plural
   
 } state_struct;
 

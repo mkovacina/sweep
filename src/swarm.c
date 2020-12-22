@@ -36,7 +36,7 @@ void strip_white( char **str );
 
 int handleFsaInitialization(const char* filename, fsa_table_struct* fsaTable);
 int handleAgentFunctionInitialization(const char* filename, agent_function_table_struct* agentFunctionTable);
-int handleAgentTableInitialization(const char* filename, const agent_table_struct* agentTable);
+int handleAgentTableInitialization(const char* filename, agent_table_struct* agentTable);
 int handleSwarmInitialization(const char* filename, agent_table_struct* agent_table, fsa_table_struct* fsa_table, agent_function_table_struct* agent_function_table);
 
 /*---------------------- Function Definitions ------------------------*/
@@ -89,9 +89,11 @@ int initialize_swarm ( fgrid_ptr agent_grid, const ExperimentFiles* experimentFi
     return FAILURE;
   }
 
-  srand( RANDOM_NUMBER );
+  srand( experimentFiles->seed );
   
+  puts("x1");
   int swarmInitializationStatus = handleSwarmInitialization(experimentFiles->swarmFileName, &agent_table, &fsa_table, &agent_function_table);
+  puts("x2");
 
   if (swarmInitializationStatus == FAILURE)
   {
@@ -503,8 +505,45 @@ int place_agents ( swarm_element_struct *first_agent,
 	trace = trace->next_agt;
       }
 
-  } 
+  } else if ( strstr( place_string, "Fill(" ) ) 
+  {
+	  TraceVerbose("Swarm initialized using 'Fill'");
+	  // this method will place the agents in a raster fashion
+	  // starting from the top-left position of the grid area
+	  //
+	  // no parameters for now.
+	  // default to the whole world
+	  // maybe extend to take a rectangle or starting (r,c)
 
+    // move past the closing parenthesis
+    for( ; *(place_string) != ')'; place_string++ );
+    place_string++;
+
+
+    swarm_element_struct *tracer = first_agent;
+
+	for( int row = 0; row < GGETR(0); row++ )
+	{
+		for( int col = 0; col < GGETC(0); col++)
+		{
+			if ( tracer == NULL ) goto NoMoreAgents;	
+
+			// todo: maybe emit a warning message if there aren't enough agents
+			TraceVerbose("Placing agent at [r,c] = [%d,%d]", row, col);
+			tracer->agent->x_pos = col;
+			tracer->agent->y_pos = row;
+			tracer = tracer->next_agt;
+		}
+	}
+
+NoMoreAgents:
+	tracer = NULL;
+		
+  }
+else
+{
+	return FAILURE;
+}
 
 
   return SUCCESS;
@@ -524,34 +563,43 @@ void update_swarm ( ) {
   
   int current_function = 0;
   
-  char agent_view;
-
   /* Loop until tracer points to NULL */
   while ( tracer != NULL ) {
     if ( tracer->agent->active ) {
 
       /* THIS IS WHERE AGENT GETS ITS PARTICULAR VIEW OF THE WORLD */
-      agent_view = priority_grid[tracer->agent->priority_id]
+      char agent_view = priority_grid[tracer->agent->priority_id]
                     (all_support_grids, tracer->agent->y_pos, 
                      tracer->agent->x_pos);
+	  TraceDebug("Agent view of priority grid %d at [r,c]=[%d,%d] is '%c' (%d)",
+			  tracer->agent->priority_id,
+			  tracer->agent->y_pos,
+			  tracer->agent->x_pos,
+			  agent_view,
+			  agent_view);
       
+	  int oldState = tracer->agent->fsa->current_state;
       change_state(tracer->agent->fsa, agent_view);
+	  TraceDebug("Agent in state '%d' transitioning to state '%d' on input '%c'", 
+			  oldState,
+			  tracer->agent->fsa->current_state,
+			  agent_view);
 
       current_function = 0;
 
-      while ( current_function < tracer->agent->state_functions[tracer->agent->fsa->current_state].number_functions ) {
-
-	if( (*tracer->agent->state_functions[tracer->agent->fsa->current_state].function_list[current_function].function) == NULL )
+      while ( current_function < tracer->agent->state_functions[tracer->agent->fsa->current_state].number_functions ) 
 	  {
-	    printf("func #: %d     state: %d\n",current_function,tracer->agent->fsa->current_state);
-	    print_function_list( tracer->agent ); 
-	    error("\nFunction in agent action list not found");
-	    exit(-1);
-	  }
+		  if( (*tracer->agent->state_functions[tracer->agent->fsa->current_state].function_list[current_function].function) == NULL )
+		  {
+			  printf("func #: %d     state: %d\n",current_function,tracer->agent->fsa->current_state);
+			  print_function_list( tracer->agent ); 
+			  error("\nFunction in agent action list not found");
+			  exit(-1);
+		  }
 
-        (*tracer->agent->state_functions[tracer->agent->fsa->current_state].function_list[current_function].function)
-          (tracer->agent,current_function);
-        current_function++; 
+		  (*tracer->agent->state_functions[tracer->agent->fsa->current_state].function_list[current_function].function)
+			  (tracer->agent,current_function);
+		  current_function++; 
 
       }
 
@@ -687,7 +735,7 @@ int addntimes( agent_ptr agent, int n  ) {
 
 int handleFsaInitialization(const char* filename, fsa_table_struct* fsaTable)
 {
-  TraceVerboseLine("Opening FSA file '%s'", filename);
+  TraceVerbose("Opening FSA file '%s'", filename);
 
   FILE *fsaFunctionFile = fopen( filename, "r");
 
@@ -725,10 +773,12 @@ int handleAgentFunctionInitialization(const char* filename, agent_function_table
   }
 
   fclose(agent_function_file);
+
+  return SUCCESS;
 }
 
 
-int handleAgentTableInitialization(const char* filename, const agent_table_struct* agentTable)
+int handleAgentTableInitialization(const char* filename, agent_table_struct* agentTable)
 {
   FILE *agentFile = fopen( filename, "r");
 
@@ -818,9 +868,11 @@ int handleSwarmInitialization(const char* filename,
       return FAILURE;
     }
 
-    if (IsTraceLevelVerbose())
+    //if (IsTraceLevelVerbose())
+    if (1)
     {
-      TraceVerboseLine("Made agents\n");
+		// todo: replace when log level is available
+      TraceVerbose("Made agents\n");
       print_agent(temp_agent);
     }
 

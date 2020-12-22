@@ -1,0 +1,7 @@
+1	   # number of grids
+3
+3	   # size of grids
+0	   # support grid ID number, message grid
+F		# U grid initialization is uniform
+static.dat
+X	   # grid update is clear
