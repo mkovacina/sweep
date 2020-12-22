@@ -12,7 +12,7 @@ Open the `sweep` folder in VS Code and it will autodetect the settings and ask t
 
 The dockerfile is in the .devcontainer folder
 
-`docker build --tag sweep/shell shell`
+`docker build --tag sweep/shell .devcontainer`
 
 ### launch the container 
 

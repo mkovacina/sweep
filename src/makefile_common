@@ -1,6 +1,6 @@
 SHELL=/bin/sh
 
-CC = clang 
+CC = clang
 CFLAGS =  -g -Wall -I.
 LDFLAGS =  -L. -lm
 

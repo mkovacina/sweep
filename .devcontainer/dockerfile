@@ -12,10 +12,13 @@ ARG USER_GID=$USER_UID
 
 # need the musl-dev library to get stdio, etc to work
 # alpine uses musl not glibc
-RUN apk add --no-cache bash make gcc musl-dev git tmux vim \
+RUN apk add --no-cache bash make musl-dev git tmux vim \
                         # this makes `man` work for the standard 'C' library
                         man man-pages git \
 						valgrind \
+						clang \ 
+						# needed for 'ld' for now
+						gcc \ 
 	#
     # Create a non-root user to use if preferred - see https://aka.ms/vscode-remote/containers/non-root-user.
     && addgroup -g $USER_GID $USERNAME \
