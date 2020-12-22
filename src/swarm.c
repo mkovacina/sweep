@@ -130,27 +130,28 @@ void random_position( agent_struct *agent )
 
 
 /* places agents in a line */
-void linear_pos(agent_struct *agent, int startrow, int startcol, int dir){
+void linear_pos(agent_struct *agent, int startrow, int startcol, int dir)
+{
+	static int offset = 0;  
+	int row = 0;
+	int column = 0;
 
-  static int offset = 0;  
-  int row, column;
+	switch(dir)
+	{
+		case 0: row = startrow - offset; break;
+		case 1: column = startcol + offset; break;
+		case 2: row = startrow + offset; break;
+		case 3: column = startcol - offset; break;
+	} 
 
-  switch( dir){
-  case 0: row = startrow - offset; break;
-  case 1: column = startcol + offset; break;
-  case 2: row = startrow + offset; break;
-  case 3: column = startcol - offset; break;
-  } 
+	agent->x_pos = column;
 
-  agent->x_pos = column;
+	agent->y_pos = row;
 
-  agent->y_pos = row;
+	//  printf("Placing agent at %d %d\n", agent->y_pos, agent->x_pos);
+	SETAGT(agent->y_pos, agent->x_pos);
 
-  //  printf("Placing agent at %d %d\n", agent->y_pos, agent->x_pos);
-  SETAGT(agent->y_pos, agent->x_pos);
-
-  offset++;
-
+	offset++;
 }
 
 /* give an agent a random position within an area */
