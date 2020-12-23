@@ -6,9 +6,7 @@
 #include "trace.h"
 #include "agent.h"
 #include "probe.h"
-#include "constants.h"
 #include "support_grids.h"
-#include "useful.h"
 
 /*------------------------ Externs Needed --------------------------- */
 
@@ -548,13 +546,15 @@ void update_swarm(Swarm* swarm, pri_func_ptr priority_grid[], s_grids_ptr all_su
   int current_function = 0;
   
   /* Loop until tracer points to NULL */
-  while ( tracer != NULL ) {
-    if ( tracer->agent->active ) {
-
+  while ( tracer != NULL ) 
+  {
+    if ( tracer->agent->active ) 
+	{
       /* THIS IS WHERE AGENT GETS ITS PARTICULAR VIEW OF THE WORLD */
       char agent_view = priority_grid[tracer->agent->priority_id]
                     (all_support_grids, tracer->agent->y_pos, 
                      tracer->agent->x_pos);
+
 	  TraceDebug("Agent view of priority grid %d at [r,c]=[%d,%d] is '%c' (%d)",
 			  tracer->agent->priority_id,
 			  tracer->agent->y_pos,
@@ -588,13 +588,10 @@ void update_swarm(Swarm* swarm, pri_func_ptr priority_grid[], s_grids_ptr all_su
       }
 
       probe_agents(tracer->agent);
-
     }
 
     tracer = tracer->next_agt;
-
   }
-
 }
 
 int remove_element( swarm_element_struct *swarm_element ) {
