@@ -30,7 +30,7 @@ int handleSwarmInitialization(const char* filename, Swarm* swarm, agent_table_st
 
 /*---------------------- Function Definitions ------------------------*/
 
-int initialize_swarm ( Swarm* swarm, fgrid_ptr agent_grid, const ExperimentFiles* experimentFiles) 
+int initialize_swarm(Swarm* swarm, fgrid_ptr agent_grid, const ExperimentFiles* experimentFiles) 
 {
 	agent_table_struct          agent_table;
 	fsa_table_struct            fsa_table;
@@ -80,9 +80,7 @@ int initialize_swarm ( Swarm* swarm, fgrid_ptr agent_grid, const ExperimentFiles
 
 	srand( experimentFiles->seed );
 
-	puts("x1");
 	int swarmInitializationStatus = handleSwarmInitialization(experimentFiles->swarmFileName, swarm, &agent_table, &fsa_table, &agent_function_table);
-	puts("x2");
 
 	if (swarmInitializationStatus == FAILURE)
 	{
