@@ -4,7 +4,6 @@
 
 #include "swarm.h"
 #include "trace.h"
-//#include "errors.h"
 #include "agent.h"
 #include "probe.h"
 #include "constants.h"
@@ -43,7 +42,7 @@ int initialize_swarm ( Swarm* swarm, fgrid_ptr agent_grid, const ExperimentFiles
 	int fsaInitializationStatus = handleFsaInitialization(experimentFiles->fsaFileName, &fsa_table);
 	if (fsaInitializationStatus == FAILURE)
 	{
-		error("There was a problem initializing the FSAs\n");
+		TraceError("There was a problem initializing the FSAs");
 		return FAILURE;
 	}
 
@@ -51,7 +50,7 @@ int initialize_swarm ( Swarm* swarm, fgrid_ptr agent_grid, const ExperimentFiles
 	int agentFunctionInitializationStatus = handleAgentFunctionInitialization(experimentFiles->agentFunctionFileName, &agent_function_table);
 	if (agentFunctionInitializationStatus == FAILURE)
 	{
-		error("There was a problem initializing the agent functions\n");
+		TraceError("There was a problem initializing the agent functions");
 		return FAILURE;
 	}
 
@@ -59,7 +58,7 @@ int initialize_swarm ( Swarm* swarm, fgrid_ptr agent_grid, const ExperimentFiles
 	int agentTableInitializationStatus = handleAgentTableInitialization(experimentFiles->agentFileName, &agent_table);
 	if (agentTableInitializationStatus == FAILURE)
 	{
-		error("There was a problem initializing the agent table\n");
+		TraceError("There was a problem initializing the agent table");
 		return FAILURE;
 	}
 
@@ -69,14 +68,14 @@ int initialize_swarm ( Swarm* swarm, fgrid_ptr agent_grid, const ExperimentFiles
 	/* indicate error.                                                  */
 	if ( fsa_table.number_fsa != agent_function_table.number_agent_lists ) 
 	{
-		error( "Mismatch between number of fsa and number of agent function lists '%d' != '%d'.\n", fsa_table.number_fsa, agent_function_table.number_agent_lists );
+		TraceError( "Mismatch between number of fsa and number of agent function lists '%d' != '%d'.", fsa_table.number_fsa, agent_function_table.number_agent_lists );
 		return FAILURE;
 	}
 
 	/* Also check against agent table */
 	if ( fsa_table.number_fsa != agent_table.number_field_lists ) 
 	{
-		error( "Mismatch between number of agent field lists and number of agent types '%d' != '%d'\n",
+		TraceError( "Mismatch between number of agent field lists and number of agent types '%d' != '%d'",
 				fsa_table.number_fsa, agent_table.number_field_lists );
 		return FAILURE;
 	}
@@ -89,7 +88,7 @@ int initialize_swarm ( Swarm* swarm, fgrid_ptr agent_grid, const ExperimentFiles
 
 	if (swarmInitializationStatus == FAILURE)
 	{
-		error("There was a problem initializing the swarm\n");
+		TraceError("There was a problem initializing the swarm");
 		return FAILURE;
 	}
 
@@ -185,7 +184,7 @@ int place_agents ( swarm_element_struct *first_agent,
   /* used by file initialization */
   FILE* fp;
   int x, test;
-  char errorbuf[ 100 ], *filename, c;
+  char *filename, c;
 
   //  printf("Placing agents\n");
   //  printf("Method used is %s\n", place_string);
@@ -394,8 +393,8 @@ int place_agents ( swarm_element_struct *first_agent,
     
     if ( fp == NULL )
     {
-	error( "Agent placement file %s not found.\n", filename );
-	error( "Please check the swarm file.\n" );
+	TraceError( "Agent placement file %s not found.", filename );
+	TraceError( "Please check the swarm file." );
 	exit(1);
       } 
 
@@ -407,10 +406,8 @@ int place_agents ( swarm_element_struct *first_agent,
 
 	if ( test == EOF )
 	  {
-	    sprintf( errorbuf, "EOF reached in %s.\n", filename );
-	    error( errorbuf  );
-	    sprintf( errorbuf, "Random positions are now being assigned for agents %d to %d.\n", x, size );
-	    error( errorbuf );
+	    TraceError("EOF reached in %s.", filename);
+	    TraceError("Random positions are now being assigned for agents %d to %d.", x, size);
 	  
 	    for( ; x < size && trace != NULL; x++, trace = trace->next_agt )
 	      {
@@ -424,8 +421,7 @@ int place_agents ( swarm_element_struct *first_agent,
 	/* tests to see if both integer positions were read in */
 	if ( test != 2 )
 	  {
-	    sprintf( errorbuf, "Error in %s at line %d, position %ld.\n", filename, x+1, ftell( fp ) );
-	    error( errorbuf );
+	    TraceError( "Error in %s at line %d, position %ld.\n", filename, x+1, ftell( fp ) );
 	    exit( 1 );
 	  }
 	
@@ -433,18 +429,13 @@ int place_agents ( swarm_element_struct *first_agent,
 	if ( trace->agent->x_pos >= GGETC( 0 ) || trace->agent->y_pos >= GGETR( 0 ) ||
 	     trace->agent->x_pos < 0           || trace->agent->y_pos < 0 )
 	  {
-	    
-	    sprintf( errorbuf, "In file %s, agent on line# %d has an invalid position.\n", filename, x+1 );
-	    
-	    error( errorbuf );
-	    error( "Assigning a random position for the agent.\n" );
+	    TraceError( "In file %s, agent on line# %d has an invalid position.", filename, x+1 );
+	    TraceError( "Assigning a random position for the agent." );
 	    
 	    random_position( trace->agent );
-
 	  }
 
 	/* allows for comments after each line */
-
 	while( ( c = fgetc( fp ) ) != EOF )
 	  {
 	    if ( c == '\n' )
@@ -464,8 +455,7 @@ int place_agents ( swarm_element_struct *first_agent,
 
 	    if ( isspace( c ) == 0 )
 	      {
-		sprintf( errorbuf, "Error in %s at line %d, position %ld.\n", filename, x+1, ftell( fp ) );
-		error( errorbuf );
+		TraceError( "Error in %s at line %d, position %ld.\n", filename, x+1, ftell( fp ) );
 		exit( 1 );
 	      }
 	  }
@@ -587,7 +577,7 @@ void update_swarm(Swarm* swarm, pri_func_ptr priority_grid[], s_grids_ptr all_su
 		  {
 			  printf("func #: %d     state: %d\n",current_function,tracer->agent->fsa->current_state);
 			  print_function_list( tracer->agent ); 
-			  error("\nFunction in agent action list not found");
+			  TraceError("Function in agent action list not found");
 			  exit(-1);
 		  }
 
@@ -657,7 +647,7 @@ int addntimes( Swarm* swarm, agent_ptr agent, int n  ) {
   
     if ( trace_agent == NULL ) {
     
-      error( "Out of memory, cannot add to swarm\n" );
+      TraceError( "Out of memory, cannot add to swarm" );
       return FAILURE;
       
     }
@@ -667,7 +657,7 @@ int addntimes( Swarm* swarm, agent_ptr agent, int n  ) {
   
     if ( trace_agent->agent == NULL ) {
     
-      error( "Out of memory, cannot add to swarm\n" );
+      TraceError( "Out of memory, cannot add to swarm" );
       return FAILURE;
       
     }
@@ -695,7 +685,7 @@ int addntimes( Swarm* swarm, agent_ptr agent, int n  ) {
 
     if ( trace_agent->next_agt == NULL ) {
     
-      error( "Out of memory, cannot add to swarm\n" );
+      TraceError( "Out of memory, cannot add to swarm" );
       return FAILURE;
       
     }
@@ -705,7 +695,7 @@ int addntimes( Swarm* swarm, agent_ptr agent, int n  ) {
       
     if ( trace_agent->next_agt->agent == NULL ) {
     
-      error( "Out of memory, cannot add to swarm\n" );
+      TraceError( "Out of memory, cannot add to swarm" );
       return FAILURE;
       
     }
@@ -735,14 +725,14 @@ int handleFsaInitialization(const char* filename, fsa_table_struct* fsaTable)
 
   if ( fsaFunctionFile == NULL ) 
   {
-    error( "Can't open FSA function file: '%s'\n", filename );
+    TraceError( "Can't open FSA function file: '%s'", filename );
     return FAILURE;
   }
 
   int status = initialize_fsa_table(fsaTable, fsaFunctionFile);
   if ( status == FAILURE ) 
   {
-    error("FSA Table not initialized.\n");
+    TraceError("FSA Table not initialized.");
   }
 
   fclose(fsaFunctionFile);
@@ -756,13 +746,13 @@ int handleAgentFunctionInitialization(const char* filename, agent_function_table
 
   if ( agent_function_file == NULL ) 
   {
-    error( "Can't open agent function file: '%s'\n", filename);
+    TraceError( "Can't open agent function file: '%s'", filename);
     return FAILURE;
   }
 
   if ( initialize_agent_function_table(agentFunctionTable, agent_function_file) )
   {
-    error( "Agent Function Table not initialized.\n" );
+    TraceError( "Agent Function Table not initialized." );
     return FAILURE;
   }
 
@@ -778,13 +768,13 @@ int handleAgentTableInitialization(const char* filename, agent_table_struct* age
 
   if ( agentFile == NULL ) 
   {
-    error( "Can't open agent file: '%s'\n", filename);
+    TraceError( "Can't open agent file: '%s'", filename);
     return FAILURE;
   }
 
   if ( initialize_agent_table( agentTable, agentFile ) ) 
   {
-    error( "Agent Table not initialized.\n" );
+    TraceError( "Agent Table not initialized." );
     return FAILURE;
   }
 
@@ -806,7 +796,7 @@ int handleSwarmInitialization(const char* filename,
   FILE* swarm_file = fopen(filename, "r");
   if ( swarm_file == NULL ) 
   {  
-    error("Could not open swarm file '%s'\n", filename);
+    TraceError("Could not open swarm file '%s'", filename);
     return FAILURE;
   }
   
@@ -835,7 +825,7 @@ int handleSwarmInitialization(const char* filename,
     /* Check against one of the ranges in either table */
     if ( current_type > fsa_table->number_fsa ) 
     {
-      error( "Agent type not defined\n" );
+      TraceError( "Agent type not defined" );
       return FAILURE;
     }
     
@@ -859,7 +849,7 @@ int handleSwarmInitialization(const char* filename,
                            &(fsa_table->fsa[current_type]), 
                            current_priority, current_support_grid ) )
     {
-      error( "Agent not initialized\n");
+      TraceError( "Agent not initialized");
       return FAILURE;
     }
 
@@ -867,7 +857,7 @@ int handleSwarmInitialization(const char* filename,
     if (1)
     {
 		// todo: replace when log level is available
-      TraceVerbose("Made agents\n");
+      TraceVerbose("Made agents");
       print_agent(temp_agent);
     }
 
@@ -881,7 +871,7 @@ int handleSwarmInitialization(const char* filename,
     /* Add agent to swarm proper number of times */
     if ( addntimes( swarm, temp_agent, current_size ) ) 
     {
-      error( "Agents cannot be added to swarm\n" );
+      TraceError( "Agents cannot be added to swarm" );
       return FAILURE;
     }
 
@@ -893,7 +883,7 @@ int handleSwarmInitialization(const char* filename,
     /* Add agent to master swarm index of types */
     if ( addntimes( temp_agent, 1, &master_swarm_types ) ) {
     
-      error( "Agents cannot be added to master swarm types\n" );
+      TraceError( "Agents cannot be added to master swarm types\n" );
       return FAILURE;
       
     }
@@ -909,7 +899,7 @@ int handleSwarmInitialization(const char* filename,
 
     if ( place_agents( first_agent, current_size, current_char, agent_grid ) ) 
     {
-      error ( "Cannot place agents\n" );
+      TraceError( "Cannot place agents" );
       return FAILURE;
     }
       
