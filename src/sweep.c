@@ -67,10 +67,12 @@ int main ( int argc, char *argv[] )
 
 	TraceVerbose("INITIALIZING SWARM EXPERIMENTATION AND EVALUATION PLATFORM");
 
+	Swarm theSwarm;
 	swarm = malloc( sizeof( swarm_element_struct ) );
 	swarm->agent = NULL;
 	swarm->next_agt = NULL;
 	swarm->prev_agt = NULL;
+	theSwarm.head = swarm;
 
 	TraceVerbose("Trying to open experiment file '%s'", argv[1]);
 
@@ -108,7 +110,7 @@ int main ( int argc, char *argv[] )
 	agent_grid = init_agent_grid();
 
 	/* Initialize swarm */  
-	if ( initialize_swarm( agent_grid, &experimentFiles) ) 
+	if ( initialize_swarm( &theSwarm, agent_grid, &experimentFiles) ) 
 	{
 		TraceError( "Couldn't initialize swarm\n" );
 		stop();
@@ -119,7 +121,7 @@ int main ( int argc, char *argv[] )
 	/* primary "workhorse" loop for the SWEEP system */
 	for( int iter_count = 0; !done ; iter_count++ ) 
 	{
-		update_swarm( swarm );
+		update_swarm( &theSwarm, priority_grid, all_support_grids );
 		update_all_grids();
 		probe_swarm(&done, swarm);
 	}

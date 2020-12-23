@@ -18,16 +18,26 @@
 
 /*------------------------------- Types ------------------------------*/
 
-typedef struct swarm_element_hold {
-
+typedef struct swarm_unit 
+{
+	// so this is a list of units, and each unit contains an agent.
+	// why?
+	// what else could be put in this unit?
+	// is the unit really just the agent, and if so can this be simplified?
+	// and what if we instead just have a MAX_SIZE array?
   agent_ptr agent;
   
-  struct swarm_element_hold *next_agt, *prev_agt;
+  struct swarm_unit *next_agt, *prev_agt;
+} 
+swarm_element_struct;
 
-} swarm_element_struct;
+typedef struct 
+{
+	swarm_element_struct* head;
+}
+Swarm;
 
 /*------------------------- Function Prototypes ----------------------*/
-/* void Sample (char *, int, Real);                                   */
 
 // PURPOSE
 //          This function initializes the swarm of agents to the size 
@@ -46,10 +56,8 @@ typedef struct swarm_element_hold {
 //          FAILURE
 //            - Indicates failure to initialize swarm           
 
-int  initialize_swarm (  fgrid_ptr agent_grid, const ExperimentFiles* experimentFiles );
-void update_swarm     (  );
+int  initialize_swarm( Swarm* swarm, fgrid_ptr agent_grid, const ExperimentFiles* experimentFiles );
+void update_swarm(Swarm* swarm, pri_func_ptr priority_grid[], s_grids_ptr all_support_grids);
 
 /*------------------------------ Globals -----------------------------*/
 /* GLOBAL  float  example;                                            */
-
-/* NOTHING GOES BEYOND THIS LINE !!!! */

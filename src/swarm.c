@@ -1,11 +1,10 @@
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 #include <ctype.h>
 
-#include "trace.h"
 #include "swarm.h"
-#include "errors.h"
+#include "trace.h"
+//#include "errors.h"
 #include "agent.h"
 #include "probe.h"
 #include "constants.h"
@@ -14,12 +13,6 @@
 
 /*------------------------ Externs Needed --------------------------- */
 
-extern int                  RANDOM_NUMBER;
-extern s_grids_ptr          all_support_grids;
-extern pri_func_ptr         priority_grid[];
-extern swarm_element_struct *swarm;
-extern swarm_element_struct *master_swarm_types;
-
 /*------------------------ Local Constants ---------------------------*/
 
 /*------------------------- Local Macros -----------------------------*/
@@ -27,9 +20,8 @@ extern swarm_element_struct *master_swarm_types;
 /*-------------------------- Local Types -----------------------------*/
 
 /*---------------------- Local Function Prototypes -------------------*/
-/* void sample (char *, int, Real);                                   */
 
-int addntimes( agent_ptr, int );
+int addntimes( Swarm* swarm, agent_ptr, int );
 int place_agents( swarm_element_struct*, int, char*, fgrid_ptr );
 void random_position( agent_struct *agent );
 void strip_white( char **str );
@@ -37,71 +29,71 @@ void strip_white( char **str );
 int handleFsaInitialization(const char* filename, fsa_table_struct* fsaTable);
 int handleAgentFunctionInitialization(const char* filename, agent_function_table_struct* agentFunctionTable);
 int handleAgentTableInitialization(const char* filename, agent_table_struct* agentTable);
-int handleSwarmInitialization(const char* filename, agent_table_struct* agent_table, fsa_table_struct* fsa_table, agent_function_table_struct* agent_function_table);
+int handleSwarmInitialization(const char* filename, Swarm* swarm, agent_table_struct* agent_table, fsa_table_struct* fsa_table, agent_function_table_struct* agent_function_table);
 
 /*---------------------- Function Definitions ------------------------*/
 
-int initialize_swarm ( fgrid_ptr agent_grid, const ExperimentFiles* experimentFiles) 
+int initialize_swarm ( Swarm* swarm, fgrid_ptr agent_grid, const ExperimentFiles* experimentFiles) 
 {
-  agent_table_struct          agent_table;
-  fsa_table_struct            fsa_table;
-  agent_function_table_struct agent_function_table;
+	agent_table_struct          agent_table;
+	fsa_table_struct            fsa_table;
+	agent_function_table_struct agent_function_table;
 
-  /* Get the FSA table */  
-  int fsaInitializationStatus = handleFsaInitialization(experimentFiles->fsaFileName, &fsa_table);
-  if (fsaInitializationStatus == FAILURE)
-  {
-    error("There was a problem initializing the FSAs\n");
-    return FAILURE;
-  }
+	/* Get the FSA table */  
+	int fsaInitializationStatus = handleFsaInitialization(experimentFiles->fsaFileName, &fsa_table);
+	if (fsaInitializationStatus == FAILURE)
+	{
+		error("There was a problem initializing the FSAs\n");
+		return FAILURE;
+	}
 
-  /* Get the agent function table */
-  int agentFunctionInitializationStatus = handleAgentFunctionInitialization(experimentFiles->agentFunctionFileName, &agent_function_table);
-  if (agentFunctionInitializationStatus == FAILURE)
-  {
-    error("There was a problem initializing the agent functions\n");
-    return FAILURE;
-  }
+	/* Get the agent function table */
+	int agentFunctionInitializationStatus = handleAgentFunctionInitialization(experimentFiles->agentFunctionFileName, &agent_function_table);
+	if (agentFunctionInitializationStatus == FAILURE)
+	{
+		error("There was a problem initializing the agent functions\n");
+		return FAILURE;
+	}
 
-  /* Get the agent table */
-  int agentTableInitializationStatus = handleAgentTableInitialization(experimentFiles->agentFileName, &agent_table);
-  if (agentTableInitializationStatus == FAILURE)
-  {
-    error("There was a problem initializing the agent table\n");
-    return FAILURE;
-  }
+	/* Get the agent table */
+	int agentTableInitializationStatus = handleAgentTableInitialization(experimentFiles->agentFileName, &agent_table);
+	if (agentTableInitializationStatus == FAILURE)
+	{
+		error("There was a problem initializing the agent table\n");
+		return FAILURE;
+	}
 
 
-  printf("xxx %d\n", agent_function_table.number_agent_lists);
-  /* If agent table and FSA table do not have same number of elements */
-  /* indicate error.                                                  */
-  if ( fsa_table.number_fsa != agent_function_table.number_agent_lists ) 
-  {
-    error( "Mismatch between number of fsa and number of agent function lists '%d' != '%d'.\n", fsa_table.number_fsa, agent_function_table.number_agent_lists );
-    return FAILURE;
-  }
+	printf("xxx %d\n", agent_function_table.number_agent_lists);
+	/* If agent table and FSA table do not have same number of elements */
+	/* indicate error.                                                  */
+	if ( fsa_table.number_fsa != agent_function_table.number_agent_lists ) 
+	{
+		error( "Mismatch between number of fsa and number of agent function lists '%d' != '%d'.\n", fsa_table.number_fsa, agent_function_table.number_agent_lists );
+		return FAILURE;
+	}
 
-  /* Also check against agent table */
-  if ( fsa_table.number_fsa != agent_table.number_field_lists ) 
-  {
-    error( "Mismatch between number of agent field lists and number of agent types '%d' != '%d'\n",
-      fsa_table.number_fsa, agent_table.number_field_lists );
-    return FAILURE;
-  }
+	/* Also check against agent table */
+	if ( fsa_table.number_fsa != agent_table.number_field_lists ) 
+	{
+		error( "Mismatch between number of agent field lists and number of agent types '%d' != '%d'\n",
+				fsa_table.number_fsa, agent_table.number_field_lists );
+		return FAILURE;
+	}
 
-  srand( experimentFiles->seed );
-  
-  puts("x1");
-  int swarmInitializationStatus = handleSwarmInitialization(experimentFiles->swarmFileName, &agent_table, &fsa_table, &agent_function_table);
-  puts("x2");
+	srand( experimentFiles->seed );
 
-  if (swarmInitializationStatus == FAILURE)
-  {
-    error("There was a problem initializing the swarm\n");
-    return FAILURE;
-  }
+	puts("x1");
+	int swarmInitializationStatus = handleSwarmInitialization(experimentFiles->swarmFileName, swarm, &agent_table, &fsa_table, &agent_function_table);
+	puts("x2");
 
-  return SUCCESS;
+	if (swarmInitializationStatus == FAILURE)
+	{
+		error("There was a problem initializing the swarm\n");
+		return FAILURE;
+	}
+
+	return SUCCESS;
 }
 
 /* strips excess white spaces from a string */
@@ -552,7 +544,8 @@ else
 }
 
 
-void update_swarm ( ) {
+void update_swarm(Swarm* swarm, pri_func_ptr priority_grid[], s_grids_ptr all_support_grids) 
+{
 /* PURPOSE: This function gets an agents particular view of world,    */
 /*          transitions the agent's fsa, and calls the agent's        */
 /*          functions associated with the particular state            */
@@ -560,7 +553,7 @@ void update_swarm ( ) {
 /* OUTPUT:  NONE                                                      */
 /* RETURN:  NONE                                                      */
 
-  swarm_element_struct *tracer = swarm;
+  swarm_element_struct *tracer = swarm->head;
   
   int current_function = 0;
   
@@ -641,7 +634,7 @@ int remove_element( swarm_element_struct *swarm_element ) {
 
 }
 
-int addntimes( agent_ptr agent, int n  ) {
+int addntimes( Swarm* swarm, agent_ptr agent, int n  ) {
 /* PURPOSE:  This function will add agent to the end of the swarm list */
 /*           n times                                                   */
 /* INPUT:    agent     Ptr to agent to add                             */
@@ -654,10 +647,10 @@ int addntimes( agent_ptr agent, int n  ) {
   int i;
   static int id_count = 1;
 
-  swarm_element_struct *trace_agent = swarm;
+  swarm_element_struct *trace_agent = swarm->head;
 
   /* If empty, add one and then recursively call self to add n-1 more */
-  if ( swarm->agent == NULL ) {
+  if ( trace_agent->agent == NULL ) {
   
 //    /* Malloc space for first element */
 //    trace_agent = malloc( sizeof( swarm_element_struct ) );
@@ -801,6 +794,7 @@ int handleAgentTableInitialization(const char* filename, agent_table_struct* age
 }
 
 int handleSwarmInitialization(const char* filename,
+		Swarm* swarm,
   agent_table_struct*          agent_table,
   fsa_table_struct*            fsa_table,
   agent_function_table_struct* agent_function_table
@@ -878,14 +872,14 @@ int handleSwarmInitialization(const char* filename,
     }
 
     /* Trace up to last agent */
-    swarm_element_struct* first_agent = swarm;
+    swarm_element_struct* first_agent = swarm->head;
     while ( first_agent->next_agt != NULL ) 
     {
       first_agent = first_agent->next_agt; 
     }
 
     /* Add agent to swarm proper number of times */
-    if ( addntimes( temp_agent, current_size ) ) 
+    if ( addntimes( swarm, temp_agent, current_size ) ) 
     {
       error( "Agents cannot be added to swarm\n" );
       return FAILURE;
