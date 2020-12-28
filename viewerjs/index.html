@@ -1,0 +1,58 @@
+<html>
+	<head>
+		<title>SWEEP Viewer</title>
+	</head>
+	<body>
+		<form>
+			<input type="file" id="animationFileInput" name="swarm_sim.dat"/>
+		</form>
+		<div id="fileList">
+			<p>No files selected!</p>
+		</div>
+		<canvas id="canvas" width="200" height="200">
+			If you are seeing this, your browser is too old.
+		</canvas>
+		<script>
+const canvas = document.getElementById("screen");
+const context = canvas.getContext('2d');
+const fileList = document.getElementById("fileList");
+const inputElement = document.getElementById("animationFileInput");
+inputElement.addEventListener("change", handleFile, false);
+
+// ugh, can't work, stupid CORS
+// this reinforces my distaste of browsers
+// why am i doing this in a browser again...
+function handleFile_Fetch()
+{
+	// todo: ensure that the array has at least (only?) one file (this.files.length)
+	const file = this.files[0];
+	fetch(file.name)
+		.then(response => response.body)
+		.then(response => console.log(response));
+}
+function handleFile()
+{
+	// todo: ensure that the array has at least (only?) one file (this.files.length)
+	const file = this.files[0];
+
+	fileList.innerHTML = "<p>file = "+file.name+"</p>";
+
+	const reader = new FileReader();
+	reader.onload = function(event)
+	{
+		// todo: yes, move to a stream/line oriented approach for larger files
+		//........but be happy to just start
+		const allLines = this.result.split(/\r?\n/);
+		allLines.forEach((line) => console.log(line));
+	};
+
+	reader.readAsText(file);
+
+
+}
+		</script>
+	</body>
+</html>
+<!--
+	https://developer.mozilla.org/en-US/docs/Web/API/File/Using_files_from_web_applications
+-->
