@@ -7,6 +7,17 @@
 	<body>
 		<form>
 			<input type="file" id="animationFileInput" name="swarm_sim.dat"/>
+			<fieldset>
+				<legend>Settings</legend>
+				<div>
+					<input type="checkbox" id="showAgents" checked />
+					<label for="showAgents">Show Agents</label>
+				</div>
+				<div>
+					<input type="checkbox" id="showEnvironment" checked />
+					<label for="showEnvironment">Show Environment</label>
+				</div>
+			</fieldset>
 		</form>
 		<div id="fileList">
 			<p>No files selected!</p>
@@ -15,10 +26,13 @@
 			If you are seeing this, your browser is too old.
 		</canvas>
 		<script>
+'use strict';
 const canvas = document.getElementById("canvas");
 const context = canvas.getContext('2d');
 const fileList = document.getElementById("fileList");
 const inputElement = document.getElementById("animationFileInput");
+const showAgentsCbx = document.getElementById("showAgents");
+const showEnvironmentCbx = document.getElementById("showEnvironment");
 inputElement.addEventListener("change", handleFile, false);
 
 // ugh, can't work, stupid CORS
@@ -93,43 +107,48 @@ class AnimationEngine
 			// todo: add in a check for the end-of-frame marker as sanity check
 			this.lineno += 1;
 
-			// todo: get to the double buffering
-			var row = 0;
-			for( var line of world )
+			if (showEnvironmentCbx.checked)
 			{
-				var color = 'black';
-				var col = 0;
-				for( var x of line )
+				// todo: get to the double buffering
+				var row = 0;
+				for( var line of world )
 				{
-					switch(x)
+					var color = 'black';
+					var col = 0;
+					for( var x of line )
 					{
-						case '0':
-							color = 'black';
-							break;
-						case '1':
-							color = 'green';
-							break;
-						default:
-							color = 'yellow'
+						switch(x)
+						{
+							case '0':
+								color = 'black';
+								break;
+							case '1':
+								color = 'green';
+								break;
+							default:
+								color = 'yellow'
+						}
+
+						this.context.fillStyle = color;
+						this.context.fillRect(col*this.scale, row*this.scale, this.scale, this.scale);
+						col++;
 					}
-
-					this.context.fillStyle = color;
-					this.context.fillRect(col*this.scale, row*this.scale, this.scale, this.scale);
-					col++;
+					row++;
 				}
-				row++;
 			}
 
-			this.context.fillStyle = 'orange';
-			for( var agent of agents )
+			if (showAgentsCbx.checked)
 			{
-				const agentData = agent.split(" ");
-				const row = parseInt(agentData[0]);
-				const col = parseInt(agentData[1]);
+				this.context.fillStyle = 'orange';
+				for( var agent of agents )
+				{
+					const agentData = agent.split(" ");
+					const row = parseInt(agentData[0]);
+					const col = parseInt(agentData[1]);
 
-				this.context.fillRect(col*this.scale, row*this.scale, this.scale, this.scale);
+					this.context.fillRect(col*this.scale, row*this.scale, this.scale, this.scale);
+				}
 			}
-
 			this.done = this.lineno >= this.data.length;
 		}
 		console.log("iterations = %d", this.iteration);
