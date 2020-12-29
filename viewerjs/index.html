@@ -1,6 +1,8 @@
 <html>
 	<head>
 		<title>SWEEP Viewer</title>
+		<stlye>
+		</stlye>
 	</head>
 	<body>
 		<form>
@@ -13,7 +15,7 @@
 			If you are seeing this, your browser is too old.
 		</canvas>
 		<script>
-const canvas = document.getElementById("screen");
+const canvas = document.getElementById("canvas");
 const context = canvas.getContext('2d');
 const fileList = document.getElementById("fileList");
 const inputElement = document.getElementById("animationFileInput");
@@ -43,12 +45,95 @@ function handleFile()
 		// todo: yes, move to a stream/line oriented approach for larger files
 		//........but be happy to just start
 		const allLines = this.result.split(/\r?\n/);
-		allLines.forEach((line) => console.log(line));
+		//		allLines.forEach((line) => console.log(line));
+		const engine = new AnimationEngine(context,allLines);
+		//animate(context, allLines);
+		setInterval(() => engine.step(), 250);
 	};
 
 	reader.readAsText(file);
+}
+class AnimationEngine
+{
+	scale = 3;
+	lineno = 2;
+	iteration = 1;
+	done = false;
+	constructor(context,data)
+	{
+		this.context = context;
+		this.data = data;
 
+		const worldData = data[0].split(" ");
+		this.rows = parseInt(worldData[0]);
+		this.cols = parseInt(worldData[1]);
 
+		const agentData = data[1];
+		this.numberOfAgents = parseInt(agentData);
+
+		console.log("world size is %d rows and %d columns with %d agents", this.rows, this.cols, this.numberOfAgents);
+
+		context.canvas.width = this.cols*this.scale;
+		context.canvas.height = this.rows*this.scale;
+	}
+
+	step()
+	{
+		//while(true)
+		{
+			this.context.clearRect(0,0,this.context.canvas.width, this.context.canvas.height);
+			this.iteration++;
+			const world = this.data.slice(this.lineno,this.lineno+this.rows);
+			// move past world data
+			this.lineno += this.rows;
+			const agents = this.data.slice(this.lineno, this.lineno+this.numberOfAgents);
+			// move past agent data
+			this.lineno += this.numberOfAgents;
+			// move past end of frame marker
+			// todo: add in a check for the end-of-frame marker as sanity check
+			this.lineno += 1;
+
+			// todo: get to the double buffering
+			var row = 0;
+			for( var line of world )
+			{
+				var color = 'black';
+				var col = 0;
+				for( var x of line )
+				{
+					switch(x)
+					{
+						case '0':
+							color = 'black';
+							break;
+						case '1':
+							color = 'green';
+							break;
+						default:
+							color = 'yellow'
+					}
+
+					this.context.fillStyle = color;
+					this.context.fillRect(col*this.scale, row*this.scale, this.scale, this.scale);
+					col++;
+				}
+				row++;
+			}
+
+			this.context.fillStyle = 'orange';
+			for( var agent of agents )
+			{
+				const agentData = agent.split(" ");
+				const row = parseInt(agentData[0]);
+				const col = parseInt(agentData[1]);
+
+				this.context.fillRect(col*this.scale, row*this.scale, this.scale, this.scale);
+			}
+
+			this.done = this.lineno >= this.data.length;
+		}
+		console.log("iterations = %d", this.iteration);
+	}
 }
 		</script>
 	</body>
