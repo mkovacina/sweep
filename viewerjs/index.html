@@ -117,6 +117,7 @@ class AnimationEngine
 					var col = 0;
 					for( var x of line )
 					{
+						// todo: replace this with a lookup
 						switch(x)
 						{
 							case '0':
@@ -125,8 +126,29 @@ class AnimationEngine
 							case '1':
 								color = 'green';
 								break;
+							case '2':
+								color = 'red';
+								break;
+							case '3':
+								color = 'blue';
+								break;
+							case '4':
+								color = 'brown';
+								break;
+							case '5':
+								color = 'cyan';
+								break;
+							case '6':
+								color = 'DarkSlateBlue';
+								break;
+							case '7':
+								color = 'gold';
+								break;
+							case '8':
+								color = 'orange';
+								break;
 							default:
-								color = 'yellow'
+								color = 'HoneyDw'
 						}
 
 						this.context.fillStyle = color;
