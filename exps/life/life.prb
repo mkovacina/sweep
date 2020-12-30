@@ -1,5 +1,5 @@
 2   # there is 0 thing to count
-Animation full_world-stdout
+Animation full_world #-stdout
 # Counts (agent-based)
 # number of agent-based counts
 2
@@ -12,7 +12,7 @@ C1 : A1
 # Probe-actions repeated
 1   # number of probe actions
 # comment about first one
-I > 2 : T
+I > 200 : T
 
 # Animation Information
 1  # time_step
