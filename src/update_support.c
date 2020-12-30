@@ -71,7 +71,7 @@ void random_init(sgrid_ptr grid, int first, int last)
 
    for(row=0; row<grid->rows;row++){
       for(col=0; col<grid->cols; col++){
-	 (*(grid->curr_grid))[row][col] = first+
+	 (*(grid->prev_grid))[row][col] = first+
 	                                  ((double)rand()/(double)RAND_MAX)*
 	                                  (last-first+1);
       }
