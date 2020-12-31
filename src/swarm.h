@@ -56,7 +56,7 @@ Swarm;
 //          FAILURE
 //            - Indicates failure to initialize swarm           
 
-int  initialize_swarm( Swarm* swarm, fgrid_ptr agent_grid, const ExperimentFiles* experimentFiles );
+int  initialize_swarm( Swarm* swarm, const ExperimentFiles* experimentFiles );
 void update_swarm(Swarm* swarm, pri_func_ptr priority_grid[], s_grids_ptr all_support_grids);
 
 /*------------------------------ Globals -----------------------------*/

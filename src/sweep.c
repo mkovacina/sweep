@@ -79,24 +79,22 @@ int main ( int argc, char *argv[] )
 	FILE* file = fopen ( argv[1], "r" );
 
 	/* Read file names from file */
-	if ( file ) 
-	{
-		TraceVerbose("Reading experiment file");
-		for( int i = 0; i < 5; i++ ) 
-		{
-			char filename[MAX_BUFFER];
-			fgets( filename, MAX_BUFFER, file );
-			trim_right_inplace(filename);
-			addFileToExperiment(filename, &experimentFiles);
-		}
-
-		fclose( file );
-	} 
-	else
+	if ( file == NULL ) 
 	{
 		TraceError("Failed to open experiment file '%s'", argv[1]);
 		stop();
 	}
+
+	TraceVerbose("Reading experiment file");
+	for( int i = 0; i < 5; i++ ) 
+	{
+		char filename[MAX_BUFFER];
+		fgets( filename, MAX_BUFFER, file );
+		trim_right_inplace(filename);
+		addFileToExperiment(filename, &experimentFiles);
+	}
+
+	fclose( file );
 
 	experimentFiles.seed = atoi(argv[2]);
 	TraceVerbose("Setting random seed to %d", experimentFiles.seed);
@@ -110,7 +108,7 @@ int main ( int argc, char *argv[] )
 	agent_grid = init_agent_grid();
 
 	/* Initialize swarm */  
-	if ( initialize_swarm( &theSwarm, agent_grid, &experimentFiles) ) 
+	if ( initialize_swarm( &theSwarm, &experimentFiles) ) 
 	{
 		TraceError( "Couldn't initialize swarm\n" );
 		stop();

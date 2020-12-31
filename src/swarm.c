@@ -19,7 +19,7 @@
 /*---------------------- Local Function Prototypes -------------------*/
 
 int addntimes( Swarm* swarm, agent_ptr, int );
-int place_agents( swarm_element_struct*, int, char*, fgrid_ptr );
+int place_agents( swarm_element_struct*, int, char* );
 void random_position( agent_struct *agent );
 void strip_white( char **str );
 
@@ -30,7 +30,7 @@ int handleSwarmInitialization(const char* filename, Swarm* swarm, agent_table_st
 
 /*---------------------- Function Definitions ------------------------*/
 
-int initialize_swarm(Swarm* swarm, fgrid_ptr agent_grid, const ExperimentFiles* experimentFiles) 
+int initialize_swarm(Swarm* swarm, const ExperimentFiles* experimentFiles) 
 {
 	agent_table_struct          agent_table;
 	fsa_table_struct            fsa_table;
@@ -142,6 +142,7 @@ void linear_pos(agent_struct *agent, int startrow, int startcol, int dir)
 }
 
 /* give an agent a random position within an area */
+
 void limited_random_pos( agent_struct *agent, int minrow, int mincol, 
 			                      int maxrow, int maxcol)
 {
@@ -162,8 +163,8 @@ void limited_random_pos( agent_struct *agent, int minrow, int mincol,
 
 int place_agents ( swarm_element_struct *first_agent, 
                    int                  size,
-                   char                 *place_string, 
-		   fgrid_ptr            agent_grid ) {
+                   char                 *place_string)
+{
 /* PURPOSE: Places the agents based on contents of place_string  */
 /* INPUT:   first_agent  First agent of current type             */
 /*          size         Number of agents for current type       */
@@ -892,7 +893,7 @@ int handleSwarmInitialization(const char* filename,
     for ( ; *current_char >= 48 && (*current_char <= 57); current_char++ );
     for ( ; *current_char == 9; current_char++ );
 
-    if ( place_agents( first_agent, current_size, current_char, agent_grid ) ) 
+    if ( place_agents( first_agent, current_size, current_char ) ) 
     {
       TraceError( "Cannot place agents" );
       return FAILURE;
