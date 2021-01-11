@@ -1,11 +1,4 @@
-/*
-** Purpose:
-**
-*/
-
-/* NOTHING GOES ABOVE THIS LINE!!!  (Multiple include protection) */
-#ifndef _support_grids
-#define _support_grids
+#pragma once
 
 /*------------------- Includes Needed for Definitions Below -----------------*/
 
@@ -43,6 +36,139 @@
 #define SETAGT(r,c) (((*agent_grid)[r][c])=1)
 #define GETAGT(r,c) ((*agent_grid)[r][c])
 /*---------------------------------- Types ----------------------------------*/
+
+#define MAX_SUPPORT_GRIDS (20)
+
+typedef enum
+{
+	Uniform,
+	File,
+	Random,
+	Computed,
+	Distributed,
+	Proportional,
+	Toss,
+	RestrictedToss,
+}
+GridInitializationMethod;
+
+typedef struct
+{
+	float InitializationValue;
+}
+UniformInitializationParameters;
+
+#define MAX_FILEPATH_LENGTH (256)
+
+typedef struct 
+{
+	char filepath[MAX_FILEPATH_LENGTH];
+}
+FileInitializationParameters;
+
+typedef struct
+{
+	float MinimumRandomValue;
+	float MaximumRandomValue;
+}
+RandomInitializationParameters;
+
+typedef struct
+{
+}
+ComputedInitializationParameters;
+
+#define MAX_DISTRIBUTED_VALUES (50)
+
+typedef struct
+{
+	unsigned int NumberOfValues;
+	float Values[MAX_DISTRIBUTED_VALUES];
+}
+DistributedInitializationParameters;
+
+#define MAX_PROPORTIONAL_VALUES (30)
+
+typedef struct
+{
+	unsigned int NumberOfValues;
+	float Values[MAX_PROPORTIONAL_VALUES][2];
+}
+ProportionalInitializationParameters;
+
+typedef struct
+{
+	unsigned int NumberOfValues;
+	unsigned int ValueToPlace;
+	unsigned int DefaultValue;
+	unsigned int LowerLeftRow;
+	unsigned int LowerLeftColumn;
+	unsigned int UpperRightRow;
+	unsigned int UpperRightColumn;
+}
+TossInitializationParameters;
+
+typedef struct
+{
+	unsigned int NumberOfValues;
+	unsigned int ValueToPlace;
+	unsigned int DefaultValue;
+	unsigned int LowerLeftRow;
+	unsigned int LowerLeftColumn;
+	unsigned int UpperRightRow;
+	unsigned int UpperRightColumn;
+	unsigned int HoleLowerLeftRow;
+	unsigned int HoleLowerLeftColumn;
+	unsigned int HoleUpperRightRow;
+	unsigned int HoleUpperRightColumn;
+}
+RestrictedTossInitializationParameters;
+
+typedef struct
+{
+}
+StaticUpdateParameters;
+
+typedef struct
+{
+}
+ClearUpdateParameters;
+
+typedef struct
+{
+	int RowOffest;
+	int ColumnOffset;
+}
+MovementUpdateParameters;
+
+typedef enum
+{
+	Static,
+	Clear,
+	Move,
+	Diffusion,
+	Cycle,
+	Library,
+	E,
+}
+GridUpdateMethod;
+
+typedef struct 
+{
+	unsigned int GridID;
+	GridInitializationMethod InitializationMethod;
+	GridUpdateMethod UpdateMethod;
+}
+SupportGridDefinition;
+
+typedef struct 
+{
+	unsigned int NumberOfSupportGrids;
+	unsigned int NumberOfRows;
+	unsigned int NumberOfColumns;
+	SupportGridDefinition SupportGridDefinitions[MAX_GRIDS];	
+}
+SupportGridConfiguration;
 
 typedef float feature_grid[MAX_SIZE][MAX_SIZE];
 
@@ -89,9 +215,3 @@ typedef char (*pri_func_ptr)(s_grids_ptr, int, int);
 
 extern s_grids_ptr all_support_grids;
 extern fgrid_ptr agent_grid;
-
-/* NOTHING GOES BEYOND THIS LINE!!! */
-#endif /*_support_grids*/
-
-
-

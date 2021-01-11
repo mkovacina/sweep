@@ -525,6 +525,7 @@ s_grids_ptr init_support_grids(char file_name[])
 				{
 					TraceVerbose("Initializing grid %d using Uniform Initialization", support_ptr->id); 
 					strip_read_file(buffer, support_file);
+					// todo: we read in a float, cast it to and int, then pass it as a float...
 					int init_val = atof(buffer);
 					uniform_init(support_ptr, init_val);
 				}
