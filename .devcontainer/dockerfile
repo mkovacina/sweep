@@ -1,6 +1,21 @@
 # reference: https://github.com/microsoft/vscode-dev-containers/blob/master/containers/alpine-3.10-git/.devcontainer/Dockerfile
 
-FROM alpine:3.10
+########################
+FROM alpine:3.10 as base
+
+# need the musl-dev library to get stdio, etc to work
+# alpine uses musl not glibc
+RUN apk add --no-cache bash tmux vim git
+RUN apk add --no-cache make musl-dev valgrind clang
+# needed for 'ld' for now
+RUN apk add --no-cache gcc
+# this makes `man` work for the standard 'C' library
+RUN apk add --no-cache man man-pages
+RUN apk add --no-cache sudo
+
+
+###################
+FROM base as vscode
 
 # This Dockerfile adds a non-root user with sudo access. Use the "remoteUser"
 # property in devcontainer.json to use it. On Linux, the container user's GID/UIDs
@@ -10,28 +25,26 @@ ARG USERNAME=vscode
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
-# need the musl-dev library to get stdio, etc to work
-# alpine uses musl not glibc
-RUN apk add --no-cache bash make musl-dev git tmux vim \
-                        # this makes `man` work for the standard 'C' library
-                        man man-pages git \
-						valgrind \
-						clang \ 
-						# needed for 'ld' for now
-						gcc \ 
-	#
-    # Create a non-root user to use if preferred - see https://aka.ms/vscode-remote/containers/non-root-user.
-    && addgroup -g $USER_GID $USERNAME \
-    && adduser -S -s /bin/bash -u $USER_UID -G $USERNAME $USERNAME \
-    # [Optional] Add sudo support for the non-root user
-    && apk add --no-cache sudo \
-    && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME\
-    && chmod 0440 /etc/sudoers.d/$USERNAME \
-    # add /sweep directory for non-VSCode develoment
-    && mkdir -p /sweep \
-    && git clone https://github.com/mkovacina/dotfiles.git \
-    && cd dotfiles \
-    && make install-vim 
+# Create a non-root user to use if preferred - see https://aka.ms/vscode-remote/containers/non-root-user.
+RUN addgroup -g $USER_GID $USERNAME
+RUN adduser -S -s /bin/bash -u $USER_UID -G $USERNAME $USERNAME
+
+# [Optional] Add sudo support for the non-root user
+RUN echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME
+RUN chmod 0440 /etc/sudoers.d/$USERNAME
+
+
+####################
+FROM vscode as sweep
+
+# add /sweep directory for non-VSCode develoment
+RUN mkdir -p /sweep
+RUN git clone https://github.com/mkovacina/dotfiles.git 
+RUN cd dotfiles && make install-vim 
+
+
+###################
+FROM sweep as shell
 
 # notes
 # - bash was not included in the image, contrary to what the alpine sample indicated
