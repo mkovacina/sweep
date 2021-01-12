@@ -141,6 +141,28 @@ typedef struct
 }
 MovementUpdateParameters;
 
+typedef struct
+{
+	float DiffusionRate;
+	float DecayRate;
+}
+DiffusionUpdateParameters;
+
+typedef struct
+{
+}
+CycleUpdateParameters;
+
+typedef struct
+{
+}
+LibraryUpdateParameters;
+
+typedef struct
+{
+}
+EUpdateParameters;
+
 typedef enum
 {
 	Static,
