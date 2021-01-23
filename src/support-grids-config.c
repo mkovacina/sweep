@@ -5,29 +5,76 @@
 #include "string-util.h"
 #include "support_grids.h"
 
-void ParseUniformInitialization(UniformInitializationParameters* parameters, FILE* file, char buffer[], size_t length )
+typedef enum
+{
+	FileSourceType,
+	MemorySourceType
+}
+InputDataSourceType;
+
+typedef struct
+{
+	InputDataSourceType Type;
+	FILE *File;
+	char Data[1024][1024];
+} InputDataSource;
+
+void initialize(char filename[], InputDataSource *source)
+{
+	TraceVerbose("Opening support grid file '%s'", filename);
+	FILE* file = fopen(filename, "r");
+	if (file == NULL) 
+	{
+		TraceError("Can't open file: %s%c", filename, 'z');
+		return;
+	}
+
+	source->Type = FileSourceType;
+	source->File = file;
+}
+
+void readLine(InputDataSource* source, char buffer[], size_t length)
+{
+	switch(source->Type)
+	{
+		case FileSourceType:
+			{
+				fgets(buffer, length, source->File);
+			}
+		default:
+			exit(-1);
+	}
+}
+
+void nextLine(InputDataSource* source, char buffer[], size_t length)
+{
+	readLine(source, buffer, length);
+	trim_comments(buffer, length);
+}
+
+void ParseUniformInitialization(UniformInitializationParameters* parameters, InputDataSource *source, char buffer[], size_t length )
 {
 
 }
 
+//void ParseSupportGridConfig(char file_name[])
+//j//	TraceVerbose("Opening support grid file '%s'", file_name);
+//j	FILE* file = fopen(file_name, "r");
+//j	if (file == NULL) 
+//j	{
+//j		TraceError("Can't open file: %s%c", file_name, 'z');
+//j		return;
+//j	}
+//
 // XXX: how do i change this to take in something that hides the file (iterator?) w/o reading in the whole file
-void ParseSupportGridConfig(char file_name[])
+void ParseSupportGridConfig(InputDataSource *source)
 {
 	char buffer[MAX_BUFFER];
-
-	TraceVerbose("Opening support grid file '%s'", file_name);
-	FILE* file = fopen(file_name, "r");
-	if (file == NULL) 
-	{
-		TraceError("Can't open file: %s%c", file_name, 'z');
-		return;
-	}
 
 	SupportGridConfiguration config;
 
 	/* Determine how many support grids there are */
-	fgets(buffer, MAX_BUFFER, file);
-	trim_comments(buffer, MAX_BUFFER);
+	nextLine(source, buffer, MAX_BUFFER);
 
 	config.NumberOfSupportGrids = atoi(buffer);
 
@@ -41,23 +88,18 @@ void ParseSupportGridConfig(char file_name[])
 	TraceDebug("Number of support grids: %d", config.NumberOfSupportGrids);
 
 	/* Get row dimension of the support grids */
-	fgets(buffer, MAX_BUFFER, file);
-	trim_comments(buffer, MAX_BUFFER);
-
+	nextLine(source, buffer, MAX_BUFFER);
 	config.NumberOfRows = atoi(buffer);
 	TraceDebug("Number of rows: %d", config.NumberOfRows); 
 
 	/* Get column dimension of the support grids */
-	fgets(buffer, MAX_BUFFER, file);
-	trim_comments(buffer, MAX_BUFFER);
-
+	nextLine(source, buffer, MAX_BUFFER);
 	config.NumberOfColumns = atoi(buffer);
 	TraceDebug("Number of columns: %d", config.NumberOfColumns);
 
 	for (int entry = 0; entry < config.NumberOfSupportGrids; entry++)
 	{
-		fgets(buffer, MAX_BUFFER, file);
-		trim_comments(buffer, MAX_BUFFER);
+		nextLine(source, buffer, MAX_BUFFER);
 
 		int id = atoi(buffer);
 
@@ -72,8 +114,7 @@ void ParseSupportGridConfig(char file_name[])
 		SupportGridDefinition* definition = &(config.GridDefinitions[id]);
 		definition->GridID = id;
 
-		fgets(buffer, MAX_BUFFER, file);
-		trim_comments(buffer, MAX_BUFFER);
+		nextLine(source, buffer, MAX_BUFFER);
 
 		/* determines method of INITIALIZATION for each support grid */
 		switch (buffer[0])
@@ -83,9 +124,7 @@ void ParseSupportGridConfig(char file_name[])
 				{
 					definition->InitializationMethod = Uniform;
 
-					ParseUniformInitialization(&definition->InitializationParameters.Uniform, file, buffer, MAX_BUFFER);
-					fgets(buffer, MAX_BUFFER, file);
-					trim_comments(buffer, MAX_BUFFER);
+					ParseUniformInitialization(&definition->InitializationParameters.Uniform, source, buffer, MAX_BUFFER);
 					//
 					// todo: we read in a float, cast it to and int, then pass it as a float...
 					//int init_val = atof(buffer);
