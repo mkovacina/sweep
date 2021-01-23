@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include "trace.h"
 #include "support_grids.h"
+#include "support-grids-config.h"
 
 
 #include "sweep.h"

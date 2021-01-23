@@ -7,10 +7,12 @@ SOURCES = \
     fsa.c \
     tests-fsa.c \
     errors.c \
+	trace.c 
+	
 
 OBJECTS = $(SOURCES:.c=.o)
 
-../sweep-tests: $(OBJECTS)
-	$(CC) $(CFLAGS) $^ $(LDFLAGS) -o ../sweep-tests
+sweep-tests: $(OBJECTS)
+	$(CC) $(CFLAGS) $^ $(LDFLAGS) -o sweep-tests
     
 include $(SOURCES:.c=.d)

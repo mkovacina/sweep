@@ -13,6 +13,7 @@ SOURCES = 	\
 		sweep.c \
 		trace.c \
 		string-util.c \
+		support-grids-config.c \
 		update_support.c 
 
 EXPERIMENT_DIR = ../exps

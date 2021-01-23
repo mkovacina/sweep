@@ -175,10 +175,24 @@ typedef enum
 }
 GridUpdateMethod;
 
+typedef union
+{
+	UniformInitializationParameters Uniform;
+	FileInitializationParameters File;
+	RandomInitializationParameters Random;
+	ComputedInitializationParameters Computed;
+	DistributedInitializationParameters Distributed;
+	ProportionalInitializationParameters Proportional;
+	TossInitializationParameters Toss;
+	RestrictedTossInitializationParameters RestrictedToss;
+}
+GridInitializationParameters;
+
 typedef struct 
 {
 	unsigned int GridID;
 	GridInitializationMethod InitializationMethod;
+	GridInitializationParameters InitializationParameters;
 	GridUpdateMethod UpdateMethod;
 }
 SupportGridDefinition;
@@ -188,7 +202,7 @@ typedef struct
 	unsigned int NumberOfSupportGrids;
 	unsigned int NumberOfRows;
 	unsigned int NumberOfColumns;
-	SupportGridDefinition SupportGridDefinitions[MAX_GRIDS];	
+	SupportGridDefinition GridDefinitions[MAX_GRIDS];	
 }
 SupportGridConfiguration;
 

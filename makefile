@@ -24,8 +24,8 @@ run-sweep:
 run-life: 
 	./sweep exp/life.exp 1234
 
-run-tests:
-	./sweep-tests
+run-tests: build-tests
+	./src/sweep-tests
 
 clean:
 	rm -f sweep
