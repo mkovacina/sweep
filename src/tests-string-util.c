@@ -9,8 +9,6 @@
 
 void test_trim_right_inplace_NoModification()
 {
-    ANNOUNCE_TEST();
-
     char actual[] = "spaceman";
     const char* expected = "spaceman";
     trim_right_inplace(actual);
@@ -20,8 +18,6 @@ void test_trim_right_inplace_NoModification()
 
 void test_trim_right_inplace_WhitespaceAtEnd()
 {
-    ANNOUNCE_TEST();
-
     char actual[] = "spaceman \t\n";
     const char* expected = "spaceman";
     trim_right_inplace(actual);
@@ -31,8 +27,6 @@ void test_trim_right_inplace_WhitespaceAtEnd()
 
 void test_trim_comments()
 {
-    ANNOUNCE_TEST();
-	
 	char actual[] = "something  xlkdlg";
 	const int length = 16;
 	const char* expected = "something";
@@ -43,8 +37,6 @@ void test_trim_comments()
 
 void test_trim_comments_respect_buffer_size()
 {
-    ANNOUNCE_TEST();
-	
 	char actual[] = "something  xlkdlg";
 	const int length = 5;
 	const char* expected = "some";
@@ -55,8 +47,8 @@ void test_trim_comments_respect_buffer_size()
 
 void run_string_util_tests()
 {
-    test_trim_right_inplace_NoModification();
-    test_trim_right_inplace_WhitespaceAtEnd();
-	test_trim_comments();
-	test_trim_comments_respect_buffer_size();
+    TEST(test_trim_right_inplace_NoModification);
+    TEST(test_trim_right_inplace_WhitespaceAtEnd);
+	TEST(test_trim_comments);
+	TEST(test_trim_comments_respect_buffer_size);
 }

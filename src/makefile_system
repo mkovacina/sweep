@@ -1,11 +1,14 @@
 include makefile_common
 
+# XXX: can I make this target auto-magic too?
+
 SOURCES = 	\
 		actions.c \
 		agent.c \
 		errors.c \
 		file.c \
 		fsa.c \
+		input-data-source.c \
 		print_grid.c \
 		priority.c \
 		probes.c \

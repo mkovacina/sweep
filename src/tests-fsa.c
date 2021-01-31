@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <assert.h>
 
 #include "fsa.h"
@@ -8,8 +9,6 @@
 
 void test_initialize_fsa_simple()
 {
-    ANNOUNCE_TEST();
-
     FILE* tmpFsaFile = tmpfile();
 
     // sources from all-follow.fsa
@@ -37,7 +36,7 @@ void test_initialize_fsa_simple()
 
 
     state_struct* state0 = &fsa->state[0];
-    state_struct* state1 = &fsa->state[1];
+    //state_struct* state1 = &fsa->state[1];
 
     assert( state0->number_transitions == 2 && "incorrect number of transitions");
     assert( strncmp(state0->description,"wander",6) == 0 && "incorrect state name");

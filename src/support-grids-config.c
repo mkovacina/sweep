@@ -4,57 +4,24 @@
 #include "trace.h"
 #include "string-util.h"
 #include "support_grids.h"
-
-typedef enum
-{
-	FileSourceType,
-	MemorySourceType
-}
-InputDataSourceType;
-
-typedef struct
-{
-	InputDataSourceType Type;
-	FILE *File;
-	char Data[1024][1024];
-} InputDataSource;
-
-void initialize(char filename[], InputDataSource *source)
-{
-	TraceVerbose("Opening support grid file '%s'", filename);
-	FILE* file = fopen(filename, "r");
-	if (file == NULL) 
-	{
-		TraceError("Can't open file: %s%c", filename, 'z');
-		return;
-	}
-
-	source->Type = FileSourceType;
-	source->File = file;
-}
-
-void readLine(InputDataSource* source, char buffer[], size_t length)
-{
-	switch(source->Type)
-	{
-		case FileSourceType:
-			{
-				fgets(buffer, length, source->File);
-			}
-		default:
-			exit(-1);
-	}
-}
+#include "support-grids-config.h"
+#include "input-data-source.h"
 
 void nextLine(InputDataSource* source, char buffer[], size_t length)
 {
-	readLine(source, buffer, length);
+	ReadLine(source, buffer, length);
 	trim_comments(buffer, length);
 }
 
-void ParseUniformInitialization(UniformInitializationParameters* parameters, InputDataSource *source, char buffer[], size_t length )
+void parseUniformInitialization(UniformInitializationParameters* parameters, InputDataSource *source, char buffer[], size_t length )
 {
-
+	TraceVerbose("going to try to read");
+	nextLine(source,buffer,length);
+	TraceVerbose("data '%s'", buffer);
+	
+	// todo: we read in a float, cast it to and int, then pass it as a float...
+	// currently keeping for "backwards compatiblity" or until I figure out why
+	parameters->InitializationValue = atof(buffer);
 }
 
 //void ParseSupportGridConfig(char file_name[])
@@ -124,10 +91,7 @@ void ParseSupportGridConfig(InputDataSource *source)
 				{
 					definition->InitializationMethod = Uniform;
 
-					ParseUniformInitialization(&definition->InitializationParameters.Uniform, source, buffer, MAX_BUFFER);
-					//
-					// todo: we read in a float, cast it to and int, then pass it as a float...
-					//int init_val = atof(buffer);
+					parseUniformInitialization(&definition->InitializationParameters.Uniform, source, buffer, MAX_BUFFER);
 				}
 				break;
 #if 0

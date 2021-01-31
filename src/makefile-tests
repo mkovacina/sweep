@@ -2,13 +2,18 @@ include makefile_common
 
 SOURCES = \
     tests.c \
-    string-util.c \
-    tests-string-util.c \
-    fsa.c \
     tests-fsa.c \
+	tests-input-data-source.c \
+    tests-string-util.c \
+	tests-support-grids-config.c \
+    fsa.c \
     errors.c \
+	input-data-source.c \
+	support-grids-config.c \
+    string-util.c \
 	trace.c 
 	
+
 
 OBJECTS = $(SOURCES:.c=.o)
 

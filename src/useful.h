@@ -43,7 +43,7 @@
 #define INRANGE(val,low,hi) ( (low) <= (val) && (val) < (hi) )
 #define EVEN(x)         (((x)%2) == 0)         
 #define ODD(x)          (((x)%2) == 1)
-#define TEST(flags, bit)        ((flags) & (bit))
+#define TESTBIT(flags, bit)        ((flags) & (bit))
 #define SET(flags, bit)         ((flags) |= (bit))
 #define CLEAR(flags, bit)       ((flags) &= ~(bit))
 
