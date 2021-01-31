@@ -7,33 +7,10 @@
 #include "support-grids-config.h"
 #include "input-data-source.h"
 
-void nextLine(InputDataSource* source, char buffer[], size_t length)
-{
-	ReadLine(source, buffer, length);
-	trim_comments(buffer, length);
-}
+void nextLine(InputDataSource* source, char buffer[], size_t length);
+void parseUniformInitialization(UniformInitializationParameters* parameters, InputDataSource *source, char buffer[], size_t length );
+void parseFileInitialization(FileInitializationParameters* parameters, InputDataSource *source, char buffer[], size_t length );
 
-void parseUniformInitialization(UniformInitializationParameters* parameters, InputDataSource *source, char buffer[], size_t length )
-{
-	TraceVerbose("going to try to read");
-	nextLine(source,buffer,length);
-	TraceVerbose("data '%s'", buffer);
-	
-	// todo: we read in a float, cast it to and int, then pass it as a float...
-	// currently keeping for "backwards compatiblity" or until I figure out why
-	parameters->InitializationValue = atof(buffer);
-}
-
-//void ParseSupportGridConfig(char file_name[])
-//j//	TraceVerbose("Opening support grid file '%s'", file_name);
-//j	FILE* file = fopen(file_name, "r");
-//j	if (file == NULL) 
-//j	{
-//j		TraceError("Can't open file: %s%c", file_name, 'z');
-//j		return;
-//j	}
-//
-// XXX: how do i change this to take in something that hides the file (iterator?) w/o reading in the whole file
 void ParseSupportGridConfig(InputDataSource *source)
 {
 	char buffer[MAX_BUFFER];
@@ -89,31 +66,23 @@ void ParseSupportGridConfig(InputDataSource *source)
 			/* uniform - all grid locations get same initial value */
 			case 'U': 
 				{
+					TraceDebug("Initializing grid %d using Uniform initialization", definition->GridID);
 					definition->InitializationMethod = Uniform;
-
 					parseUniformInitialization(&definition->InitializationParameters.Uniform, source, buffer, MAX_BUFFER);
 				}
 				break;
-#if 0
 
-				/* file - all grid locations specified in a named file */
+			/* file - all grid locations specified in a named file */
 			case 'F': 
 				{
-					TraceVerbose("Initializing grid %d using File Initialization", support_ptr->id);
+					TraceDebug("Initializing grid %d using File Initialization", definition->GridID);
 
-					strip_read_file(buffer, support_file);
+					definition->InitializationMethod = File;
+					parseFileInitialization(&definition->InitializationParameters.File, source, buffer, MAX_BUFFER);
 
-					/* open initialization data file */
-					FILE *init_file = fopen(buffer, "r");
-					if (init_file == NULL) {
-						printf("Can't open file: %s\n", buffer);
-						exit(1);
-					}	
-
-					file_init(support_ptr, init_file);
-					fclose(init_file);
 				}
 				break;
+#if 0
 
 				/* random - all grid locs get a random value in given range */
 			case 'R': 
@@ -418,3 +387,29 @@ void ParseSupportGridConfig(InputDataSource *source)
 #endif
 }
 }
+
+void nextLine(InputDataSource* source, char buffer[], size_t length)
+{
+	ReadLine(source, buffer, length);
+	trim_comments(buffer, length);
+}
+
+void parseUniformInitialization(UniformInitializationParameters* parameters, InputDataSource *source, char buffer[], size_t length )
+{
+	TraceVerbose("Parsing information for Uniform initialization");
+	nextLine(source,buffer,length);
+	
+	// todo: we read in a float, cast it to and int, then pass it as a float...
+	// currently keeping for "backwards compatiblity" or until I figure out why
+	parameters->InitializationValue = atof(buffer);
+}
+
+void parseFileInitialization(FileInitializationParameters* parameters, InputDataSource *source, char buffer[], size_t length )
+{
+	TraceVerbose("Parsing information for File initialization");
+	nextLine(source,parameters->FilePath, MAX_FILEPATH_LENGTH);
+
+	// XXX: this should probably be read into a buffer first and verified
+	// XXX: can we reasonably check that the file exists here (look up stat()/access()/open())
+}
+

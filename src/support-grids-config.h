@@ -27,7 +27,7 @@ UniformInitializationParameters;
 
 typedef struct 
 {
-	char filepath[MAX_FILEPATH_LENGTH];
+	char FilePath[MAX_FILEPATH_LENGTH];
 }
 FileInitializationParameters;
 
