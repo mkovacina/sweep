@@ -11,6 +11,7 @@ void nextLine(InputDataSource* source, char buffer[], size_t length);
 void parseUniformInitialization(UniformInitializationParameters* parameters, InputDataSource *source, char buffer[], size_t length );
 void parseFileInitialization(FileInitializationParameters* parameters, InputDataSource *source, char buffer[], size_t length );
 void parseRandomInitialization(RandomInitializationParameters* parameters, InputDataSource *source, char buffer[], size_t length );
+void parseDistributedInitialization(DistributedInitializationParameters* parameters, InputDataSource *source, char buffer[], size_t length );
 
 void ParseSupportGridConfig(InputDataSource *source)
 {
@@ -105,32 +106,16 @@ void ParseSupportGridConfig(InputDataSource *source)
 				}
 				break;
 
-#if 0
 				/* distributed - all grid locs get one of a list of values */
 			case 'D': 
 				{
-					TraceVerbose("Initializing grid %d using Distributed Initialization", support_ptr->id);
+					TraceVerbose("Initializing grid %d using Distributed Initialization", definition->GridID);
 
-					strip_read_file(buffer, support_file);
-					int num_dis_vals = atoi(buffer);
-
-					if (num_dis_vals > 50)
-					{
-						TraceError("The specified number of values to distribute (%d) is greater than the maximum number allowed (%d)", num_dis_vals, 50);
-						exit(1);
-					}
-
-					float dist_vals[50];
-					for (int count=0;count<num_dis_vals;count++)
-					{
-						strip_read_file(buffer, support_file);
-						dist_vals[count] = atof(buffer);
-						TraceDebug("Stored %f for distribution in grid %d", dist_vals[count], support_ptr->id); 
-					}
-
-					distribute_init(support_ptr, num_dis_vals, dist_vals);
+					definition->InitializationMethod = Distributed;
+					parseRandomInitialization(&definition->InitializationParameters.Random, source, buffer, MAX_BUFFER);
 				}
 				break;
+#if 0
 
 				/* proportional - all locs get a user-specified proportion */
 			case 'P': 
@@ -417,11 +402,34 @@ void parseRandomInitialization(RandomInitializationParameters* parameters, Input
 	// int beg_range = atof(buffer);
 	//
 	parameters->MinimumRandomValue = atof(buffer);
+	TraceVerbose("RandomInitializationParameters.MinimumRandomValue = %f", parameters->MinimumRandomValue);
 
 	nextLine(source,buffer,length);
 
 	parameters->MaximumRandomValue = atof(buffer);
-	TraceVerbose("RandomInitializationParameters.MinimumRandomValue = %f", parameters->MinimumRandomValue);
 	TraceVerbose("RandomInitializationParameters.MaximumRandomValue = %f", parameters->MaximumRandomValue);
 
+}
+
+void parseDistributedInitialization(DistributedInitializationParameters* parameters, InputDataSource *source, char buffer[], size_t length )
+{
+	TraceVerbose("Parsing information for Distributed initialization");
+
+	nextLine(source,buffer,length);
+
+	parameters->NumberOfValues = atoi(buffer);
+	TraceVerbose("DistributedInitializationParameters.NumberOfValues = %d", parameters->NumberOfValues);
+
+	if (parameters->NumberOfValues > MAX_DISTRIBUTED_VALUES)
+	{
+		TraceError("The specified number of values to distribute (%d) is greater than the maximum number allowed (%d)", parameters->NumberOfValues, MAX_DISTRIBUTED_VALUES);
+		exit(1);
+	}
+
+	for (int x = 0; x < parameters->NumberOfValues; x++)
+	{
+		nextLine(source,buffer,length);
+		parameters->Values[x] = atof(buffer);
+		TraceVerbose("DistributedInitializationParameters.Values[%d] = %f", x, parameters->Values[x]); 
+	}
 }

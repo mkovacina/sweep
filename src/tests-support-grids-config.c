@@ -15,6 +15,7 @@
 void parseUniformInitialization(UniformInitializationParameters* parameters, InputDataSource *source, char buffer[], size_t length );
 void parseFileInitialization(FileInitializationParameters* parameters, InputDataSource *source, char buffer[], size_t length );
 void parseRandomInitialization(RandomInitializationParameters* parameters, InputDataSource *source, char buffer[], size_t length );
+void parseDistributedInitialization(DistributedInitializationParameters* parameters, InputDataSource *source, char buffer[], size_t length );
 
 
 void test_parseUniformInitialization()
@@ -70,13 +71,37 @@ void test_parseRandomInitialization()
 	const float expectedMinimumValue = 1.0;
 	const float expectedMaximumValue = 2.0;
 
-	TraceVerbose("%f %f", parameters.MinimumRandomValue, parameters.MaximumRandomValue);
 	assert(parameters.MinimumRandomValue == expectedMinimumValue && "unexpected value for MinimumValue");
 	assert(parameters.MaximumRandomValue == expectedMaximumValue && "unexpected value for MaximumValue");
+}
+void test_parseDistributedInitialization()
+{
+	DistributedInitializationParameters parameters;
+	InputDataSource source;
+	const size_t length = 1024;
+	char buffer[length];
+
+	InitializeInputDataSourceFromMemory(&source);
+	AddInputData(&source, "3");
+	AddInputData(&source, "4.0");
+	AddInputData(&source, "5.0");
+	AddInputData(&source, "6.1");
+	parseDistributedInitialization(&parameters, &source, buffer, length);
+
+	const int expectedNumberOfValues = 3;
+	const float expectedValue_0 = 4.0;
+	const float expectedValue_1 = 5.0;
+	const float expectedValue_2 = 6.1;
+
+	assert(parameters.NumberOfValues == expectedNumberOfValues && "unexpected value for NumberOfValues");
+	assert(parameters.Values[0] == expectedValue_0 && "unexpected value for Value_0");
+	assert(parameters.Values[1] == expectedValue_1 && "unexpected value for Value_1");
+	assert(parameters.Values[2] == expectedValue_2 && "unexpected value for Value_2");
 }
 void run_support_grids_config_tests()
 {
 	TEST(test_parseUniformInitialization);
 	TEST(test_parseFileInitialization);
 	TEST(test_parseRandomInitialization);
+	TEST(test_parseDistributedInitialization);
 }
