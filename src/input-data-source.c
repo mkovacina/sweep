@@ -24,9 +24,11 @@ void InitializeInputDataSourceFromMemory(InputDataSource *source)
 {
 	TraceVerbose("Initializing input from memory");
 
+	// xxx: consider replacing this with a circular buffer queue
 	source->Type = MemorySourceType;
 	source->File = NULL;
 	source->NumberOfLines = 0;
+	source->Head = 0;
 }
 
 void AddInputData(InputDataSource *source, const char* line)
@@ -58,8 +60,9 @@ void ReadLine(InputDataSource* source, char buffer[], size_t length)
 					exit(-1);
 				}
 
-				strncpy( buffer, source->Data[source->NumberOfLines - 1], length );
+				strncpy( buffer, source->Data[source->Head], length );
 				source->NumberOfLines--;
+				source->Head++;
 			}
 			break;
 		default:

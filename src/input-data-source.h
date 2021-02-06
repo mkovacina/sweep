@@ -17,6 +17,7 @@ typedef struct
 	FILE *File;
 	size_t NumberOfLines;
 	char Data[MAX_INPUT_BUFFER_LINES][MAX_INPUT_BUFFER_LINE_LENGTH];
+	int Head;
 } 
 InputDataSource;
 
