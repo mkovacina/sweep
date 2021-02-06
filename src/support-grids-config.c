@@ -94,17 +94,18 @@ void ParseSupportGridConfig(InputDataSource *source)
 					parseRandomInitialization(&definition->InitializationParameters.Random, source, buffer, MAX_BUFFER);
 				}
 				break;
-#if 0
 
 				/* computed - as yet unimplemented */
 			case 'C': 
 				{
-					TraceVerbose("Initializing grid %d using Computed Initialization", support_ptr->id);
+					TraceVerbose("Initializing grid %d using Computed Initialization", definition->GridID);
+
 					TraceError("Computed Initialization not yet implemented");
 					exit(1);
 				}
 				break;
 
+#if 0
 				/* distributed - all grid locs get one of a list of values */
 			case 'D': 
 				{
