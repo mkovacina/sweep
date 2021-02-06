@@ -10,6 +10,7 @@
 void nextLine(InputDataSource* source, char buffer[], size_t length);
 void parseUniformInitialization(UniformInitializationParameters* parameters, InputDataSource *source, char buffer[], size_t length );
 void parseFileInitialization(FileInitializationParameters* parameters, InputDataSource *source, char buffer[], size_t length );
+void parseRandomInitialization(RandomInitializationParameters* parameters, InputDataSource *source, char buffer[], size_t length );
 
 void ParseSupportGridConfig(InputDataSource *source)
 {
@@ -67,6 +68,7 @@ void ParseSupportGridConfig(InputDataSource *source)
 			case 'U': 
 				{
 					TraceDebug("Initializing grid %d using Uniform initialization", definition->GridID);
+
 					definition->InitializationMethod = Uniform;
 					parseUniformInitialization(&definition->InitializationParameters.Uniform, source, buffer, MAX_BUFFER);
 				}
@@ -82,26 +84,17 @@ void ParseSupportGridConfig(InputDataSource *source)
 
 				}
 				break;
-#if 0
 
 				/* random - all grid locs get a random value in given range */
 			case 'R': 
 				{
-					TraceVerbose("Initializing grid %d using Random Initialization", support_ptr->id);
+					TraceDebug("Initializing grid %d using Random Initialization", definition->GridID);
 
-					strip_read_file(buffer, support_file);
-
-					/* beginning of range of random values to place */
-					int beg_range = atof(buffer);
-
-					strip_read_file(buffer, support_file);
-
-					/* end of range of random values to place in grid */
-					int end_range = atof(buffer);
-
-					random_init(support_ptr, beg_range, end_range);
+					definition->InitializationMethod = Random;
+					parseRandomInitialization(&definition->InitializationParameters.Random, source, buffer, MAX_BUFFER);
 				}
 				break;
+#if 0
 
 				/* computed - as yet unimplemented */
 			case 'C': 
@@ -413,3 +406,21 @@ void parseFileInitialization(FileInitializationParameters* parameters, InputData
 	// XXX: can we reasonably check that the file exists here (look up stat()/access()/open())
 }
 
+void parseRandomInitialization(RandomInitializationParameters* parameters, InputDataSource *source, char buffer[], size_t length )
+{
+	TraceVerbose("Parsing information for Random initialization");
+
+	nextLine(source,buffer,length);
+
+	// xxx: again, reading in floats and casting down to int...why?
+	// int beg_range = atof(buffer);
+	//
+	parameters->MinimumRandomValue = atof(buffer);
+
+	nextLine(source,buffer,length);
+
+	parameters->MaximumRandomValue = atof(buffer);
+	TraceVerbose("RandomInitializationParameters.MinimumRandomValue = %f", parameters->MinimumRandomValue);
+	TraceVerbose("RandomInitializationParameters.MaximumRandomValue = %f", parameters->MaximumRandomValue);
+
+}
