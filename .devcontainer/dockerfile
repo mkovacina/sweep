@@ -5,13 +5,9 @@ FROM alpine:3.10 as base
 
 # need the musl-dev library to get stdio, etc to work
 # alpine uses musl not glibc
-RUN apk add --no-cache bash tmux vim git
-RUN apk add --no-cache make musl-dev valgrind clang
-# needed for 'ld' for now
-RUN apk add --no-cache gcc
-# this makes `man` work for the standard 'C' library
-RUN apk add --no-cache man man-pages
-RUN apk add --no-cache sudo
+# gcc is needed for 'ld' for now
+# man/man-pages makes `man` work for the standard 'C' library
+RUN apk add --no-cache bash tmux vim git make musl-dev valgrind clang gcc man man-pages sudo
 
 
 ###################
