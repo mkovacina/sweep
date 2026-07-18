@@ -1,13 +1,13 @@
 # reference: https://github.com/microsoft/vscode-dev-containers/blob/master/containers/alpine-3.10-git/.devcontainer/Dockerfile
 
 ########################
-FROM alpine:3.10 as base
+FROM alpine:3.22 as base
 
 # need the musl-dev library to get stdio, etc to work
 # alpine uses musl not glibc
 # gcc is needed for 'ld' for now
-# man/man-pages makes `man` work for the standard 'C' library
-RUN apk add --no-cache bash tmux vim git make musl-dev valgrind clang gcc man man-pages sudo
+# man-db/man-pages makes `man` work for the standard 'C' library
+RUN apk add --no-cache bash tmux vim git make musl-dev valgrind clang gcc man-db man-pages sudo
 
 
 ###################
