@@ -1,21 +1,17 @@
 # reference: https://github.com/microsoft/vscode-dev-containers/blob/master/containers/alpine-3.10-git/.devcontainer/Dockerfile
 
 ########################
-FROM alpine:3.10 as base
+FROM alpine:3.22 AS base
 
 # need the musl-dev library to get stdio, etc to work
 # alpine uses musl not glibc
-RUN apk add --no-cache bash tmux vim git
-RUN apk add --no-cache make musl-dev valgrind clang
-# needed for 'ld' for now
-RUN apk add --no-cache gcc
-# this makes `man` work for the standard 'C' library
-RUN apk add --no-cache man man-pages
-RUN apk add --no-cache sudo
+# gcc is needed for 'ld' for now
+# man-db/man-pages makes `man` work for the standard 'C' library
+RUN apk add --no-cache bash tmux vim git make musl-dev valgrind clang gcc man-db man-pages sudo
 
 
 ###################
-FROM base as vscode
+FROM base AS vscode
 
 # This Dockerfile adds a non-root user with sudo access. Use the "remoteUser"
 # property in devcontainer.json to use it. On Linux, the container user's GID/UIDs
@@ -35,7 +31,7 @@ RUN chmod 0440 /etc/sudoers.d/$USERNAME
 
 
 ####################
-FROM vscode as sweep
+FROM vscode AS sweep
 
 # add /sweep directory for non-VSCode develoment
 RUN mkdir -p /sweep
@@ -44,7 +40,7 @@ RUN cd dotfiles && make install-vim
 
 
 ###################
-FROM sweep as shell
+FROM sweep AS shell
 
 # notes
 # - bash was not included in the image, contrary to what the alpine sample indicated

@@ -9,7 +9,7 @@
 	{
 		"terminal.integrated.shell.linux": "/bin/bash"
 	},
-	"postCreateCommand": ""
+	"postCreateCommand": "",
 	// An array of Docker CLI arguments that should be used when running the container.
 	"runArgs": []
 }
