@@ -1,0 +1,45 @@
+#!/bin/sh
+# Run a git or gh command as the Claude bot account instead of as the
+# repo owner. See docs/claude-workflow.md for setup and the workflow.
+#
+#   scripts/as-claude git commit -m "..."
+#   scripts/as-claude git push -u origin issue-12-fix-eof
+#   scripts/as-claude gh pr create ...
+#
+# The bot's login and email come from this clone's git config
+# (sweep.botLogin, sweep.botEmail). Its token comes from the macOS
+# Keychain item "sweep-claude-bot" and is never written to disk or
+# passed on a command line.
+
+set -eu
+
+die() { echo "as-claude: $*" >&2; exit 1; }
+
+[ $# -gt 0 ] || die "usage: scripts/as-claude <git|gh> [args...]"
+case "$1" in
+	git|gh) ;;
+	*) die "only git and gh commands can be run as the bot" ;;
+esac
+
+login=$(git config --get sweep.botLogin) ||
+	die "sweep.botLogin is not set; see Setup in docs/claude-workflow.md"
+email=$(git config --get sweep.botEmail) ||
+	die "sweep.botEmail is not set; see Setup in docs/claude-workflow.md"
+token=$(security find-generic-password -s sweep-claude-bot -a "$login" -w 2>/dev/null) ||
+	die "no Keychain item 'sweep-claude-bot' for $login; see Setup in docs/claude-workflow.md"
+
+# commits are authored and committed by the bot
+export GIT_AUTHOR_NAME="$login" GIT_AUTHOR_EMAIL="$email"
+export GIT_COMMITTER_NAME="$login" GIT_COMMITTER_EMAIL="$email"
+
+# gh uses GH_TOKEN ahead of the owner's own gh login
+export GH_TOKEN="$token" SWEEP_BOT_LOGIN="$login"
+
+# git: clear any configured credential helpers (an empty value resets
+# the list) and supply the bot token from the environment instead
+export GIT_CONFIG_COUNT=2
+export GIT_CONFIG_KEY_0=credential.helper GIT_CONFIG_VALUE_0=
+export GIT_CONFIG_KEY_1=credential.helper
+export GIT_CONFIG_VALUE_1='!f() { test "$1" = get || return 0; echo "username=$SWEEP_BOT_LOGIN"; echo "password=$GH_TOKEN"; }; f'
+
+exec "$@"

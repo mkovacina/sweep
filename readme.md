@@ -102,3 +102,10 @@ Launch the container:
 ```sh
 docker run -it -v ${pwd}:/sweep sweep/shell
 ```
+
+## Working with Claude
+
+Claude contributes through its own GitHub bot account: one branch and
+one pull request per issue, reviewed and merged by the owner. See
+[docs/claude-workflow.md](docs/claude-workflow.md) for the workflow and
+setup.
