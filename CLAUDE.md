@@ -11,10 +11,10 @@ setup and reasoning are in `docs/claude-workflow.md`; the rules are:
   missing, stop and point the owner to the Setup section.
 - One issue per PR, with `Closes #<n>` in the description. Only issues
   that are duplicates of each other can share a PR.
-- One branch per issue: `issue-<n>-<short-slug>`, off the latest `master`.
+- One branch per issue: `issue-<n>-<short-slug>`, off the latest `main`.
 - Problems found along the way get a new issue, not a fix in the
   current PR.
-- Never merge, approve, or push to `master`; the owner merges.
+- Never merge, approve, or push to `main`; the owner merges.
 - Once review has started, add follow-up commits; don't amend or
   force-push unless the owner asks for a rebase.
 - Verify in the devcontainer image before opening a PR, and list what

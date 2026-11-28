@@ -10,9 +10,9 @@ and is the only one who merges.
 | | Claude (bot account) | Owner |
 |---|---|---|
 | Issues | Opens issues for bugs and work it finds; works on issues assigned to it | Opens, triages, assigns and closes issues |
-| Branches | One branch per issue, off the latest `master` | — |
+| Branches | One branch per issue, off the latest `main` | — |
 | Pull requests | Opens one PR per issue; answers review questions; pushes follow-up fixes | Reviews, approves, requests changes |
-| `master` | Never pushes to it, never merges into it | Merges PRs |
+| `main` | Never pushes to it, never merges into it | Merges PRs |
 
 ## Rules
 
@@ -21,15 +21,15 @@ and is the only one who merges.
    are duplicates of each other: close the duplicates and list every
    one in the PR (`Closes #12, closes #15`).
 2. **One branch per issue**, named `issue-<n>-<short-slug>`
-   (e.g. `issue-12-eof-on-arm`) and branched from the latest `master`.
+   (e.g. `issue-12-eof-on-arm`) and branched from the latest `main`.
 3. **Stay in scope.** If the work turns up another problem, Claude opens
    a new issue for it instead of fixing it in the current PR.
-4. **Claude never merges, approves, or pushes to `master`.** The owner
+4. **Claude never merges, approves, or pushes to `main`.** The owner
    merges.
 5. **Don't rewrite history once review starts.** After a review is
    requested, Claude adds follow-up commits instead of amending or
    force-pushing, so the reviewer can see what changed. Rebasing onto
-   `master` happens only when the owner asks for it.
+   `main` happens only when the owner asks for it.
 6. **Everything Claude does on GitHub uses the bot account**, through
    `scripts/as-claude`. The owner's own git and `gh` identity stays
    unchanged in this clone.
@@ -40,14 +40,14 @@ and is the only one who merges.
    Claude opens one for something it found (with what's wrong, where,
    and how it was found). Claude works on one only when the owner asks
    in a Claude Code session.
-2. **Branch.** Claude fetches `master`, creates `issue-<n>-<slug>`, and
+2. **Branch.** Claude fetches `main`, creates `issue-<n>-<slug>`, and
    commits there in small, self-explanatory commits.
 3. **Verify.** Before opening the PR, Claude builds and tests in the
    devcontainer image (the project's target environment), at minimum
    `make build-life`, `make build-tests && make run-tests`, and
    `make analyze` where available, plus whatever the issue needs.
 4. **Pull request.** Claude pushes the branch and opens a PR against
-   `master` with `Closes #<n>`, a summary of the change, and what was
+   `main` with `Closes #<n>`, a summary of the change, and what was
    run to verify it (including anything that couldn't be run).
 5. **Review.** The owner reviews on GitHub, then tells Claude in a
    Claude Code session that the PR has feedback. Claude reads the
@@ -61,7 +61,7 @@ and is the only one who merges.
 If issue B can't be done until A's PR merges, Claude waits when it can.
 When it can't, it branches B from A's branch, opens B's PR as a draft
 based on A's branch, and says so in the description. When A merges and
-its branch is deleted, GitHub retargets B's PR to `master`.
+its branch is deleted, GitHub retargets B's PR to `main`.
 
 ## Running commands as the bot
 
@@ -71,7 +71,7 @@ its branch is deleted, GitHub retargets B's PR to `master`.
 scripts/as-claude git commit -m "Fix EOF detection on ARM"
 scripts/as-claude git push -u origin issue-12-eof-on-arm
 scripts/as-claude gh issue create --title "..." --body "..."
-scripts/as-claude gh pr create --base master --title "..." --body "..."
+scripts/as-claude gh pr create --base main --title "..." --body "..."
 ```
 
 It sets the bot as commit author and committer, points `gh` at the
@@ -116,13 +116,13 @@ container.
    git config sweep.botEmail <id>+<bot-login>@users.noreply.github.com
    ```
 
-6. **Protect `master`.** Repository Settings → Rules → Rulesets → New
+6. **Protect `main`.** Repository Settings → Rules → Rulesets → New
    branch ruleset, targeting the default branch:
    - Require a pull request before merging, with 1 required approval
    - Block force pushes
    - Restrict deletions
    - Add *Repository admin* to the bypass list only if the owner wants
-     to keep pushing straight to `master`
+     to keep pushing straight to `main`
 7. **Delete merged branches automatically.** Settings → General →
    "Automatically delete head branches".
 8. **Check it works:**
